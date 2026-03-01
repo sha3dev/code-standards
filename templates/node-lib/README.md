@@ -59,7 +59,8 @@ Hardcoded configuration is centralized in `src/config.ts`.
 - `npm run check`: lint + format check + typecheck + tests
 - `npm run fix`: lint/prettier autofix
 - `npm run build`: compile to `dist/`
-- `npm run test`: tests con Node test runner
+- `npm run test`: tests with Node test runner
+- `npm run publish`: publish package to npm (`--access public`)
 
 ## Structure
 

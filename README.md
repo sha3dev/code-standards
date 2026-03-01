@@ -365,9 +365,7 @@ module.exports = require("@sha3/code-standards/prettier");
 ### TSConfig
 
 ```json
-{
-  "extends": "@sha3/code-standards/tsconfig/node-lib.json"
-}
+{ "extends": "@sha3/code-standards/tsconfig/node-lib.json" }
 ```
 
 ---

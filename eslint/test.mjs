@@ -5,11 +5,6 @@ export default [
   ...nodeConfig,
   {
     files: ["**/*.test.{js,mjs,cjs,ts,mts,cts}", "**/*.spec.{js,mjs,cjs,ts,mts,cts}", "test/**/*.{js,mjs,cjs,ts,mts,cts}"],
-    languageOptions: {
-      globals: {
-        ...globals.mocha,
-        ...globals.node
-      }
-    }
+    languageOptions: { globals: { ...globals.mocha, ...globals.node } }
   }
 ];

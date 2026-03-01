@@ -22,13 +22,7 @@ import type { InvoiceSummary } from "../invoices/invoice-types.js";
  * @section types
  */
 
-export type BillingSnapshot = {
-  customerId: string;
-  invoiceCount: number;
-  totalAmount: number;
-  formattedTotal: string;
-  statusServiceUrl: string;
-};
+export type BillingSnapshot = { customerId: string; invoiceCount: number; totalAmount: number; formattedTotal: string; statusServiceUrl: string };
 
 export class BillingService {
   /**

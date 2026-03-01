@@ -58,6 +58,7 @@ Hardcoded configuration is centralized:
 - `npm run check`: lint + format check + typecheck + tests
 - `npm run fix`: apply lint/prettier autofix
 - `npm run test`: run tests with Node test runner
+- `npm run publish`: publish package to npm (`--access public`)
 
 ## Structure
 

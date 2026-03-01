@@ -78,12 +78,7 @@ export class InvoiceService {
    */
 
   private toInvoice(command: CreateInvoiceCommand): Invoice {
-    const invoice: Invoice = {
-      id: randomUUID(),
-      customerId: command.customerId,
-      amount: command.amount,
-      createdAt: new Date()
-    };
+    const invoice: Invoice = { id: randomUUID(), customerId: command.customerId, amount: command.amount, createdAt: new Date() };
     return invoice;
   }
 

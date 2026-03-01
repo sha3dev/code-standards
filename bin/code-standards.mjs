@@ -11,10 +11,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 
 const TEMPLATE_NAMES = ["node-lib", "node-service"];
 const CODE_STANDARDS_METADATA_KEY = "codeStandards";
-const NODE_LIB_REFRESH_SIGNATURE = {
-  main: "dist/index.js",
-  types: "dist/index.d.ts"
-};
+const NODE_LIB_REFRESH_SIGNATURE = { main: "dist/index.js", types: "dist/index.d.ts" };
 const NODE_SERVICE_START_SIGNATURE = "node --import tsx src/index.ts";
 const PROFILE_KEY_ORDER = [
   "version",
@@ -83,86 +80,22 @@ const DEFAULT_PROFILE = {
 };
 
 const PROFILE_QUESTIONS = [
-  {
-    key: "paradigm",
-    prompt: "Preferred paradigm",
-    options: ["class-first", "hybrid", "functional-first"]
-  },
-  {
-    key: "function_size_policy",
-    prompt: "Function size policy",
-    options: ["max_20_lines_hard", "max_30_lines_soft", "no_fixed_limit"]
-  },
-  {
-    key: "return_policy",
-    prompt: "Return policy",
-    options: ["single_return_strict_no_exceptions", "single_return_with_guard_clauses", "free_return_style"]
-  },
-  {
-    key: "class_design",
-    prompt: "Class design policy",
-    options: ["constructor_injection", "internal_instantiation", "mixed"]
-  },
-  {
-    key: "comments_policy",
-    prompt: "Comments policy",
-    options: ["extensive", "complex_logic_only", "minimal"]
-  },
-  {
-    key: "testing_policy",
-    prompt: "Testing policy",
-    options: ["tests_required_for_behavior_change", "tests_critical_only", "tests_optional"]
-  },
-  {
-    key: "architecture",
-    prompt: "Architecture style",
-    options: ["feature_folders", "layered", "simple_src_lib"]
-  },
-  {
-    key: "error_handling",
-    prompt: "Error handling style",
-    options: ["exceptions_with_typed_errors", "result_either", "mixed"]
-  },
-  {
-    key: "async_style",
-    prompt: "Async style",
-    options: ["async_await_only", "promise_chains", "both"]
-  },
-  {
-    key: "class_file_policy",
-    prompt: "Class/file policy",
-    options: ["one_public_class_per_file", "multiple_classes_allowed", "no_rule"]
-  },
-  {
-    key: "type_contract_policy",
-    prompt: "Type contract policy",
-    options: ["prefer_types_over_interfaces", "interfaces_everywhere", "interfaces_public_only"]
-  },
-  {
-    key: "mutability",
-    prompt: "Mutability policy",
-    options: ["immutability_preferred", "immutability_strict", "mutable_pragmatic"]
-  },
-  {
-    key: "rule_severity_model",
-    prompt: "Rule severity model",
-    options: ["all_blocking", "tiered", "all_preferred"]
-  },
-  {
-    key: "language",
-    prompt: "Instruction language",
-    options: ["english_technical", "spanish_technical", "bilingual"]
-  },
-  {
-    key: "examples_density",
-    prompt: "Examples density",
-    options: ["rule_with_good_bad_examples", "rules_only", "rules_plus_long_templates"]
-  },
-  {
-    key: "instruction_file_location",
-    prompt: "Instruction file location",
-    options: ["root_agents_md", "ai_instructions_md", "both"]
-  }
+  { key: "paradigm", prompt: "Preferred paradigm", options: ["class-first", "hybrid", "functional-first"] },
+  { key: "function_size_policy", prompt: "Function size policy", options: ["max_20_lines_hard", "max_30_lines_soft", "no_fixed_limit"] },
+  { key: "return_policy", prompt: "Return policy", options: ["single_return_strict_no_exceptions", "single_return_with_guard_clauses", "free_return_style"] },
+  { key: "class_design", prompt: "Class design policy", options: ["constructor_injection", "internal_instantiation", "mixed"] },
+  { key: "comments_policy", prompt: "Comments policy", options: ["extensive", "complex_logic_only", "minimal"] },
+  { key: "testing_policy", prompt: "Testing policy", options: ["tests_required_for_behavior_change", "tests_critical_only", "tests_optional"] },
+  { key: "architecture", prompt: "Architecture style", options: ["feature_folders", "layered", "simple_src_lib"] },
+  { key: "error_handling", prompt: "Error handling style", options: ["exceptions_with_typed_errors", "result_either", "mixed"] },
+  { key: "async_style", prompt: "Async style", options: ["async_await_only", "promise_chains", "both"] },
+  { key: "class_file_policy", prompt: "Class/file policy", options: ["one_public_class_per_file", "multiple_classes_allowed", "no_rule"] },
+  { key: "type_contract_policy", prompt: "Type contract policy", options: ["prefer_types_over_interfaces", "interfaces_everywhere", "interfaces_public_only"] },
+  { key: "mutability", prompt: "Mutability policy", options: ["immutability_preferred", "immutability_strict", "mutable_pragmatic"] },
+  { key: "rule_severity_model", prompt: "Rule severity model", options: ["all_blocking", "tiered", "all_preferred"] },
+  { key: "language", prompt: "Instruction language", options: ["english_technical", "spanish_technical", "bilingual"] },
+  { key: "examples_density", prompt: "Examples density", options: ["rule_with_good_bad_examples", "rules_only", "rules_plus_long_templates"] },
+  { key: "instruction_file_location", prompt: "Instruction file location", options: ["root_agents_md", "ai_instructions_md", "both"] }
 ];
 
 function printUsage() {
@@ -203,15 +136,7 @@ Global:
 }
 
 function parseInitArgs(argv) {
-  const options = {
-    template: undefined,
-    yes: false,
-    install: true,
-    force: false,
-    withAiAdapters: true,
-    profilePath: undefined,
-    help: false
-  };
+  const options = { template: undefined, yes: false, install: true, force: false, withAiAdapters: true, profilePath: undefined, help: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -289,15 +214,7 @@ function parseInitArgs(argv) {
 }
 
 function parseRefreshArgs(argv) {
-  const options = {
-    template: undefined,
-    profilePath: undefined,
-    withAiAdapters: true,
-    dryRun: false,
-    install: false,
-    yes: false,
-    help: false
-  };
+  const options = { template: undefined, profilePath: undefined, withAiAdapters: true, dryRun: false, install: false, yes: false, help: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -371,12 +288,7 @@ function parseRefreshArgs(argv) {
 }
 
 function parseProfileArgs(argv) {
-  const options = {
-    profilePath: undefined,
-    nonInteractive: false,
-    forceProfile: false,
-    help: false
-  };
+  const options = { profilePath: undefined, nonInteractive: false, forceProfile: false, help: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -553,10 +465,7 @@ async function readProjectPackageJson(targetPath) {
     throw new Error(`package.json was not found in ${targetPath}. Run refresh from the project root.`);
   }
 
-  return {
-    packageJsonPath,
-    packageJson: await readJsonFile(packageJsonPath)
-  };
+  return { packageJsonPath, packageJson: await readJsonFile(packageJsonPath) };
 }
 
 async function writeProjectPackageJson(packageJsonPath, packageJson) {
@@ -565,27 +474,17 @@ async function writeProjectPackageJson(packageJsonPath, packageJson) {
 
 function updateCodeStandardsMetadata(projectPackageJson, metadataPatch) {
   const existingMetadata = asPlainObject(projectPackageJson[CODE_STANDARDS_METADATA_KEY]);
-  const nextMetadata = {
-    ...existingMetadata,
-    ...metadataPatch
-  };
+  const nextMetadata = { ...existingMetadata, ...metadataPatch };
 
-  return {
-    ...projectPackageJson,
-    [CODE_STANDARDS_METADATA_KEY]: nextMetadata
-  };
+  return { ...projectPackageJson, [CODE_STANDARDS_METADATA_KEY]: nextMetadata };
 }
 
 function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson, templateName) {
   const mergedPackageJson = { ...projectPackageJson };
   const templateScripts = asPlainObject(templatePackageJson.scripts);
   const templateDevDependencies = asPlainObject(templatePackageJson.devDependencies);
-  const mergedScripts = {
-    ...asPlainObject(projectPackageJson.scripts)
-  };
-  const mergedDevDependencies = {
-    ...asPlainObject(projectPackageJson.devDependencies)
-  };
+  const mergedScripts = { ...asPlainObject(projectPackageJson.scripts) };
+  const mergedDevDependencies = { ...asPlainObject(projectPackageJson.devDependencies) };
 
   for (const [scriptName, scriptValue] of Object.entries(templateScripts)) {
     mergedScripts[scriptName] = scriptValue;
@@ -647,11 +546,7 @@ async function collectTemplateFiles(templateDir, baseDir = templateDir) {
     const mappedFileName = mapTemplateFileName(sourceFileName);
     const targetRelativePath = sourceDirectory === "." ? mappedFileName : path.join(sourceDirectory, mappedFileName);
 
-    files.push({
-      sourcePath,
-      sourceRelativePath,
-      targetRelativePath
-    });
+    files.push({ sourcePath, sourceRelativePath, targetRelativePath });
   }
 
   return files.sort((left, right) => left.targetRelativePath.localeCompare(right.targetRelativePath));
@@ -691,10 +586,7 @@ async function applyManagedFiles(options) {
     await writeProjectPackageJson(packageJsonPath, mergedPackageJson);
   }
 
-  return {
-    updatedFiles,
-    mergedPackageJson
-  };
+  return { updatedFiles, mergedPackageJson };
 }
 
 function resolvePackageRoot() {
@@ -749,11 +641,7 @@ async function readAndValidateProfile(profilePath, schema) {
 
 function runCommand(command, args, cwd) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, {
-      cwd,
-      stdio: "inherit",
-      shell: process.platform === "win32"
-    });
+    const child = spawn(command, args, { cwd, stdio: "inherit", shell: process.platform === "win32" });
 
     child.on("error", reject);
     child.on("exit", (code) => {
@@ -821,10 +709,7 @@ async function promptYesNo(rl, prompt, defaultYes = true) {
 
 async function createProfileInteractively(baseProfile) {
   const profile = { ...baseProfile };
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
   try {
     for (const question of PROFILE_QUESTIONS) {
@@ -855,10 +740,7 @@ async function runProfile(rawOptions) {
       throw new Error(`Profile already exists at ${outputPath}. Use --force-profile to overwrite.`);
     }
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
     try {
       const shouldOverwrite = await promptYesNo(rl, `Profile already exists at ${outputPath}. Overwrite?`, false);
@@ -949,11 +831,7 @@ function buildAlternativeRules(profile) {
     testingRule = "### Testing Override (MUST)\n\n" + `- The active testing policy is \`${profile.testing_policy}\`.`;
   }
 
-  return {
-    codeRules,
-    architectureRule,
-    testingRule
-  };
+  return { codeRules, architectureRule, testingRule };
 }
 
 async function buildRuleSections(packageRoot, profile) {
@@ -1041,10 +919,7 @@ async function generateAiInstructions(packageRoot, targetDir, tokens, profile) {
 }
 
 async function maybeInitializeProfileInteractively(packageRoot, profilePath) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
   try {
     const shouldInit = await promptYesNo(rl, `Profile not found at ${profilePath}. Initialize it with package defaults?`, true);
@@ -1066,17 +941,11 @@ async function resolveBundledOrDefaultProfile(packageRoot, schema) {
   const bundledExists = await pathExists(bundledProfilePath);
 
   if (bundledExists) {
-    return {
-      profile: await readAndValidateProfile(bundledProfilePath, schema),
-      profilePathForMetadata: null
-    };
+    return { profile: await readAndValidateProfile(bundledProfilePath, schema), profilePathForMetadata: null };
   }
 
   validateProfile(DEFAULT_PROFILE, schema, "hardcoded defaults");
-  return {
-    profile: normalizeProfile(DEFAULT_PROFILE),
-    profilePathForMetadata: null
-  };
+  return { profile: normalizeProfile(DEFAULT_PROFILE), profilePathForMetadata: null };
 }
 
 async function resolveProfileForInit(packageRoot, targetPath, rawOptions, schema) {
@@ -1093,10 +962,7 @@ async function resolveProfileForInit(packageRoot, targetPath, rawOptions, schema
       await writeJsonFile(bundledProfilePath, normalizeProfile(DEFAULT_PROFILE));
     }
 
-    return {
-      profile: await readAndValidateProfile(bundledProfilePath, schema),
-      profilePathForMetadata: null
-    };
+    return { profile: await readAndValidateProfile(bundledProfilePath, schema), profilePathForMetadata: null };
   }
 
   const requestedPath = path.resolve(targetPath, rawOptions.profilePath);
@@ -1110,10 +976,7 @@ async function resolveProfileForInit(packageRoot, targetPath, rawOptions, schema
     await maybeInitializeProfileInteractively(packageRoot, requestedPath);
   }
 
-  return {
-    profile: await readAndValidateProfile(requestedPath, schema),
-    profilePathForMetadata: getRelativeProfilePath(requestedPath, targetPath)
-  };
+  return { profile: await readAndValidateProfile(requestedPath, schema), profilePathForMetadata: getRelativeProfilePath(requestedPath, targetPath) };
 }
 
 async function resolveTemplateForRefresh(rawOptions, projectPackageJson, targetPath) {
@@ -1199,10 +1062,7 @@ async function collectAiFiles(packageRoot) {
 }
 
 async function promptForMissing(options) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
   try {
     const resolved = { ...options };
@@ -1277,12 +1137,7 @@ async function runInit(rawOptions) {
   await ensureTargetReady(targetPath, options.force);
 
   const { templateDir } = await validateInitResources(packageRoot, template);
-  const tokens = {
-    projectName,
-    packageName,
-    year: String(new Date().getFullYear()),
-    profileSummary: JSON.stringify(profile)
-  };
+  const tokens = { projectName, packageName, year: String(new Date().getFullYear()), profileSummary: JSON.stringify(profile) };
 
   await copyTemplateDirectory(templateDir, targetPath, tokens);
 

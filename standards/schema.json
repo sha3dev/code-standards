@@ -21,11 +21,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["runtime", "typescript", "target"],
-      "properties": {
-        "runtime": { "type": "string", "const": "node" },
-        "typescript": { "type": "boolean" },
-        "target": { "type": "string" }
-      }
+      "properties": { "runtime": { "type": "string", "const": "node" }, "typescript": { "type": "boolean" }, "target": { "type": "string" } }
     },
     "formatting": {
       "type": "object",
@@ -63,12 +59,7 @@
       "required": ["strictness", "templates"],
       "properties": {
         "strictness": { "type": "string", "enum": ["moderate"] },
-        "templates": {
-          "type": "array",
-          "items": { "type": "string", "enum": ["node-lib", "node-service"] },
-          "minItems": 2,
-          "uniqueItems": true
-        }
+        "templates": { "type": "array", "items": { "type": "string", "enum": ["node-lib", "node-service"] }, "minItems": 2, "uniqueItems": true }
       }
     },
     "testing": {
@@ -88,10 +79,7 @@
       "properties": {
         "eslintConfig": { "type": "string", "const": "@sha3/code-standards/eslint/node" },
         "prettierConfig": { "type": "string", "const": "@sha3/code-standards/prettier" },
-        "tsconfigPackage": {
-          "type": "string",
-          "const": "@sha3/code-standards/tsconfig/node-lib.json"
-        },
+        "tsconfigPackage": { "type": "string", "const": "@sha3/code-standards/tsconfig/node-lib.json" },
         "enforcement": { "type": "string", "enum": ["local-strict"] }
       }
     },
@@ -101,12 +89,7 @@
       "required": ["enabledByDefault", "assistants"],
       "properties": {
         "enabledByDefault": { "type": "boolean" },
-        "assistants": {
-          "type": "array",
-          "items": { "type": "string", "enum": ["codex", "cursor", "copilot", "windsurf"] },
-          "minItems": 4,
-          "uniqueItems": true
-        }
+        "assistants": { "type": "array", "items": { "type": "string", "enum": ["codex", "cursor", "copilot", "windsurf"] }, "minItems": 4, "uniqueItems": true }
       }
     }
   }

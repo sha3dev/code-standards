@@ -1,47 +1,19 @@
 {
-  "meta": {
-    "version": "v1",
-    "scope": "@sha3",
-    "packageManager": "npm",
-    "moduleSystem": "esm"
-  },
-  "language": {
-    "runtime": "node",
-    "typescript": true,
-    "target": "ES2022"
-  },
-  "formatting": {
-    "prettier": true,
-    "lineLength": 160,
-    "semi": true,
-    "singleQuote": false
-  },
+  "meta": { "version": "v1", "scope": "@sha3", "packageManager": "npm", "moduleSystem": "esm" },
+  "language": { "runtime": "node", "typescript": true, "target": "ES2022" },
+  "formatting": { "prettier": true, "lineLength": 160, "semi": true, "singleQuote": false },
   "naming": {
     "files": "kebab-case",
     "directories": "kebab-case",
-    "typescript": {
-      "types": "PascalCase",
-      "interfaces": "PascalCase",
-      "constants": "SCREAMING_SNAKE_CASE"
-    }
+    "typescript": { "types": "PascalCase", "interfaces": "PascalCase", "constants": "SCREAMING_SNAKE_CASE" }
   },
-  "architecture": {
-    "strictness": "moderate",
-    "templates": ["node-lib", "node-service"]
-  },
-  "testing": {
-    "runner": "node-test-runner",
-    "coverage": false,
-    "testLocation": "test/"
-  },
+  "architecture": { "strictness": "moderate", "templates": ["node-lib", "node-service"] },
+  "testing": { "runner": "node-test-runner", "coverage": false, "testLocation": "test/" },
   "tooling": {
     "eslintConfig": "@sha3/code-standards/eslint/node",
     "prettierConfig": "@sha3/code-standards/prettier",
     "tsconfigPackage": "@sha3/code-standards/tsconfig/node-lib.json",
     "enforcement": "local-strict"
   },
-  "ai": {
-    "enabledByDefault": true,
-    "assistants": ["codex", "cursor", "copilot", "windsurf"]
-  }
+  "ai": { "enabledByDefault": true, "assistants": ["codex", "cursor", "copilot", "windsurf"] }
 }

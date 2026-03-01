@@ -10,12 +10,7 @@ const repoRoot = path.resolve(scriptDir, "..");
 const cliPath = path.join(repoRoot, "bin", "code-standards.mjs");
 
 function runCli(args, cwd = repoRoot, input, envPatch) {
-  return spawnSync(process.execPath, [cliPath, ...args], {
-    cwd,
-    input,
-    encoding: "utf8",
-    env: envPatch ? { ...process.env, ...envPatch } : process.env
-  });
+  return spawnSync(process.execPath, [cliPath, ...args], { cwd, input, encoding: "utf8", env: envPatch ? { ...process.env, ...envPatch } : process.env });
 }
 
 async function listRelativeFiles(baseDir, currentDir = baseDir) {
@@ -90,6 +85,9 @@ async function main() {
   assert.match(result.stdout, /Project created/);
   const libGitignore = await readFile(path.join(libTarget, ".gitignore"), "utf8");
   assert.match(libGitignore, /node_modules\//);
+  const libPrettierConfigRaw = await readFile(path.join(libTarget, "prettier.config.cjs"), "utf8");
+  assert.match(libPrettierConfigRaw, /printWidth: 160/);
+  assert.match(libPrettierConfigRaw, /objectWrap: "collapse"/);
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
   assert.match(libReadmeRaw, /# 📚 demo-lib/);
   assert.match(libReadmeRaw, /## Public API/);
@@ -106,6 +104,7 @@ async function main() {
   assert.equal(libPackageAfterInit.codeStandards.withAiAdapters, true);
   assert.equal(libPackageAfterInit.codeStandards.profilePath, null);
   assert.match(libPackageAfterInit.codeStandards.lastRefreshWith, /\d+\.\d+\.\d+/);
+  assert.equal(libPackageAfterInit.scripts.publish, "npm publish --access public --ignore-scripts");
 
   const agentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(agentsRaw, /Class-First Design/);
@@ -235,10 +234,15 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
   const serviceGitignore = await readFile(path.join(serviceTarget, ".gitignore"), "utf8");
   assert.match(serviceGitignore, /node_modules\//);
+  const servicePrettierConfigRaw = await readFile(path.join(serviceTarget, "prettier.config.cjs"), "utf8");
+  assert.match(servicePrettierConfigRaw, /printWidth: 160/);
+  assert.match(servicePrettierConfigRaw, /objectWrap: "collapse"/);
   const serviceReadmeRaw = await readFile(path.join(serviceTarget, "README.md"), "utf8");
   assert.match(serviceReadmeRaw, /# 🚀 demo-service/);
   assert.match(serviceReadmeRaw, /## API HTTP/);
   assert.match(serviceReadmeRaw, /## Contract for LLM Integrators/);
+  const servicePackageAfterInit = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
+  assert.equal(servicePackageAfterInit.scripts.publish, "npm publish --access public --ignore-scripts");
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
   assert.match(serviceConfigRaw, /const CONFIG = \{/);

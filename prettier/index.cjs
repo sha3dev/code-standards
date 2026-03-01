@@ -6,5 +6,6 @@ module.exports = {
   singleQuote: false,
   trailingComma: "none",
   bracketSpacing: true,
-  arrowParens: "always"
+  arrowParens: "always",
+  objectWrap: "collapse"
 };

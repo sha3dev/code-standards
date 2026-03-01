@@ -5,12 +5,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 function parseArgs(argv) {
-  const options = {
-    dryRun: false,
-    access: "public",
-    tag: undefined,
-    skipChecks: false
-  };
+  const options = { dryRun: false, access: "public", tag: undefined, skipChecks: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -74,11 +69,7 @@ Options:
 
 function run(command, args, cwd) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, {
-      cwd,
-      stdio: "inherit",
-      shell: process.platform === "win32"
-    });
+    const child = spawn(command, args, { cwd, stdio: "inherit", shell: process.platform === "win32" });
 
     child.on("error", reject);
     child.on("exit", (code) => {
