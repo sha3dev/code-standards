@@ -1,0 +1,368 @@
+<div align="center">
+
+# @sha3/code-standards
+
+**Scaffold TypeScript projects + enforce how AI writes code.**
+
+[![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](./.nvmrc)
+[![ESM](https://img.shields.io/badge/module-ESM-1f6feb)](./package.json)
+[![Local Strict Checks](https://img.shields.io/badge/enforcement-local%20strict-111111)](./standards/tooling.md)
+[![AI Profiles](https://img.shields.io/badge/AI-profile--driven-7c3aed)](./profiles/schema.json)
+
+</div>
+
+---
+
+## TL;DR
+
+If you just want to start now:
+
+```bash
+npx @sha3/code-standards init my-api --template node-service --yes
+```
+
+Then in your AI chat, paste this:
+
+```txt
+Before writing code:
+1) Read AGENTS.md and ai/<assistant>.md in this repo.
+2) List the blocking rules you will follow.
+3) Implement the task following those rules.
+4) Run npm run check and fix all issues.
+5) Return changed files and which AGENTS rules were applied.
+```
+
+`profile` is optional. Use it only when you want to customize AI behavior.
+
+---
+
+## What This Tool Actually Does
+
+This package combines 3 things in one:
+
+1. Project scaffolding (`init`) for `node-lib` and `node-service`.
+2. Shared tooling exports (`eslint`, `prettier`, `tsconfig`).
+3. AI behavior contract generation (`AGENTS.md` + `ai/*.md`) based on a style profile.
+
+So it is not only formatting/linting. It also defines **how AI should think and generate code**.
+
+Default generated contract includes structural class/file blocks such as:
+
+- `imports:externals`
+- `imports:internals`
+- `consts`
+- `types`
+- `private:attributes`
+- `private:properties`
+- `public:properties`
+- `constructor`
+- `static:properties`
+- `factory`
+- `private:methods`
+- `public:methods`
+- `static:methods`
+
+Section marker format is fixed to:
+
+- `/** @section <block-name> */`
+
+All blocks MUST exist even when empty (`// empty`).
+
+Additional blocking defaults:
+
+- `if`/`else`/loop statements MUST always use braces.
+- README updates MUST follow a top-tier quality standard (see `standards/readme.md`).
+
+---
+
+## Do I Need `profile` First?
+
+No.
+
+- If you run `init` without profile flags, it uses the bundled default profile.
+- If you want your custom coding preferences, create a profile and pass it to `init`.
+
+Default flow (no profile setup):
+
+```bash
+npx @sha3/code-standards init my-app --template node-service --yes
+```
+
+Custom profile flow:
+
+```bash
+npx @sha3/code-standards profile --profile ./profiles/team.profile.json
+npx @sha3/code-standards init my-app --template node-service --yes --profile ./profiles/team.profile.json
+```
+
+---
+
+## What Happens After `init`
+
+After `init`, your new repo contains:
+
+- `AGENTS.md` (blocking rules for AI)
+- `ai/codex.md`, `ai/cursor.md`, `ai/copilot.md`, `ai/windsurf.md`
+- lint/format/typecheck/test-ready project template
+
+That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
+
+---
+
+## How To Use With AI (Copy/Paste)
+
+## Universal bootstrap prompt
+
+Use this as your first message in any coding session:
+
+```txt
+Before generating code:
+- Read AGENTS.md and ai/<assistant>.md.
+- Summarize the blocking rules you must follow.
+- Implement the task with those rules.
+- Run npm run check and fix issues until it passes.
+- Return changed files + a short compliance checklist.
+```
+
+## Task prompt template
+
+```txt
+Task: <describe task>
+Constraints:
+- Follow AGENTS.md and ai/<assistant>.md strictly.
+- Keep architecture and naming conventions intact.
+- Add/update tests for behavior changes.
+- Run npm run check at the end.
+Output:
+- What changed
+- Why
+- Proof checks passed
+```
+
+Replace `<assistant>` with:
+
+- `codex`
+- `cursor`
+- `copilot`
+- `windsurf`
+
+---
+
+## Assistant-Specific Start Commands
+
+Use these prompts depending on tool:
+
+### Codex
+
+```txt
+Read AGENTS.md and ai/codex.md first. Do not start implementation until you summarize blocking rules.
+```
+
+### Cursor
+
+```txt
+Read AGENTS.md and ai/cursor.md. Enforce rules while implementing and keep edits compliant.
+```
+
+### GitHub Copilot Chat
+
+```txt
+Use AGENTS.md and ai/copilot.md as mandatory coding rules for this task.
+```
+
+### Windsurf
+
+```txt
+Read AGENTS.md and ai/windsurf.md and treat them as non-negotiable constraints.
+```
+
+---
+
+## Quick Start (Step by Step)
+
+### 1) Create profile (optional)
+
+```bash
+npx @sha3/code-standards profile
+```
+
+Non-interactive:
+
+```bash
+npx @sha3/code-standards profile \
+  --non-interactive \
+  --profile ./profiles/team.profile.json \
+  --force-profile
+```
+
+### 2) Scaffold project
+
+```bash
+npx @sha3/code-standards init my-api --template node-service --yes
+```
+
+With explicit profile:
+
+```bash
+npx @sha3/code-standards init my-lib \
+  --template node-lib \
+  --yes \
+  --no-install \
+  --profile ./profiles/team.profile.json
+```
+
+Skip AI files when needed:
+
+```bash
+npx @sha3/code-standards init my-lib --template node-lib --yes --no-ai-adapters
+```
+
+### 3) Work loop inside generated project
+
+```bash
+npm install
+npm run check
+```
+
+Then use the prompts above in your AI tool.
+
+---
+
+## CLI Reference
+
+```bash
+code-standards <command> [options]
+
+Commands:
+  init [project-name]   Initialize a project from templates
+  profile               Create or update the AI style profile
+```
+
+### `init` options
+
+- `--template <node-lib|node-service>`
+- `--yes`
+- `--target <dir>`
+- `--no-install`
+- `--force`
+- `--with-ai-adapters`
+- `--no-ai-adapters`
+- `--profile <path>`
+
+### `profile` options
+
+- `--profile <path>`
+- `--non-interactive`
+- `--force-profile`
+
+---
+
+## Package Exports
+
+### ESLint
+
+```js
+// eslint.config.mjs
+import nodeConfig from "@sha3/code-standards/eslint/node";
+import testConfig from "@sha3/code-standards/eslint/test";
+
+export default [...nodeConfig, ...testConfig];
+```
+
+### Prettier
+
+```js
+// prettier.config.cjs
+module.exports = require("@sha3/code-standards/prettier");
+```
+
+### TSConfig
+
+```json
+{
+  "extends": "@sha3/code-standards/tsconfig/node-lib.json"
+}
+```
+
+---
+
+## Local Quality Gates
+
+Main gate:
+
+```bash
+npm run check
+```
+
+Includes:
+
+- standards schema validation
+- profile schema validation
+- lint
+- format check
+- typecheck
+- smoke tests + CLI tests
+
+Other scripts:
+
+- `npm run fix`
+- `npm run standards:validate`
+- `npm run profile:validate`
+- `npm run release:check`
+- `npm run release:publish -- --dry-run`
+- `npm run release:publish`
+- `npm run hooks:install`
+
+---
+
+## FAQ
+
+### “I ran `init`. How do I force AI to follow rules?”
+
+Always start with a bootstrap prompt that says:
+
+1. read `AGENTS.md` and `ai/<assistant>.md`
+2. summarize blocking rules
+3. implement
+4. run `npm run check`
+
+### “AI ignored my standards.”
+
+Use stricter prompt wording:
+
+```txt
+Treat AGENTS.md as hard constraints. If any rule conflicts with your default behavior, AGENTS.md wins.
+```
+
+### “Do I need to repeat the rules every task?”
+
+Yes, practically you should restate that AGENTS is mandatory at each task boundary. Keep the prompt short and consistent.
+
+### “Can I use this without AI files?”
+
+Yes, with `--no-ai-adapters`. You still get scaffold + tooling exports.
+
+---
+
+## Repository Layout
+
+```text
+.
+├── bin/                # CLI entrypoint
+├── profiles/           # AI style profile schema + defaults
+├── resources/ai/       # templates for generated AGENTS/adapters
+├── standards/          # canonical standards docs + manifest/schema
+├── templates/          # project scaffolds (node-lib, node-service)
+├── eslint/             # exported eslint configs
+├── prettier/           # exported prettier config
+└── tsconfig/           # exported tsconfig presets
+```
+
+---
+
+## Publishing
+
+```bash
+npm run release:check
+npm run release:publish
+```

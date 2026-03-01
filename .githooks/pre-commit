@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+set -eu
+
+CHANGED="$(git diff --cached --name-only)"
+
+if echo "$CHANGED" | grep -Eq '^(bin/|eslint/|prettier/|profiles/|resources/|scripts/|standards/|templates/|test/|tsconfig/|ai/|AGENTS.md|README.md|package.json|eslint.config.mjs|prettier.config.cjs|tsconfig.json)'; then
+  echo "Running npm run check..."
+  npm run check
+fi

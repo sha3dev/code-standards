@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sha3.dev/code-standards/schema.json",
+  "title": "Code Standards Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta",
+    "language",
+    "formatting",
+    "naming",
+    "architecture",
+    "testing",
+    "tooling",
+    "ai"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "scope", "packageManager", "moduleSystem"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^v[0-9]+$" },
+        "scope": { "type": "string", "const": "@sha3" },
+        "packageManager": { "type": "string", "const": "npm" },
+        "moduleSystem": { "type": "string", "enum": ["esm"] }
+      }
+    },
+    "language": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime", "typescript", "target"],
+      "properties": {
+        "runtime": { "type": "string", "const": "node" },
+        "typescript": { "type": "boolean" },
+        "target": { "type": "string" }
+      }
+    },
+    "formatting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prettier", "lineLength", "semi", "singleQuote"],
+      "properties": {
+        "prettier": { "type": "boolean" },
+        "lineLength": { "type": "integer", "minimum": 80, "maximum": 140 },
+        "semi": { "type": "boolean" },
+        "singleQuote": { "type": "boolean" }
+      }
+    },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "directories", "typescript"],
+      "properties": {
+        "files": { "type": "string", "enum": ["kebab-case"] },
+        "directories": { "type": "string", "enum": ["kebab-case"] },
+        "typescript": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["types", "interfaces", "constants"],
+          "properties": {
+            "types": { "type": "string", "enum": ["PascalCase"] },
+            "interfaces": { "type": "string", "enum": ["PascalCase"] },
+            "constants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE"] }
+          }
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strictness", "templates"],
+      "properties": {
+        "strictness": { "type": "string", "enum": ["moderate"] },
+        "templates": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["node-lib", "node-service"] },
+          "minItems": 2,
+          "uniqueItems": true
+        }
+      }
+    },
+    "testing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runner", "coverage", "testLocation"],
+      "properties": {
+        "runner": { "type": "string", "const": "node-test-runner" },
+        "coverage": { "type": "boolean" },
+        "testLocation": { "type": "string", "enum": ["test/"] }
+      }
+    },
+    "tooling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eslintConfig", "prettierConfig", "tsconfigPackage", "enforcement"],
+      "properties": {
+        "eslintConfig": { "type": "string", "const": "@sha3/code-standards/eslint/node" },
+        "prettierConfig": { "type": "string", "const": "@sha3/code-standards/prettier" },
+        "tsconfigPackage": {
+          "type": "string",
+          "const": "@sha3/code-standards/tsconfig/node-lib.json"
+        },
+        "enforcement": { "type": "string", "enum": ["local-strict"] }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabledByDefault", "assistants"],
+      "properties": {
+        "enabledByDefault": { "type": "boolean" },
+        "assistants": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["codex", "cursor", "copilot", "windsurf"] },
+          "minItems": 4,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

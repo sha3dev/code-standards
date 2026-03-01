@@ -1,0 +1,64 @@
+{
+  "name": "@sha3/code-standards",
+  "version": "0.1.0",
+  "description": "AI-first code standards, tooling exports, and project initializer",
+  "type": "module",
+  "bin": {
+    "code-standards": "./bin/code-standards.mjs"
+  },
+  "exports": {
+    ".": "./index.mjs",
+    "./eslint/base": "./eslint/base.mjs",
+    "./eslint/node": "./eslint/node.mjs",
+    "./eslint/test": "./eslint/test.mjs",
+    "./prettier": "./prettier/index.cjs",
+    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig/node-lib.json": "./tsconfig/node-lib.json",
+    "./tsconfig/node-service.json": "./tsconfig/node-service.json"
+  },
+  "files": [
+    "AGENTS.md",
+    "README.md",
+    "ai",
+    "bin",
+    "eslint",
+    "index.mjs",
+    "prettier",
+    "resources",
+    "standards",
+    "templates",
+    "tsconfig",
+    "profiles"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "check": "npm run standards:validate && npm run profile:validate && npm run lint && npm run format:check && npm run typecheck && npm run test",
+    "fix": "npm run lint:fix && npm run format:write",
+    "standards:validate": "node scripts/validate-standards.mjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node scripts/smoke-fixtures.mjs && node --test ./test/*.test.mjs",
+    "release:check": "npm run check",
+    "release:publish": "node scripts/release-publish.mjs",
+    "hooks:install": "git config core.hooksPath .githooks",
+    "profile:validate": "node scripts/validate-profile.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/node": "^22.13.10",
+    "ajv": "^8.17.1",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.24.1"
+  }
+}

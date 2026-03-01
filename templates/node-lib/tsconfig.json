@@ -1,0 +1,7 @@
+{
+  "extends": "@sha3/code-standards/tsconfig/node-lib.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}
