@@ -55,12 +55,14 @@ const DEFAULT_PROFILE = {
     "consts",
     "types",
     "private:attributes",
+    "protected:attributes",
     "private:properties",
     "public:properties",
     "constructor",
     "static:properties",
     "factory",
     "private:methods",
+    "protected:methods",
     "public:methods",
     "static:methods"
   ],
@@ -88,11 +90,7 @@ const PROFILE_QUESTIONS = [
   {
     key: "return_policy",
     prompt: "Return policy",
-    options: [
-      "single_return_strict_no_exceptions",
-      "single_return_with_guard_clauses",
-      "free_return_style"
-    ]
+    options: ["single_return_strict_no_exceptions", "single_return_with_guard_clauses", "free_return_style"]
   },
   {
     key: "class_design",
@@ -202,9 +200,7 @@ function parseInitArgs(argv) {
     const token = argv[i];
 
     if (!token.startsWith("-")) {
-      throw new Error(
-        `Positional project names are not supported: ${token}. Run init from your target directory.`
-      );
+      throw new Error(`Positional project names are not supported: ${token}. Run init from your target directory.`);
     }
 
     if (token === "--template") {
@@ -397,9 +393,7 @@ async function ensureTargetReady(targetPath, force) {
   const nonGitEntries = entries.filter((entry) => entry !== ".git");
 
   if (nonGitEntries.length > 0 && !force) {
-    throw new Error(
-      `Target directory is not empty: ${targetPath}. Use --force to continue and overwrite files.`
-    );
+    throw new Error(`Target directory is not empty: ${targetPath}. Use --force to continue and overwrite files.`);
   }
 }
 
@@ -456,9 +450,7 @@ function validateProfile(profile, schema, sourceLabel) {
     return;
   }
 
-  const details = (validate.errors ?? [])
-    .map((issue) => `${issue.instancePath || "/"}: ${issue.message ?? "invalid"}`)
-    .join("; ");
+  const details = (validate.errors ?? []).map((issue) => `${issue.instancePath || "/"}: ${issue.message ?? "invalid"}`).join("; ");
 
   throw new Error(`Invalid profile at ${sourceLabel}: ${details}`);
 }
@@ -550,12 +542,7 @@ async function createProfileInteractively(baseProfile) {
 
   try {
     for (const question of PROFILE_QUESTIONS) {
-      profile[question.key] = await askChoice(
-        rl,
-        question.prompt,
-        question.options,
-        profile[question.key]
-      );
+      profile[question.key] = await askChoice(rl, question.prompt, question.options, profile[question.key]);
     }
   } finally {
     rl.close();
@@ -573,9 +560,7 @@ async function runProfile(rawOptions) {
   const packageRoot = resolvePackageRoot();
   const schema = await loadProfileSchema(packageRoot);
   const defaultProfilePath = getBundledProfilePath(packageRoot);
-  const outputPath = rawOptions.profilePath
-    ? path.resolve(process.cwd(), rawOptions.profilePath)
-    : defaultProfilePath;
+  const outputPath = rawOptions.profilePath ? path.resolve(process.cwd(), rawOptions.profilePath) : defaultProfilePath;
   const shouldUseNonInteractive = rawOptions.nonInteractive || !process.stdin.isTTY;
   const exists = await pathExists(outputPath);
 
@@ -590,11 +575,7 @@ async function runProfile(rawOptions) {
     });
 
     try {
-      const shouldOverwrite = await promptYesNo(
-        rl,
-        `Profile already exists at ${outputPath}. Overwrite?`,
-        false
-      );
+      const shouldOverwrite = await promptYesNo(rl, `Profile already exists at ${outputPath}. Overwrite?`, false);
 
       if (!shouldOverwrite) {
         console.log("Profile update cancelled.");
@@ -656,44 +637,30 @@ function buildAlternativeRules(profile) {
 
   if (profile.return_policy !== "single_return_strict_no_exceptions") {
     codeRules.push(
-      "### Return Policy Override (MUST)\n\n" +
-        `- The active return policy is \`${profile.return_policy}\` and MUST be respected for all new functions.`
+      "### Return Policy Override (MUST)\n\n" + `- The active return policy is \`${profile.return_policy}\` and MUST be respected for all new functions.`
     );
   }
 
   if (profile.function_size_policy !== "max_30_lines_soft") {
-    codeRules.push(
-      "### Function Size Override (MUST)\n\n" +
-        `- The active function-size policy is \`${profile.function_size_policy}\` and MUST be enforced.`
-    );
+    codeRules.push("### Function Size Override (MUST)\n\n" + `- The active function-size policy is \`${profile.function_size_policy}\` and MUST be enforced.`);
   }
 
   if (profile.error_handling !== "exceptions_with_typed_errors") {
-    codeRules.push(
-      "### Error Handling Override (MUST)\n\n" +
-        `- The active error-handling policy is \`${profile.error_handling}\`.`
-    );
+    codeRules.push("### Error Handling Override (MUST)\n\n" + `- The active error-handling policy is \`${profile.error_handling}\`.`);
   }
 
   if (profile.async_style !== "async_await_only") {
-    codeRules.push(
-      "### Async Style Override (MUST)\n\n" +
-        `- The active async policy is \`${profile.async_style}\` and MUST be followed in new code.`
-    );
+    codeRules.push("### Async Style Override (MUST)\n\n" + `- The active async policy is \`${profile.async_style}\` and MUST be followed in new code.`);
   }
 
   let architectureRule = "";
   if (profile.architecture !== "feature_folders") {
-    architectureRule =
-      "### Architecture Override (MUST)\n\n" +
-      `- The active architecture is \`${profile.architecture}\` and MUST take precedence.`;
+    architectureRule = "### Architecture Override (MUST)\n\n" + `- The active architecture is \`${profile.architecture}\` and MUST take precedence.`;
   }
 
   let testingRule = "";
   if (profile.testing_policy !== "tests_required_for_behavior_change") {
-    testingRule =
-      "### Testing Override (MUST)\n\n" +
-      `- The active testing policy is \`${profile.testing_policy}\`.`;
+    testingRule = "### Testing Override (MUST)\n\n" + `- The active testing policy is \`${profile.testing_policy}\`.`;
   }
 
   return {
@@ -722,14 +689,7 @@ async function buildRuleSections(packageRoot, profile) {
   const readmeRule = await readRule("readme.md");
 
   const alternatives = buildAlternativeRules(profile);
-  const codeGenerationRules = [
-    classRule,
-    functionRule,
-    returnRule,
-    controlFlowRule,
-    errorRule,
-    asyncRule
-  ];
+  const codeGenerationRules = [classRule, functionRule, returnRule, controlFlowRule, errorRule, asyncRule];
 
   if (alternatives.codeRules.length > 0) {
     codeGenerationRules.push(...alternatives.codeRules);
@@ -743,13 +703,7 @@ async function buildRuleSections(packageRoot, profile) {
 }
 
 async function renderProjectAgents(packageRoot, targetDir, projectName, profile) {
-  const templatePath = path.join(
-    packageRoot,
-    "resources",
-    "ai",
-    "templates",
-    "agents.project.template.md"
-  );
+  const templatePath = path.join(packageRoot, "resources", "ai", "templates", "agents.project.template.md");
   const template = await readFile(templatePath, "utf8");
   const sections = await buildRuleSections(packageRoot, profile);
 
@@ -807,11 +761,7 @@ async function maybeInitializeProfileInteractively(packageRoot, profilePath) {
   });
 
   try {
-    const shouldInit = await promptYesNo(
-      rl,
-      `Profile not found at ${profilePath}. Initialize it with package defaults?`,
-      true
-    );
+    const shouldInit = await promptYesNo(rl, `Profile not found at ${profilePath}. Initialize it with package defaults?`, true);
 
     if (!shouldInit) {
       throw new Error("Profile initialization declined by user.");
@@ -874,9 +824,7 @@ async function promptForMissing(options) {
     const resolved = { ...options };
 
     if (!resolved.template) {
-      const templateAnswer = await rl.question(
-        "Choose template (node-lib/node-service) [node-lib]: "
-      );
+      const templateAnswer = await rl.question("Choose template (node-lib/node-service) [node-lib]: ");
       const normalized = templateAnswer.trim() || "node-lib";
 
       if (!TEMPLATE_NAMES.includes(normalized)) {
@@ -900,13 +848,7 @@ async function promptForMissing(options) {
 
 async function validateInitResources(packageRoot, templateName) {
   const templateDir = path.join(packageRoot, "templates", templateName);
-  const agentsTemplatePath = path.join(
-    packageRoot,
-    "resources",
-    "ai",
-    "templates",
-    "agents.project.template.md"
-  );
+  const agentsTemplatePath = path.join(packageRoot, "resources", "ai", "templates", "agents.project.template.md");
   const adaptersTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "adapters");
   const examplesTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "examples");
 
@@ -944,8 +886,7 @@ async function runInit(rawOptions) {
 
   const targetPath = path.resolve(process.cwd());
   const inferredProjectName = path.basename(targetPath);
-  const projectName =
-    inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
+  const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
   const packageName = sanitizePackageName(projectName);
 
   await ensureTargetReady(targetPath, options.force);

@@ -5,13 +5,6 @@ export default [
   ...nodeConfig,
   ...testConfig,
   {
-    ignores: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/coverage/**",
-      "**/.git/**",
-      "**/*.md",
-      "**/*.json"
-    ]
+    ignores: ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/.git/**", "**/*.md", "**/*.json"]
   }
 ];

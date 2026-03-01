@@ -30,6 +30,12 @@ export class InvoiceEscalationPolicy {
   // empty
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -64,6 +70,12 @@ export class InvoiceEscalationPolicy {
 
   /**
    * @section private:methods
+   */
+
+  // empty
+
+  /**
+   * @section protected:methods
    */
 
   // empty

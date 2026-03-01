@@ -4,16 +4,7 @@
   "title": "Code Standards Manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "meta",
-    "language",
-    "formatting",
-    "naming",
-    "architecture",
-    "testing",
-    "tooling",
-    "ai"
-  ],
+  "required": ["meta", "language", "formatting", "naming", "architecture", "testing", "tooling", "ai"],
   "properties": {
     "meta": {
       "type": "object",
@@ -42,7 +33,7 @@
       "required": ["prettier", "lineLength", "semi", "singleQuote"],
       "properties": {
         "prettier": { "type": "boolean" },
-        "lineLength": { "type": "integer", "minimum": 80, "maximum": 140 },
+        "lineLength": { "type": "integer", "minimum": 80, "maximum": 200 },
         "semi": { "type": "boolean" },
         "singleQuote": { "type": "boolean" }
       }

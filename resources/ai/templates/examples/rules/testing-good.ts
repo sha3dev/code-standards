@@ -31,6 +31,12 @@ export class InvoiceEscalationPolicy {
   // empty
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -72,6 +78,12 @@ export class InvoiceEscalationPolicy {
     const dayCount = Math.floor(diffInMilliseconds / MILLISECONDS_PER_DAY);
     return dayCount;
   }
+
+  /**
+   * @section protected:methods
+   */
+
+  // empty
 
   /**
    * @section public:methods

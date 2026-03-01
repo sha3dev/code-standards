@@ -9,10 +9,7 @@ const repoRoot = path.resolve(scriptDir, "..");
 const schemaPath = path.join(repoRoot, "standards", "schema.json");
 const manifestPath = path.join(repoRoot, "standards", "manifest.json");
 
-const [schemaRaw, manifestRaw] = await Promise.all([
-  readFile(schemaPath, "utf8"),
-  readFile(manifestPath, "utf8")
-]);
+const [schemaRaw, manifestRaw] = await Promise.all([readFile(schemaPath, "utf8"), readFile(manifestPath, "utf8")]);
 
 const schema = JSON.parse(schemaRaw);
 const manifest = JSON.parse(manifestRaw);

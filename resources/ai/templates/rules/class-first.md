@@ -14,12 +14,14 @@
   - `consts`
   - `types`
   - `private:attributes`
+  - `protected:attributes`
   - `private:properties`
   - `public:properties`
   - `constructor`
   - `static:properties`
   - `factory`
   - `private:methods`
+  - `protected:methods`
   - `public:methods`
   - `static:methods`
 - All section blocks MUST exist even when empty, using `// empty` after the section marker.

@@ -34,6 +34,12 @@ export class InvoiceSyncService {
   // empty
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -72,6 +78,12 @@ export class InvoiceSyncService {
 
   /**
    * @section private:methods
+   */
+
+  // empty
+
+  /**
+   * @section protected:methods
    */
 
   // empty

@@ -43,11 +43,7 @@
     },
     "return_policy": {
       "type": "string",
-      "enum": [
-        "single_return_strict_no_exceptions",
-        "single_return_with_guard_clauses",
-        "free_return_style"
-      ]
+      "enum": ["single_return_strict_no_exceptions", "single_return_with_guard_clauses", "free_return_style"]
     },
     "class_design": {
       "type": "string",
@@ -87,8 +83,8 @@
     },
     "comment_section_blocks": {
       "type": "array",
-      "minItems": 13,
-      "maxItems": 13,
+      "minItems": 15,
+      "maxItems": 15,
       "items": {
         "type": "string",
         "enum": [
@@ -97,12 +93,14 @@
           "consts",
           "types",
           "private:attributes",
+          "protected:attributes",
           "private:properties",
           "public:properties",
           "constructor",
           "static:properties",
           "factory",
           "private:methods",
+          "protected:methods",
           "public:methods",
           "static:methods"
         ]
@@ -113,12 +111,14 @@
         "consts",
         "types",
         "private:attributes",
+        "protected:attributes",
         "private:properties",
         "public:properties",
         "constructor",
         "static:properties",
         "factory",
         "private:methods",
+        "protected:methods",
         "public:methods",
         "static:methods"
       ]

@@ -6,6 +6,7 @@
 - Types MUST be preferred over interfaces for local modeling unless a public contract requires an interface.
 - New implementation and test files MUST be `.ts`.
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
+- If a declaration/expression fits in one line within 160 chars, it MUST stay on one line.
 
 Good example:
 

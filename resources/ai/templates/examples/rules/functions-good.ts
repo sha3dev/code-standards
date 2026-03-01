@@ -31,6 +31,12 @@ export class PaymentNormalizer {
   // empty
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -81,6 +87,12 @@ export class PaymentNormalizer {
     const sanitizedMetadata: Record<string, string> = { ...metadata };
     return sanitizedMetadata;
   }
+
+  /**
+   * @section protected:methods
+   */
+
+  // empty
 
   /**
    * @section public:methods

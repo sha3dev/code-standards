@@ -1,3 +1,5 @@
+import { GREETING_PREFIX } from "./config.js";
+
 export function greet(name: string): string {
-  return `Hello, ${name}`;
+  return `${GREETING_PREFIX}, ${name}`;
 }

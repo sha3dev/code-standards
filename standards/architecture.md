@@ -14,6 +14,7 @@ Two templates are supported:
 Both templates SHOULD keep this baseline structure:
 
 - `src/` for implementation.
+- `src/config.ts` for non-parameterized hardcoded configuration values.
 - `test/` for automated tests.
 - Root tooling config files (`eslint`, `prettier`, `tsconfig`) at project root.
 
@@ -21,4 +22,4 @@ Both templates SHOULD keep this baseline structure:
 
 - Keep feature modules cohesive.
 - Avoid cyclic dependencies.
-- Keep configuration centralized at project root.
+- Keep hardcoded application configuration centralized in `src/config.ts`.

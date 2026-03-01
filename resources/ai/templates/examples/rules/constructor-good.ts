@@ -31,6 +31,12 @@ export class InvoiceIdBuilder {
   // empty
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -77,6 +83,12 @@ export class InvoiceIdBuilder {
     const year = this.clock().getUTCFullYear();
     return year;
   }
+
+  /**
+   * @section protected:methods
+   */
+
+  // empty
 
   /**
    * @section public:methods

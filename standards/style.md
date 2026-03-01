@@ -5,7 +5,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 ## Formatting
 
 - Use Prettier for formatting.
-- Use a max line length of 100.
+- Use a max line length of 160.
+- Keep lines as compact as possible: if a declaration/expression fits in one line within 160 chars, keep it on one line.
 - Use semicolons.
 - Use double quotes for strings.
 
@@ -42,14 +43,16 @@ Required block names:
 3. `consts`
 4. `types`
 5. `private:attributes`
-6. `private:properties`
-7. `public:properties`
-8. `constructor`
-9. `static:properties`
-10. `factory`
-11. `private:methods`
-12. `public:methods`
-13. `static:methods`
+6. `protected:attributes`
+7. `private:properties`
+8. `public:properties`
+9. `constructor`
+10. `static:properties`
+11. `factory`
+12. `private:methods`
+13. `protected:methods`
+14. `public:methods`
+15. `static:methods`
 
 All section blocks MUST be present even when empty. Empty sections MUST include:
 

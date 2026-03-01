@@ -8,6 +8,7 @@
  * @section imports:internals
  */
 
+import { BILLING_CURRENCY_SYMBOL, STATUS_SERVICE_URL } from "../config.js";
 import type { InvoiceService } from "../invoices/invoice-service.js";
 import type { InvoiceSummary } from "../invoices/invoice-types.js";
 
@@ -15,7 +16,7 @@ import type { InvoiceSummary } from "../invoices/invoice-types.js";
  * @section consts
  */
 
-const CURRENCY_SYMBOL = "$";
+// empty
 
 /**
  * @section types
@@ -26,11 +27,18 @@ export type BillingSnapshot = {
   invoiceCount: number;
   totalAmount: number;
   formattedTotal: string;
+  statusServiceUrl: string;
 };
 
 export class BillingService {
   /**
    * @section private:attributes
+   */
+
+  // empty
+
+  /**
+   * @section protected:attributes
    */
 
   // empty
@@ -75,9 +83,15 @@ export class BillingService {
    */
 
   private formatCurrency(amount: number): string {
-    const formattedAmount = `${CURRENCY_SYMBOL}${amount.toFixed(2)}`;
+    const formattedAmount = `${BILLING_CURRENCY_SYMBOL}${amount.toFixed(2)}`;
     return formattedAmount;
   }
+
+  /**
+   * @section protected:methods
+   */
+
+  // empty
 
   /**
    * @section public:methods
@@ -89,7 +103,8 @@ export class BillingService {
       customerId,
       invoiceCount: summary.count,
       totalAmount: summary.totalAmount,
-      formattedTotal: this.formatCurrency(summary.totalAmount)
+      formattedTotal: this.formatCurrency(summary.totalAmount),
+      statusServiceUrl: STATUS_SERVICE_URL
     };
     return snapshot;
   }

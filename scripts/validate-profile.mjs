@@ -9,10 +9,7 @@ const repoRoot = path.resolve(scriptDir, "..");
 const schemaPath = path.join(repoRoot, "profiles", "schema.json");
 const profilePath = path.join(repoRoot, "profiles", "default.profile.json");
 
-const [schemaRaw, profileRaw] = await Promise.all([
-  readFile(schemaPath, "utf8"),
-  readFile(profilePath, "utf8")
-]);
+const [schemaRaw, profileRaw] = await Promise.all([readFile(schemaPath, "utf8"), readFile(profilePath, "utf8")]);
 
 const schema = JSON.parse(schemaRaw);
 const profile = JSON.parse(profileRaw);

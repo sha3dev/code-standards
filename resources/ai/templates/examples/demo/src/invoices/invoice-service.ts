@@ -8,6 +8,7 @@ import { randomUUID } from "node:crypto";
  * @section imports:internals
  */
 
+import { MINIMUM_INVOICE_AMOUNT } from "../config.js";
 import { InvalidInvoiceCommandError } from "./invoice-errors.js";
 import type { CreateInvoiceCommand, Invoice, InvoiceSummary } from "./invoice-types.js";
 
@@ -15,7 +16,7 @@ import type { CreateInvoiceCommand, Invoice, InvoiceSummary } from "./invoice-ty
  * @section consts
  */
 
-const MINIMUM_INVOICE_AMOUNT = 0;
+// empty
 
 /**
  * @section types
@@ -26,6 +27,12 @@ const MINIMUM_INVOICE_AMOUNT = 0;
 export class InvoiceService {
   /**
    * @section private:attributes
+   */
+
+  // empty
+
+  /**
+   * @section protected:attributes
    */
 
   // empty
@@ -88,6 +95,12 @@ export class InvoiceService {
     };
     return invoice;
   }
+
+  /**
+   * @section protected:methods
+   */
+
+  // empty
 
   /**
    * @section public:methods

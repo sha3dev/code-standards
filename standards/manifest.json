@@ -12,7 +12,7 @@
   },
   "formatting": {
     "prettier": true,
-    "lineLength": 100,
+    "lineLength": 160,
     "semi": true,
     "singleQuote": false
   },

@@ -30,6 +30,12 @@ export class InvalidInvoiceCommandError extends Error {
   // empty
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -68,6 +74,12 @@ export class InvalidInvoiceCommandError extends Error {
 
   /**
    * @section private:methods
+   */
+
+  // empty
+
+  /**
+   * @section protected:methods
    */
 
   // empty

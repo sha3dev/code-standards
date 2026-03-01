@@ -60,11 +60,7 @@ async function main() {
   assert.equal(profileData.paradigm, "class-first");
   assert.equal(profileData.return_policy, "single_return_strict_no_exceptions");
 
-  result = runCli(
-    ["profile", "--profile", profileInteractivePath],
-    repoRoot,
-    "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-  );
+  result = runCli(["profile", "--profile", profileInteractivePath], repoRoot, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
   assert.equal(result.status, 0, result.stderr);
 
   const profileInteractiveData = JSON.parse(await readFile(profileInteractivePath, "utf8"));
@@ -78,15 +74,14 @@ async function main() {
   await mkdir(targetFlagTarget, { recursive: true });
   await writeFile(path.join(gitOnlyTarget, ".git", "HEAD"), "ref: refs/heads/main\n", "utf8");
 
-  result = runCli(
-    ["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profilePath],
-    libTarget
-  );
+  result = runCli(["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profilePath], libTarget);
 
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Project created/);
   const libGitignore = await readFile(path.join(libTarget, ".gitignore"), "utf8");
   assert.match(libGitignore, /node_modules\//);
+  const libConfigRaw = await readFile(path.join(libTarget, "src", "config.ts"), "utf8");
+  assert.match(libConfigRaw, /GREETING_PREFIX/);
 
   const agentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(agentsRaw, /Class-First Design/);
@@ -97,7 +92,9 @@ async function main() {
   assert.match(agentsRaw, /imports:externals/);
   assert.match(agentsRaw, /consts/);
   assert.match(agentsRaw, /types/);
+  assert.match(agentsRaw, /protected:attributes/);
   assert.match(agentsRaw, /factory/);
+  assert.match(agentsRaw, /protected:methods/);
   assert.match(agentsRaw, /@section/);
   assert.match(agentsRaw, /\/\/ empty/);
   assert.match(agentsRaw, /Control Flow Braces/);
@@ -116,42 +113,31 @@ async function main() {
   const libProjectFiles = await listRelativeFiles(libTarget);
   const libForbiddenJs = libProjectFiles.filter((filePath) => {
     return (
-      (filePath.startsWith("src/") || filePath.startsWith("test/")) &&
-      (filePath.endsWith(".js") || filePath.endsWith(".mjs") || filePath.endsWith(".cjs"))
+      (filePath.startsWith("src/") || filePath.startsWith("test/")) && (filePath.endsWith(".js") || filePath.endsWith(".mjs") || filePath.endsWith(".cjs"))
     );
   });
   assert.equal(libForbiddenJs.length, 0, `unexpected JS files in lib scaffold: ${libForbiddenJs}`);
 
-  const demoServiceRaw = await readFile(
-    path.join(libTarget, "ai", "examples", "demo", "src", "invoices", "invoice-service.ts"),
-    "utf8"
-  );
+  const demoServiceRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "invoices", "invoice-service.ts"), "utf8");
   assert.match(demoServiceRaw, /@section constructor/);
   assert.match(demoServiceRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
-  const demoInvoiceEntries = await readdir(
-    path.join(libTarget, "ai", "examples", "demo", "src", "invoices")
-  );
+  const demoInvoiceEntries = await readdir(path.join(libTarget, "ai", "examples", "demo", "src", "invoices"));
   assert(!demoInvoiceEntries.includes("invoice-repository.ts"));
+  const demoConfigRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "config.ts"), "utf8");
+  assert.match(demoConfigRaw, /STATUS_SERVICE_URL/);
 
-  const asyncGoodRaw = await readFile(
-    path.join(libTarget, "ai", "examples", "rules", "async-good.ts"),
-    "utf8"
-  );
+  const asyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
   assert.match(asyncGoodRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
-  const constructorGoodRaw = await readFile(
-    path.join(libTarget, "ai", "examples", "rules", "constructor-good.ts"),
-    "utf8"
-  );
+  const constructorGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "constructor-good.ts"), "utf8");
   assert.match(constructorGoodRaw, /@section constructor/);
 
-  result = runCli(
-    ["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"],
-    serviceTarget
-  );
+  result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], serviceTarget);
 
   assert.equal(result.status, 0, result.stderr);
   const serviceGitignore = await readFile(path.join(serviceTarget, ".gitignore"), "utf8");
   assert.match(serviceGitignore, /node_modules\//);
+  const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
+  assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
 
   const serviceEntries = await readdir(serviceTarget);
   assert(!serviceEntries.includes("AGENTS.md"));
@@ -159,15 +145,10 @@ async function main() {
   const serviceProjectFiles = await listRelativeFiles(serviceTarget);
   const serviceForbiddenJs = serviceProjectFiles.filter((filePath) => {
     return (
-      (filePath.startsWith("src/") || filePath.startsWith("test/")) &&
-      (filePath.endsWith(".js") || filePath.endsWith(".mjs") || filePath.endsWith(".cjs"))
+      (filePath.startsWith("src/") || filePath.startsWith("test/")) && (filePath.endsWith(".js") || filePath.endsWith(".mjs") || filePath.endsWith(".cjs"))
     );
   });
-  assert.equal(
-    serviceForbiddenJs.length,
-    0,
-    `unexpected JS files in service scaffold: ${serviceForbiddenJs}`
-  );
+  assert.equal(serviceForbiddenJs.length, 0, `unexpected JS files in service scaffold: ${serviceForbiddenJs}`);
 
   result = runCli(["init", "--template", "node-lib", "--yes", "--no-install"], gitOnlyTarget);
   assert.equal(result.status, 0, result.stderr);
@@ -179,18 +160,12 @@ async function main() {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Positional project names are not supported/);
 
-  result = runCli(
-    ["init", "--template", "node-lib", "--target", "ignored", "--yes", "--no-install"],
-    targetFlagTarget
-  );
+  result = runCli(["init", "--template", "node-lib", "--target", "ignored", "--yes", "--no-install"], targetFlagTarget);
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /--target is not supported/);
 
   await writeFile(profileInvalidPath, JSON.stringify({ version: "v1" }, null, 2), "utf8");
-  result = runCli(
-    ["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profileInvalidPath],
-    brokenTarget
-  );
+  result = runCli(["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profileInvalidPath], brokenTarget);
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Invalid profile/);
@@ -203,10 +178,7 @@ async function main() {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /not empty/);
 
-  result = runCli(
-    ["init", "--template", "node-lib", "--yes", "--no-install", "--force"],
-    collisionTarget
-  );
+  result = runCli(["init", "--template", "node-lib", "--yes", "--no-install", "--force"], collisionTarget);
 
   assert.equal(result.status, 0, result.stderr);
 

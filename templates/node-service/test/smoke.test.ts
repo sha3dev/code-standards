@@ -22,7 +22,7 @@ test("service responds with ok payload", async () => {
   const json = await response.json();
 
   assert.equal(response.status, 200);
-  assert.deepEqual(json, { ok: true });
+  assert.deepEqual(json, { ok: true, statusSource: "https://status.example.com/health" });
 
   await new Promise<void>((resolve, reject) => {
     server.close((error) => {

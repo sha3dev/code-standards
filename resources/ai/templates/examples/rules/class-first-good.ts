@@ -31,6 +31,12 @@ export class InvoiceService {
   private readonly requestId: string;
 
   /**
+   * @section protected:attributes
+   */
+
+  // empty
+
+  /**
    * @section private:properties
    */
 
@@ -80,6 +86,12 @@ export class InvoiceService {
     };
     return invoice;
   }
+
+  /**
+   * @section protected:methods
+   */
+
+  // empty
 
   /**
    * @section public:methods
