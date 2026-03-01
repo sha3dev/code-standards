@@ -4,6 +4,7 @@
 - Each feature MUST keep its own domain model, application services, and infrastructure adapters grouped by feature.
 - Cross-feature imports MUST happen through explicit public entry points.
 - Hardcoded, non-parameterized configuration MUST be centralized in `src/config.ts` (for example, external service URLs).
+- `src/config.ts` MUST export a single default object and it MUST always be imported as `import CONFIG from ".../config.js"`.
 
 Good example:
 

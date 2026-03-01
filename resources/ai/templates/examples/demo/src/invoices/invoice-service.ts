@@ -8,7 +8,7 @@ import { randomUUID } from "node:crypto";
  * @section imports:internals
  */
 
-import { MINIMUM_INVOICE_AMOUNT } from "../config.js";
+import CONFIG from "../config.js";
 import { InvalidInvoiceCommandError } from "./invoice-errors.js";
 import type { CreateInvoiceCommand, Invoice, InvoiceSummary } from "./invoice-types.js";
 
@@ -81,7 +81,7 @@ export class InvoiceService {
       throw InvalidInvoiceCommandError.forReason("customerId is required");
     }
 
-    if (command.amount <= MINIMUM_INVOICE_AMOUNT) {
+    if (command.amount <= CONFIG.MINIMUM_INVOICE_AMOUNT) {
       throw InvalidInvoiceCommandError.forReason("amount must be greater than zero");
     }
   }

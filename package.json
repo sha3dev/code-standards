@@ -1,6 +1,6 @@
 {
   "name": "@sha3/code-standards",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "AI-first code standards, tooling exports, and project initializer",
   "type": "module",
   "bin": {

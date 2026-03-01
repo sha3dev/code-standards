@@ -1,6 +1,6 @@
 <div align="center">
 
-# @sha3/code-standards
+# 📏 @sha3/code-standards
 
 **Scaffold TypeScript projects + enforce how AI writes code.**
 
@@ -117,9 +117,12 @@ After `init`, your new repo contains:
 - `ai/examples/rules/*.ts` (good/bad examples per rule)
 - `ai/examples/demo/src/*` (feature-folder demo with classes and section blocks)
 - `src/config.ts` for centralized hardcoded configuration values
+- `README.md` generated with an icon emoji in the main header
 - `.gitignore` preconfigured for Node/TypeScript output
 - lint/format/typecheck/test-ready project template
 - `package.json.codeStandards` metadata used by `refresh` (`template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
+
+`config.ts` convention: export a single default object and import it as `import CONFIG from "./config.js"`.
 
 That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
 

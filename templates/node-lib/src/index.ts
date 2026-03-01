@@ -1,5 +1,5 @@
-import { GREETING_PREFIX } from "./config.js";
+import CONFIG from "./config.js";
 
 export function greet(name: string): string {
-  return `${GREETING_PREFIX}, ${name}`;
+  return `${CONFIG.GREETING_PREFIX}, ${name}`;
 }

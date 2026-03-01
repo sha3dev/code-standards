@@ -90,8 +90,14 @@ async function main() {
   assert.match(result.stdout, /Project created/);
   const libGitignore = await readFile(path.join(libTarget, ".gitignore"), "utf8");
   assert.match(libGitignore, /node_modules\//);
+  const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
+  assert.match(libReadmeRaw, /# 📚 demo-lib/);
   const libConfigRaw = await readFile(path.join(libTarget, "src", "config.ts"), "utf8");
   assert.match(libConfigRaw, /GREETING_PREFIX/);
+  assert.match(libConfigRaw, /const CONFIG = \{/);
+  assert.match(libConfigRaw, /export default CONFIG/);
+  const libIndexRaw = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
+  assert.match(libIndexRaw, /import CONFIG from "\.\/config\.js";/);
   const libPackageAfterInit = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
   assert.equal(libPackageAfterInit.codeStandards.template, "node-lib");
   assert.equal(libPackageAfterInit.codeStandards.withAiAdapters, true);
@@ -136,10 +142,15 @@ async function main() {
   const demoServiceRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "invoices", "invoice-service.ts"), "utf8");
   assert.match(demoServiceRaw, /@section constructor/);
   assert.match(demoServiceRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
+  assert.match(demoServiceRaw, /import CONFIG from "\.\.\/config\.js";/);
   const demoInvoiceEntries = await readdir(path.join(libTarget, "ai", "examples", "demo", "src", "invoices"));
   assert(!demoInvoiceEntries.includes("invoice-repository.ts"));
   const demoConfigRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "config.ts"), "utf8");
   assert.match(demoConfigRaw, /STATUS_SERVICE_URL/);
+  assert.match(demoConfigRaw, /const CONFIG = \{/);
+  assert.match(demoConfigRaw, /export default CONFIG/);
+  const demoBillingRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "billing", "billing-service.ts"), "utf8");
+  assert.match(demoBillingRaw, /import CONFIG from "\.\.\/config\.js";/);
 
   const asyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
   assert.match(asyncGoodRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
@@ -221,8 +232,14 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
   const serviceGitignore = await readFile(path.join(serviceTarget, ".gitignore"), "utf8");
   assert.match(serviceGitignore, /node_modules\//);
+  const serviceReadmeRaw = await readFile(path.join(serviceTarget, "README.md"), "utf8");
+  assert.match(serviceReadmeRaw, /# 🚀 demo-service/);
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
+  assert.match(serviceConfigRaw, /const CONFIG = \{/);
+  assert.match(serviceConfigRaw, /export default CONFIG/);
+  const serviceIndexRaw = await readFile(path.join(serviceTarget, "src", "index.ts"), "utf8");
+  assert.match(serviceIndexRaw, /import CONFIG from "\.\/config\.js";/);
 
   const serviceEntries = await readdir(serviceTarget);
   assert(!serviceEntries.includes("AGENTS.md"));

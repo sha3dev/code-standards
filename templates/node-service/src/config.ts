@@ -1,3 +1,7 @@
-export const RESPONSE_CONTENT_TYPE = "application/json";
-export const DEFAULT_PORT = 3000;
-export const EXTERNAL_STATUS_URL = "https://status.example.com/health";
+const CONFIG = {
+  RESPONSE_CONTENT_TYPE: "application/json",
+  DEFAULT_PORT: 3000,
+  EXTERNAL_STATUS_URL: "https://status.example.com/health"
+} as const;
+
+export default CONFIG;

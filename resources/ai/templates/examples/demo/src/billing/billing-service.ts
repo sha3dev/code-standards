@@ -8,7 +8,7 @@
  * @section imports:internals
  */
 
-import { BILLING_CURRENCY_SYMBOL, STATUS_SERVICE_URL } from "../config.js";
+import CONFIG from "../config.js";
 import type { InvoiceService } from "../invoices/invoice-service.js";
 import type { InvoiceSummary } from "../invoices/invoice-types.js";
 
@@ -83,7 +83,7 @@ export class BillingService {
    */
 
   private formatCurrency(amount: number): string {
-    const formattedAmount = `${BILLING_CURRENCY_SYMBOL}${amount.toFixed(2)}`;
+    const formattedAmount = `${CONFIG.BILLING_CURRENCY_SYMBOL}${amount.toFixed(2)}`;
     return formattedAmount;
   }
 
@@ -104,7 +104,7 @@ export class BillingService {
       invoiceCount: summary.count,
       totalAmount: summary.totalAmount,
       formattedTotal: this.formatCurrency(summary.totalAmount),
-      statusServiceUrl: STATUS_SERVICE_URL
+      statusServiceUrl: CONFIG.STATUS_SERVICE_URL
     };
     return snapshot;
   }

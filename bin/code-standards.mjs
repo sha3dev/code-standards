@@ -537,8 +537,10 @@ function getRelativeProfilePath(profilePath, targetPath) {
   const resolvedProfilePath = path.resolve(targetPath, profilePath);
   const relativePath = path.relative(targetPath, resolvedProfilePath);
 
+  // If the profile is outside the project directory, return null instead of absolute path
+  // to avoid storing machine-specific paths in package.json
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
-    return resolvedProfilePath;
+    return null;
   }
 
   return relativePath;
