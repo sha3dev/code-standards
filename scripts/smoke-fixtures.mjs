@@ -92,6 +92,9 @@ async function main() {
   assert.match(libGitignore, /node_modules\//);
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
   assert.match(libReadmeRaw, /# 📚 demo-lib/);
+  assert.match(libReadmeRaw, /## Public API/);
+  assert.match(libReadmeRaw, /## Integration Guide \(External Projects\)/);
+  assert.match(libReadmeRaw, /## Contract for LLM Integrators/);
   const libConfigRaw = await readFile(path.join(libTarget, "src", "config.ts"), "utf8");
   assert.match(libConfigRaw, /GREETING_PREFIX/);
   assert.match(libConfigRaw, /const CONFIG = \{/);
@@ -101,7 +104,7 @@ async function main() {
   const libPackageAfterInit = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
   assert.equal(libPackageAfterInit.codeStandards.template, "node-lib");
   assert.equal(libPackageAfterInit.codeStandards.withAiAdapters, true);
-  assert.equal(libPackageAfterInit.codeStandards.profilePath, profilePath);
+  assert.equal(libPackageAfterInit.codeStandards.profilePath, null);
   assert.match(libPackageAfterInit.codeStandards.lastRefreshWith, /\d+\.\d+\.\d+/);
 
   const agentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
@@ -234,6 +237,8 @@ async function main() {
   assert.match(serviceGitignore, /node_modules\//);
   const serviceReadmeRaw = await readFile(path.join(serviceTarget, "README.md"), "utf8");
   assert.match(serviceReadmeRaw, /# 🚀 demo-service/);
+  assert.match(serviceReadmeRaw, /## API HTTP/);
+  assert.match(serviceReadmeRaw, /## Contract for LLM Integrators/);
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
   assert.match(serviceConfigRaw, /const CONFIG = \{/);

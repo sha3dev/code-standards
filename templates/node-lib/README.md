@@ -1,6 +1,6 @@
 # 📚 {{packageName}}
 
-Libreria TypeScript lista para publicar y reutilizar.
+Reusable TypeScript library with a clear integration contract for external projects and LLM agents.
 
 ## TL;DR
 
@@ -10,28 +10,74 @@ npm run check
 npm run build
 ```
 
-## Uso
+## Installation
+
+```bash
+npm install <library-name>
+```
+
+## Compatibility
+
+- Node.js 20+
+- ESM (`"type": "module"`)
+- Strict TypeScript
+
+## Public API
+
+### `greet(name: string): string`
+
+Returns a greeting using the configured prefix.
 
 ```ts
-import { greet } from "./dist/index.js";
+import { greet } from "<library-name>";
 
-console.log(greet("world"));
+const greeting = greet("world");
+console.log(greeting);
 ```
+
+## Integration Guide (External Projects)
+
+1. Install the library with `npm install <library-name>`.
+2. Import only from the public entrypoint (`<library-name>`).
+3. Do not import internal paths (`src/*`, private `dist/*` files, or private modules).
+4. If you integrate with an LLM, treat this section as the integration contract.
+
+## Configuration (`src/config.ts`)
+
+Hardcoded configuration is centralized in `src/config.ts`.
+
+- `CONFIG.GREETING_PREFIX`: prefix used by `greet`.
+
+## Contract for LLM Integrators
+
+- This README is the source of truth for external integration.
+- The stable API is the one documented in `Public API`.
+- If API shape or observable behavior changes, update this README in the same change.
 
 ## Scripts
 
 - `npm run check`: lint + format check + typecheck + tests
-- `npm run fix`: aplica autofix de lint y prettier
-- `npm run build`: compila a `dist/`
-- `npm run test`: ejecuta tests con Node test runner
+- `npm run fix`: lint/prettier autofix
+- `npm run build`: compile to `dist/`
+- `npm run test`: tests con Node test runner
 
-## Estructura
+## Structure
 
-- `src/`: implementacion
-- `src/config.ts`: configuracion hardcodeada centralizada
-- `test/`: pruebas
-- `dist/`: salida de build
+- `src/`: implementation
+- `src/config.ts`: centralized configuration
+- `test/`: tests
+- `dist/`: build output
+
+## Troubleshooting
+
+### Import errors (ESM)
+
+Ensure the consumer project uses Node.js-compatible ESM.
+
+### Type errors
+
+Run `npm run typecheck` in the consumer project and verify TypeScript version compatibility.
 
 ## AI Workflow
 
-Si trabajas con asistentes, usa `AGENTS.md` y `ai/*.md` como reglas bloqueantes.
+If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.

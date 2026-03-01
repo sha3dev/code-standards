@@ -3,6 +3,7 @@
 ## Goal
 
 Every repository README MUST be clear, actionable, and visually structured.
+For libraries, README MUST be complete integration documentation because other LLMs will use it as source-of-truth.
 
 ## Mandatory Sections
 
@@ -10,6 +11,11 @@ Every repository README MUST be clear, actionable, and visually structured.
 - TL;DR or Quick Start with copy/paste commands.
 - What it does and why it exists.
 - Setup and usage examples.
+- Installation requirements and exact install command.
+- Public API reference (exports, expected inputs/outputs, and behavior notes).
+- Integration guide (how to consume the library from another project).
+- Configuration reference (`src/config.ts` constants and impact).
+- Compatibility and constraints (runtime, module format, TypeScript expectations).
 - AI workflow section when the repository uses AI coding contracts.
 - Troubleshooting or FAQ.
 
@@ -23,3 +29,4 @@ Every repository README MUST be clear, actionable, and visually structured.
 ## Quality Bar
 
 A top-tier README lets a new engineer understand and run the project in under 5 minutes without asking additional questions.
+For libraries, a top-tier README also lets another LLM integrate the library in a different codebase without opening source files.
