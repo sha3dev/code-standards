@@ -17,6 +17,27 @@ function runCli(args, cwd = repoRoot, input) {
   });
 }
 
+async function listRelativeFiles(baseDir, currentDir = baseDir) {
+  const entries = await readdir(currentDir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(currentDir, entry.name);
+
+    if (entry.isDirectory()) {
+      const nestedFiles = await listRelativeFiles(baseDir, fullPath);
+      files.push(...nestedFiles);
+      continue;
+    }
+
+    if (entry.isFile()) {
+      files.push(path.relative(baseDir, fullPath));
+    }
+  }
+
+  return files;
+}
+
 async function main() {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), "sha3-standards-"));
 
@@ -28,6 +49,7 @@ async function main() {
   const serviceTarget = path.join(tempRoot, "demo-service");
   const brokenTarget = path.join(tempRoot, "broken");
   const collisionTarget = path.join(tempRoot, "existing");
+  const gitOnlyTarget = path.join(tempRoot, "git-only");
   const positionalTarget = path.join(tempRoot, "positional");
   const targetFlagTarget = path.join(tempRoot, "target-flag");
 
@@ -51,8 +73,10 @@ async function main() {
   await mkdir(libTarget, { recursive: true });
   await mkdir(serviceTarget, { recursive: true });
   await mkdir(brokenTarget, { recursive: true });
+  await mkdir(path.join(gitOnlyTarget, ".git"), { recursive: true });
   await mkdir(positionalTarget, { recursive: true });
   await mkdir(targetFlagTarget, { recursive: true });
+  await writeFile(path.join(gitOnlyTarget, ".git", "HEAD"), "ref: refs/heads/main\n", "utf8");
 
   result = runCli(
     ["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profilePath],
@@ -89,6 +113,14 @@ async function main() {
   const libAiEntries = await readdir(path.join(libTarget, "ai"));
   assert(libAiEntries.includes("windsurf.md"));
   assert(libAiEntries.includes("examples"));
+  const libProjectFiles = await listRelativeFiles(libTarget);
+  const libForbiddenJs = libProjectFiles.filter((filePath) => {
+    return (
+      (filePath.startsWith("src/") || filePath.startsWith("test/")) &&
+      (filePath.endsWith(".js") || filePath.endsWith(".mjs") || filePath.endsWith(".cjs"))
+    );
+  });
+  assert.equal(libForbiddenJs.length, 0, `unexpected JS files in lib scaffold: ${libForbiddenJs}`);
 
   const demoServiceRaw = await readFile(
     path.join(libTarget, "ai", "examples", "demo", "src", "invoices", "invoice-service.ts"),
@@ -124,6 +156,24 @@ async function main() {
   const serviceEntries = await readdir(serviceTarget);
   assert(!serviceEntries.includes("AGENTS.md"));
   assert(!serviceEntries.includes("ai"));
+  const serviceProjectFiles = await listRelativeFiles(serviceTarget);
+  const serviceForbiddenJs = serviceProjectFiles.filter((filePath) => {
+    return (
+      (filePath.startsWith("src/") || filePath.startsWith("test/")) &&
+      (filePath.endsWith(".js") || filePath.endsWith(".mjs") || filePath.endsWith(".cjs"))
+    );
+  });
+  assert.equal(
+    serviceForbiddenJs.length,
+    0,
+    `unexpected JS files in service scaffold: ${serviceForbiddenJs}`
+  );
+
+  result = runCli(["init", "--template", "node-lib", "--yes", "--no-install"], gitOnlyTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const gitOnlyEntries = await readdir(gitOnlyTarget);
+  assert(gitOnlyEntries.includes(".git"));
+  assert(gitOnlyEntries.includes("package.json"));
 
   result = runCli(["init", "legacy-name", "--yes", "--no-install"], positionalTarget);
   assert.notEqual(result.status, 0);

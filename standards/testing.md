@@ -5,7 +5,7 @@ Projects MUST use the Node test runner.
 ## Location
 
 - Store tests under `test/`.
-- Use `*.test.ts` or `*.test.js` naming.
+- Use `*.test.ts` naming only.
 
 ## Commands
 

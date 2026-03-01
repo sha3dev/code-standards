@@ -15,7 +15,7 @@ Both templates SHOULD keep this baseline structure:
 
 - `src/` for implementation.
 - `test/` for automated tests.
-- `eslint.config.mjs`, `prettier.config.cjs`, and `tsconfig.json` at root.
+- Root tooling config files (`eslint`, `prettier`, `tsconfig`) at project root.
 
 ## Boundary Rules
 

@@ -12,6 +12,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 ## TypeScript
 
 - Use strict TypeScript mode.
+- Project implementation and tests MUST be TypeScript-only (`.ts`).
+- JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.

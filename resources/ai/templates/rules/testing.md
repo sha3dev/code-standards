@@ -2,6 +2,7 @@
 
 - Any behavior change MUST include or update tests.
 - Tests MUST validate behavior, not implementation details.
+- Test files MUST be TypeScript (`*.test.ts`).
 - Comments MUST be explicit and extensive when logic is non-trivial.
 - Async workflows MUST use `async/await` style only.
 

@@ -112,6 +112,8 @@ After `init`, your new repo contains:
 
 That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
 
+Generated project code is TypeScript-only: implementation and tests live in `.ts` files.
+
 ## TypeScript Example Files
 
 `init` now stores code examples in `.ts` files instead of embedding them inside `AGENTS.md`.
@@ -278,6 +280,7 @@ Commands:
 ### `init` options
 
 `init` always uses the current working directory as target.
+An existing `.git/` directory is allowed without `--force`.
 
 - `--template <node-lib|node-service>`
 - `--yes`

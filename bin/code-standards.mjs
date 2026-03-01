@@ -394,8 +394,9 @@ async function ensureTargetReady(targetPath, force) {
   }
 
   const entries = await readdir(targetPath);
+  const nonGitEntries = entries.filter((entry) => entry !== ".git");
 
-  if (entries.length > 0 && !force) {
+  if (nonGitEntries.length > 0 && !force) {
     throw new Error(
       `Target directory is not empty: ${targetPath}. Use --force to continue and overwrite files.`
     );
