@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { chmod, mkdtemp, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,11 +9,12 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const cliPath = path.join(repoRoot, "bin", "code-standards.mjs");
 
-function runCli(args, cwd = repoRoot, input) {
+function runCli(args, cwd = repoRoot, input, envPatch) {
   return spawnSync(process.execPath, [cliPath, ...args], {
     cwd,
     input,
-    encoding: "utf8"
+    encoding: "utf8",
+    env: envPatch ? { ...process.env, ...envPatch } : process.env
   });
 }
 
@@ -52,6 +53,10 @@ async function main() {
   const gitOnlyTarget = path.join(tempRoot, "git-only");
   const positionalTarget = path.join(tempRoot, "positional");
   const targetFlagTarget = path.join(tempRoot, "target-flag");
+  const legacyTarget = path.join(tempRoot, "legacy");
+  const installTarget = path.join(tempRoot, "install-target");
+  const fakeBinDir = path.join(tempRoot, "fake-bin");
+  const fakeNpmLogPath = path.join(tempRoot, "fake-npm.log");
 
   let result = runCli(["profile", "--non-interactive", "--profile", profilePath]);
   assert.equal(result.status, 0, result.stderr);
@@ -72,7 +77,12 @@ async function main() {
   await mkdir(path.join(gitOnlyTarget, ".git"), { recursive: true });
   await mkdir(positionalTarget, { recursive: true });
   await mkdir(targetFlagTarget, { recursive: true });
+  await mkdir(legacyTarget, { recursive: true });
+  await mkdir(installTarget, { recursive: true });
+  await mkdir(fakeBinDir, { recursive: true });
   await writeFile(path.join(gitOnlyTarget, ".git", "HEAD"), "ref: refs/heads/main\n", "utf8");
+  await writeFile(path.join(fakeBinDir, "npm"), '#!/bin/sh\nif [ -z "$FAKE_NPM_LOG" ]; then\n  exit 1\nfi\necho "$@" >> "$FAKE_NPM_LOG"\n', "utf8");
+  await chmod(path.join(fakeBinDir, "npm"), 0o755);
 
   result = runCli(["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profilePath], libTarget);
 
@@ -82,6 +92,11 @@ async function main() {
   assert.match(libGitignore, /node_modules\//);
   const libConfigRaw = await readFile(path.join(libTarget, "src", "config.ts"), "utf8");
   assert.match(libConfigRaw, /GREETING_PREFIX/);
+  const libPackageAfterInit = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
+  assert.equal(libPackageAfterInit.codeStandards.template, "node-lib");
+  assert.equal(libPackageAfterInit.codeStandards.withAiAdapters, true);
+  assert.equal(libPackageAfterInit.codeStandards.profilePath, profilePath);
+  assert.match(libPackageAfterInit.codeStandards.lastRefreshWith, /\d+\.\d+\.\d+/);
 
   const agentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(agentsRaw, /Class-First Design/);
@@ -131,6 +146,76 @@ async function main() {
   const constructorGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "constructor-good.ts"), "utf8");
   assert.match(constructorGoodRaw, /@section constructor/);
 
+  await writeFile(path.join(libTarget, "AGENTS.md"), "# temporary marker\n", "utf8");
+  await writeFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "// temporary marker\n", "utf8");
+  result = runCli(["refresh", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Project refreshed/);
+  const refreshedAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
+  assert.doesNotMatch(refreshedAgentsRaw, /temporary marker/);
+  const refreshedAsyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
+  assert.doesNotMatch(refreshedAsyncGoodRaw, /temporary marker/);
+
+  await writeFile(path.join(libTarget, "src", "index.ts"), "// overwritten marker\n", "utf8");
+  result = runCli(["refresh", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const refreshedLibIndex = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
+  assert.doesNotMatch(refreshedLibIndex, /overwritten marker/);
+  assert.match(refreshedLibIndex, /export/);
+
+  const libPackagePath = path.join(libTarget, "package.json");
+  const libPackageBeforeMergeRefresh = JSON.parse(await readFile(libPackagePath, "utf8"));
+  libPackageBeforeMergeRefresh.scripts.lint = "echo lint-custom";
+  libPackageBeforeMergeRefresh.scripts.custom = "echo custom";
+  libPackageBeforeMergeRefresh.devDependencies.eslint = "0.0.1";
+  libPackageBeforeMergeRefresh.devDependencies.customdep = "1.2.3";
+  libPackageBeforeMergeRefresh.customField = { keep: true };
+  await writeFile(libPackagePath, `${JSON.stringify(libPackageBeforeMergeRefresh, null, 2)}\n`, "utf8");
+
+  result = runCli(["refresh", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const libPackageAfterMergeRefresh = JSON.parse(await readFile(libPackagePath, "utf8"));
+  assert.equal(libPackageAfterMergeRefresh.scripts.lint, "eslint .");
+  assert.equal(libPackageAfterMergeRefresh.scripts.custom, "echo custom");
+  assert.equal(libPackageAfterMergeRefresh.devDependencies.eslint, "^9.20.1");
+  assert.equal(libPackageAfterMergeRefresh.devDependencies.customdep, "1.2.3");
+  assert.equal(libPackageAfterMergeRefresh.customField.keep, true);
+  assert.equal(libPackageAfterMergeRefresh.name, libPackageBeforeMergeRefresh.name);
+  assert.equal(libPackageAfterMergeRefresh.version, libPackageBeforeMergeRefresh.version);
+  assert.equal(libPackageAfterMergeRefresh.private, libPackageBeforeMergeRefresh.private);
+  assert.equal(libPackageAfterMergeRefresh.main, "dist/index.js");
+  assert.equal(libPackageAfterMergeRefresh.types, "dist/index.d.ts");
+  assert.deepEqual(libPackageAfterMergeRefresh.files, ["dist"]);
+
+  const libPackageWithoutMetadata = { ...libPackageAfterMergeRefresh };
+  delete libPackageWithoutMetadata.codeStandards;
+  await writeFile(libPackagePath, `${JSON.stringify(libPackageWithoutMetadata, null, 2)}\n`, "utf8");
+  result = runCli(["refresh", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const libPackageAfterMetadataRecovery = JSON.parse(await readFile(libPackagePath, "utf8"));
+  assert.equal(libPackageAfterMetadataRecovery.codeStandards.template, "node-lib");
+
+  await writeFile(path.join(libTarget, "AGENTS.md"), "# keep me\n", "utf8");
+  result = runCli(["refresh", "--no-ai-adapters", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const agentsAfterNoAi = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
+  assert.equal(agentsAfterNoAi, "# keep me\n");
+  const packageAfterNoAiRefresh = JSON.parse(await readFile(libPackagePath, "utf8"));
+  assert.equal(packageAfterNoAiRefresh.codeStandards.withAiAdapters, false);
+
+  await writeFile(path.join(libTarget, "src", "config.ts"), "// dry-run marker\n", "utf8");
+  result = runCli(["refresh", "--dry-run", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Dry run: refresh would update/);
+  const configAfterDryRun = await readFile(path.join(libTarget, "src", "config.ts"), "utf8");
+  assert.equal(configAfterDryRun, "// dry-run marker\n");
+
+  await writeFile(path.join(libTarget, "src", "index.ts"), "// alias marker\n", "utf8");
+  result = runCli(["update", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const indexAfterUpdateAlias = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
+  assert.doesNotMatch(indexAfterUpdateAlias, /alias marker/);
+
   result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], serviceTarget);
 
   assert.equal(result.status, 0, result.stderr);
@@ -149,6 +234,47 @@ async function main() {
     );
   });
   assert.equal(serviceForbiddenJs.length, 0, `unexpected JS files in service scaffold: ${serviceForbiddenJs}`);
+
+  result = runCli(["refresh", "--template", "node-lib", "--no-ai-adapters", "--yes"], serviceTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const serviceAfterTemplateOverride = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
+  assert.equal(serviceAfterTemplateOverride.main, "dist/index.js");
+  assert.equal(serviceAfterTemplateOverride.types, "dist/index.d.ts");
+  assert.deepEqual(serviceAfterTemplateOverride.files, ["dist"]);
+  assert.equal(serviceAfterTemplateOverride.codeStandards.template, "node-lib");
+  const serviceFilesAfterOverride = await listRelativeFiles(serviceTarget);
+  assert(serviceFilesAfterOverride.includes("tsconfig.build.json"));
+
+  result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], legacyTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const legacyPackagePath = path.join(legacyTarget, "package.json");
+  const legacyPackage = JSON.parse(await readFile(legacyPackagePath, "utf8"));
+  delete legacyPackage.codeStandards;
+  await writeFile(legacyPackagePath, `${JSON.stringify(legacyPackage, null, 2)}\n`, "utf8");
+  result = runCli(["refresh", "--no-ai-adapters", "--yes"], legacyTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const legacyPackageAfterRefresh = JSON.parse(await readFile(legacyPackagePath, "utf8"));
+  assert.equal(legacyPackageAfterRefresh.codeStandards.template, "node-service");
+
+  result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], installTarget);
+  assert.equal(result.status, 0, result.stderr);
+  result = runCli(["refresh", "--no-ai-adapters", "--yes"], installTarget, undefined, {
+    PATH: `${fakeBinDir}:${process.env.PATH}`,
+    FAKE_NPM_LOG: fakeNpmLogPath
+  });
+  assert.equal(result.status, 0, result.stderr);
+  result = runCli(["refresh", "--install", "--no-ai-adapters", "--yes"], installTarget, undefined, {
+    PATH: `${fakeBinDir}:${process.env.PATH}`,
+    FAKE_NPM_LOG: fakeNpmLogPath
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
+  const installInvocations = fakeNpmLog
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+  assert.equal(installInvocations.length, 1);
+  assert.equal(installInvocations[0], "install");
 
   result = runCli(["init", "--template", "node-lib", "--yes", "--no-install"], gitOnlyTarget);
   assert.equal(result.status, 0, result.stderr);

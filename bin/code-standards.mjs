@@ -10,6 +10,12 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 
 const TEMPLATE_NAMES = ["node-lib", "node-service"];
+const CODE_STANDARDS_METADATA_KEY = "codeStandards";
+const NODE_LIB_REFRESH_SIGNATURE = {
+  main: "dist/index.js",
+  types: "dist/index.d.ts"
+};
+const NODE_SERVICE_START_SIGNATURE = "node --import tsx src/index.ts";
 const PROFILE_KEY_ORDER = [
   "version",
   "paradigm",
@@ -165,6 +171,8 @@ function printUsage() {
 
 Commands:
   init                  Initialize a project in the current directory
+  refresh               Re-apply managed standards files and AI instructions
+  update                Alias of refresh
   profile               Create or update the AI style profile
 
 Init options:
@@ -175,6 +183,15 @@ Init options:
   --with-ai-adapters
   --no-ai-adapters
   --profile <path>
+
+Refresh options:
+  --template <node-lib|node-service>
+  --profile <path>
+  --with-ai-adapters
+  --no-ai-adapters
+  --dry-run
+  --install
+  --yes
 
 Profile options:
   --profile <path>
@@ -257,6 +274,88 @@ function parseInitArgs(argv) {
 
     if (token === "--no-ai-adapters") {
       options.withAiAdapters = false;
+      continue;
+    }
+
+    if (token === "-h" || token === "--help") {
+      options.help = true;
+      continue;
+    }
+
+    throw new Error(`Unknown option: ${token}`);
+  }
+
+  return options;
+}
+
+function parseRefreshArgs(argv) {
+  const options = {
+    template: undefined,
+    profilePath: undefined,
+    withAiAdapters: true,
+    dryRun: false,
+    install: false,
+    yes: false,
+    help: false
+  };
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+
+    if (!token.startsWith("-")) {
+      throw new Error(`Positional arguments are not supported for refresh: ${token}.`);
+    }
+
+    if (token === "--template") {
+      const value = argv[i + 1];
+
+      if (!value || value.startsWith("-")) {
+        throw new Error("Missing value for --template");
+      }
+
+      if (!TEMPLATE_NAMES.includes(value)) {
+        throw new Error(`Invalid template: ${value}`);
+      }
+
+      options.template = value;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--profile") {
+      const value = argv[i + 1];
+
+      if (!value || value.startsWith("-")) {
+        throw new Error("Missing value for --profile");
+      }
+
+      options.profilePath = value;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--with-ai-adapters") {
+      options.withAiAdapters = true;
+      continue;
+    }
+
+    if (token === "--no-ai-adapters") {
+      options.withAiAdapters = false;
+      continue;
+    }
+
+    if (token === "--dry-run") {
+      options.dryRun = true;
+      continue;
+    }
+
+    if (token === "--install") {
+      options.install = true;
+      continue;
+    }
+
+    if (token === "--yes") {
+      options.yes = true;
       continue;
     }
 
@@ -422,9 +521,194 @@ async function copyTemplateDirectory(sourceDir, targetDir, tokens) {
   }
 }
 
+function asPlainObject(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+
+  return value;
+}
+
+function getRelativeProfilePath(profilePath, targetPath) {
+  if (!profilePath) {
+    return null;
+  }
+
+  const resolvedProfilePath = path.resolve(targetPath, profilePath);
+  const relativePath = path.relative(targetPath, resolvedProfilePath);
+
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    return resolvedProfilePath;
+  }
+
+  return relativePath;
+}
+
+async function readProjectPackageJson(targetPath) {
+  const packageJsonPath = path.join(targetPath, "package.json");
+
+  if (!(await pathExists(packageJsonPath))) {
+    throw new Error(`package.json was not found in ${targetPath}. Run refresh from the project root.`);
+  }
+
+  return {
+    packageJsonPath,
+    packageJson: await readJsonFile(packageJsonPath)
+  };
+}
+
+async function writeProjectPackageJson(packageJsonPath, packageJson) {
+  await writeJsonFile(packageJsonPath, packageJson);
+}
+
+function updateCodeStandardsMetadata(projectPackageJson, metadataPatch) {
+  const existingMetadata = asPlainObject(projectPackageJson[CODE_STANDARDS_METADATA_KEY]);
+  const nextMetadata = {
+    ...existingMetadata,
+    ...metadataPatch
+  };
+
+  return {
+    ...projectPackageJson,
+    [CODE_STANDARDS_METADATA_KEY]: nextMetadata
+  };
+}
+
+function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson, templateName) {
+  const mergedPackageJson = { ...projectPackageJson };
+  const templateScripts = asPlainObject(templatePackageJson.scripts);
+  const templateDevDependencies = asPlainObject(templatePackageJson.devDependencies);
+  const mergedScripts = {
+    ...asPlainObject(projectPackageJson.scripts)
+  };
+  const mergedDevDependencies = {
+    ...asPlainObject(projectPackageJson.devDependencies)
+  };
+
+  for (const [scriptName, scriptValue] of Object.entries(templateScripts)) {
+    mergedScripts[scriptName] = scriptValue;
+  }
+
+  for (const [dependencyName, dependencyVersion] of Object.entries(templateDevDependencies)) {
+    mergedDevDependencies[dependencyName] = dependencyVersion;
+  }
+
+  if (Object.keys(mergedScripts).length > 0) {
+    mergedPackageJson.scripts = mergedScripts;
+  }
+
+  if (Object.keys(mergedDevDependencies).length > 0) {
+    mergedPackageJson.devDependencies = mergedDevDependencies;
+  }
+
+  if (typeof templatePackageJson.type === "string") {
+    mergedPackageJson.type = templatePackageJson.type;
+  }
+
+  if (templateName === "node-lib") {
+    if (typeof templatePackageJson.main === "string") {
+      mergedPackageJson.main = templatePackageJson.main;
+    }
+
+    if (typeof templatePackageJson.types === "string") {
+      mergedPackageJson.types = templatePackageJson.types;
+    }
+
+    if (Array.isArray(templatePackageJson.files)) {
+      mergedPackageJson.files = templatePackageJson.files;
+    }
+  }
+
+  return mergedPackageJson;
+}
+
+async function collectTemplateFiles(templateDir, baseDir = templateDir) {
+  const entries = await readdir(templateDir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const sourcePath = path.join(templateDir, entry.name);
+
+    if (entry.isDirectory()) {
+      const nestedFiles = await collectTemplateFiles(sourcePath, baseDir);
+      files.push(...nestedFiles);
+      continue;
+    }
+
+    if (!entry.isFile()) {
+      continue;
+    }
+
+    const sourceRelativePath = path.relative(baseDir, sourcePath);
+    const sourceDirectory = path.dirname(sourceRelativePath);
+    const sourceFileName = path.basename(sourceRelativePath);
+    const mappedFileName = mapTemplateFileName(sourceFileName);
+    const targetRelativePath = sourceDirectory === "." ? mappedFileName : path.join(sourceDirectory, mappedFileName);
+
+    files.push({
+      sourcePath,
+      sourceRelativePath,
+      targetRelativePath
+    });
+  }
+
+  return files.sort((left, right) => left.targetRelativePath.localeCompare(right.targetRelativePath));
+}
+
+async function applyManagedFiles(options) {
+  const { templateDir, targetDir, tokens, templateName, projectPackageJson, dryRun } = options;
+  const templateFiles = await collectTemplateFiles(templateDir);
+  const updatedFiles = [];
+  let mergedPackageJson = { ...projectPackageJson };
+
+  for (const templateFile of templateFiles) {
+    if (templateFile.targetRelativePath === "package.json") {
+      const rawTemplatePackageJson = await readFile(templateFile.sourcePath, "utf8");
+      const renderedTemplatePackageJson = replaceTokens(rawTemplatePackageJson, tokens);
+      const templatePackageJson = JSON.parse(renderedTemplatePackageJson);
+      mergedPackageJson = mergePackageJsonFromTemplate(mergedPackageJson, templatePackageJson, templateName);
+      updatedFiles.push("package.json");
+      continue;
+    }
+
+    const raw = await readFile(templateFile.sourcePath, "utf8");
+    const rendered = replaceTokens(raw, tokens);
+    const targetPath = path.join(targetDir, templateFile.targetRelativePath);
+    updatedFiles.push(templateFile.targetRelativePath);
+
+    if (dryRun) {
+      continue;
+    }
+
+    await mkdir(path.dirname(targetPath), { recursive: true });
+    await writeFile(targetPath, rendered, "utf8");
+  }
+
+  if (!dryRun) {
+    const packageJsonPath = path.join(targetDir, "package.json");
+    await writeProjectPackageJson(packageJsonPath, mergedPackageJson);
+  }
+
+  return {
+    updatedFiles,
+    mergedPackageJson
+  };
+}
+
 function resolvePackageRoot() {
   const binPath = fileURLToPath(import.meta.url);
   return path.resolve(path.dirname(binPath), "..");
+}
+
+async function readPackageVersion(packageRoot) {
+  const packageJsonPath = path.join(packageRoot, "package.json");
+  const packageJson = await readJsonFile(packageJsonPath);
+
+  if (typeof packageJson.version !== "string" || packageJson.version.length === 0) {
+    throw new Error("Package version is missing in the CLI package.json.");
+  }
+
+  return packageJson.version;
 }
 
 function getBundledProfilePath(packageRoot) {
@@ -775,7 +1059,25 @@ async function maybeInitializeProfileInteractively(packageRoot, profilePath) {
   console.log(`Profile initialized at ${profilePath}`);
 }
 
-async function resolveProfileForInit(packageRoot, rawOptions, schema) {
+async function resolveBundledOrDefaultProfile(packageRoot, schema) {
+  const bundledProfilePath = getBundledProfilePath(packageRoot);
+  const bundledExists = await pathExists(bundledProfilePath);
+
+  if (bundledExists) {
+    return {
+      profile: await readAndValidateProfile(bundledProfilePath, schema),
+      profilePathForMetadata: null
+    };
+  }
+
+  validateProfile(DEFAULT_PROFILE, schema, "hardcoded defaults");
+  return {
+    profile: normalizeProfile(DEFAULT_PROFILE),
+    profilePathForMetadata: null
+  };
+}
+
+async function resolveProfileForInit(packageRoot, targetPath, rawOptions, schema) {
   const bundledProfilePath = getBundledProfilePath(packageRoot);
 
   if (!rawOptions.profilePath) {
@@ -783,35 +1085,115 @@ async function resolveProfileForInit(packageRoot, rawOptions, schema) {
 
     if (!bundledExists) {
       if (rawOptions.yes) {
-        validateProfile(DEFAULT_PROFILE, schema, "hardcoded defaults");
-        return normalizeProfile(DEFAULT_PROFILE);
+        return resolveBundledOrDefaultProfile(packageRoot, schema);
       }
 
       await writeJsonFile(bundledProfilePath, normalizeProfile(DEFAULT_PROFILE));
     }
 
-    return readAndValidateProfile(bundledProfilePath, schema);
+    return {
+      profile: await readAndValidateProfile(bundledProfilePath, schema),
+      profilePathForMetadata: null
+    };
   }
 
-  const requestedPath = path.resolve(process.cwd(), rawOptions.profilePath);
+  const requestedPath = path.resolve(targetPath, rawOptions.profilePath);
   const requestedExists = await pathExists(requestedPath);
 
   if (!requestedExists) {
     if (rawOptions.yes) {
-      const bundledExists = await pathExists(bundledProfilePath);
-
-      if (bundledExists) {
-        return readAndValidateProfile(bundledProfilePath, schema);
-      }
-
-      validateProfile(DEFAULT_PROFILE, schema, "hardcoded defaults");
-      return normalizeProfile(DEFAULT_PROFILE);
+      return resolveBundledOrDefaultProfile(packageRoot, schema);
     }
 
     await maybeInitializeProfileInteractively(packageRoot, requestedPath);
   }
 
-  return readAndValidateProfile(requestedPath, schema);
+  return {
+    profile: await readAndValidateProfile(requestedPath, schema),
+    profilePathForMetadata: getRelativeProfilePath(requestedPath, targetPath)
+  };
+}
+
+async function resolveTemplateForRefresh(rawOptions, projectPackageJson, targetPath) {
+  if (rawOptions.template) {
+    return rawOptions.template;
+  }
+
+  const metadata = asPlainObject(projectPackageJson[CODE_STANDARDS_METADATA_KEY]);
+
+  if (typeof metadata.template === "string" && TEMPLATE_NAMES.includes(metadata.template)) {
+    return metadata.template;
+  }
+
+  const projectScripts = asPlainObject(projectPackageJson.scripts);
+  const hasNodeLibSignature =
+    (await pathExists(path.join(targetPath, "tsconfig.build.json"))) &&
+    projectPackageJson.main === NODE_LIB_REFRESH_SIGNATURE.main &&
+    projectPackageJson.types === NODE_LIB_REFRESH_SIGNATURE.types;
+
+  if (hasNodeLibSignature) {
+    return "node-lib";
+  }
+
+  const startScript = typeof projectScripts.start === "string" ? projectScripts.start : "";
+
+  if (startScript.includes(NODE_SERVICE_START_SIGNATURE)) {
+    return "node-service";
+  }
+
+  throw new Error("Unable to infer template for refresh. Use --template <node-lib|node-service>.");
+}
+
+async function resolveProfileForRefresh(packageRoot, targetPath, rawOptions, schema, projectMetadata) {
+  let selectedProfilePath;
+
+  if (rawOptions.profilePath) {
+    selectedProfilePath = path.resolve(targetPath, rawOptions.profilePath);
+  } else if (typeof projectMetadata.profilePath === "string" && projectMetadata.profilePath.trim().length > 0) {
+    selectedProfilePath = path.resolve(targetPath, projectMetadata.profilePath);
+  }
+
+  if (!selectedProfilePath) {
+    return resolveBundledOrDefaultProfile(packageRoot, schema);
+  }
+
+  const selectedExists = await pathExists(selectedProfilePath);
+
+  if (!selectedExists) {
+    if (rawOptions.yes) {
+      return resolveBundledOrDefaultProfile(packageRoot, schema);
+    }
+
+    await maybeInitializeProfileInteractively(packageRoot, selectedProfilePath);
+  }
+
+  return {
+    profile: await readAndValidateProfile(selectedProfilePath, schema),
+    profilePathForMetadata: getRelativeProfilePath(selectedProfilePath, targetPath)
+  };
+}
+
+async function collectAiFiles(packageRoot) {
+  const aiFiles = ["AGENTS.md"];
+  const adaptersTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "adapters");
+  const examplesTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "examples");
+  const adapterEntries = await readdir(adaptersTemplateDir, { withFileTypes: true });
+
+  for (const entry of adapterEntries) {
+    if (!entry.isFile() || !entry.name.endsWith(".template.md")) {
+      continue;
+    }
+
+    aiFiles.push(path.join("ai", entry.name.replace(/\.template\.md$/, ".md")));
+  }
+
+  const exampleTemplateFiles = await collectTemplateFiles(examplesTemplateDir);
+
+  for (const exampleFile of exampleTemplateFiles) {
+    aiFiles.push(path.join("ai", "examples", exampleFile.targetRelativePath));
+  }
+
+  return aiFiles.sort((left, right) => left.localeCompare(right));
 }
 
 async function promptForMissing(options) {
@@ -880,11 +1262,12 @@ async function runInit(rawOptions) {
     throw new Error(`Invalid template: ${template}`);
   }
 
-  const packageRoot = resolvePackageRoot();
-  const schema = await loadProfileSchema(packageRoot);
-  const profile = await resolveProfileForInit(packageRoot, options, schema);
-
   const targetPath = path.resolve(process.cwd());
+  const packageRoot = resolvePackageRoot();
+  const packageVersion = await readPackageVersion(packageRoot);
+  const schema = await loadProfileSchema(packageRoot);
+  const profileResolution = await resolveProfileForInit(packageRoot, targetPath, options, schema);
+  const profile = profileResolution.profile;
   const inferredProjectName = path.basename(targetPath);
   const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
   const packageName = sanitizePackageName(projectName);
@@ -910,7 +1293,89 @@ async function runInit(rawOptions) {
     await runCommand("npm", ["install"], targetPath);
   }
 
+  const { packageJsonPath, packageJson } = await readProjectPackageJson(targetPath);
+  const packageWithMetadata = updateCodeStandardsMetadata(packageJson, {
+    template,
+    profilePath: profileResolution.profilePathForMetadata,
+    withAiAdapters: options.withAiAdapters,
+    lastRefreshWith: packageVersion
+  });
+  await writeProjectPackageJson(packageJsonPath, packageWithMetadata);
+
   console.log(`Project created at ${targetPath}`);
+  console.log("Next steps:");
+  console.log("  npm run check");
+}
+
+async function runRefresh(rawOptions) {
+  if (rawOptions.help) {
+    printUsage();
+    return;
+  }
+
+  const targetPath = path.resolve(process.cwd());
+  const packageRoot = resolvePackageRoot();
+  const packageVersion = await readPackageVersion(packageRoot);
+  const schema = await loadProfileSchema(packageRoot);
+  const { packageJsonPath, packageJson: projectPackageJson } = await readProjectPackageJson(targetPath);
+  const projectMetadata = asPlainObject(projectPackageJson[CODE_STANDARDS_METADATA_KEY]);
+  const template = await resolveTemplateForRefresh(rawOptions, projectPackageJson, targetPath);
+  const { templateDir } = await validateInitResources(packageRoot, template);
+  const profileResolution = await resolveProfileForRefresh(packageRoot, targetPath, rawOptions, schema, projectMetadata);
+  const inferredProjectName = path.basename(targetPath);
+  const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
+  const currentPackageName =
+    typeof projectPackageJson.name === "string" && projectPackageJson.name.length > 0 ? projectPackageJson.name : sanitizePackageName(projectName);
+  const tokens = {
+    projectName,
+    packageName: currentPackageName,
+    year: String(new Date().getFullYear()),
+    profileSummary: JSON.stringify(profileResolution.profile)
+  };
+
+  const managedResults = await applyManagedFiles({
+    templateDir,
+    targetDir: targetPath,
+    tokens,
+    templateName: template,
+    projectPackageJson,
+    dryRun: rawOptions.dryRun
+  });
+  const aiFiles = rawOptions.withAiAdapters ? await collectAiFiles(packageRoot) : [];
+
+  if (rawOptions.dryRun) {
+    const uniqueFiles = [...new Set([...managedResults.updatedFiles, ...aiFiles])].sort((left, right) => left.localeCompare(right));
+    console.log(`Dry run: refresh would update ${uniqueFiles.length} file(s).`);
+
+    for (const filePath of uniqueFiles) {
+      console.log(`  - ${filePath}`);
+    }
+
+    if (rawOptions.install) {
+      console.log("Dry run: npm install would be executed.");
+    }
+
+    return;
+  }
+
+  if (rawOptions.withAiAdapters) {
+    await generateAiInstructions(packageRoot, targetPath, tokens, profileResolution.profile);
+  }
+
+  if (rawOptions.install) {
+    console.log("Installing dependencies...");
+    await runCommand("npm", ["install"], targetPath);
+  }
+
+  const packageWithMetadata = updateCodeStandardsMetadata(managedResults.mergedPackageJson, {
+    template,
+    profilePath: profileResolution.profilePathForMetadata,
+    withAiAdapters: rawOptions.withAiAdapters,
+    lastRefreshWith: packageVersion
+  });
+  await writeProjectPackageJson(packageJsonPath, packageWithMetadata);
+
+  console.log(`Project refreshed at ${targetPath}`);
   console.log("Next steps:");
   console.log("  npm run check");
 }
@@ -928,6 +1393,11 @@ async function main() {
   try {
     if (command === "init") {
       await runInit(parseInitArgs(rest));
+      return;
+    }
+
+    if (command === "refresh" || command === "update") {
+      await runRefresh(parseRefreshArgs(rest));
       return;
     }
 

@@ -13,4 +13,6 @@ test("cli shows help", () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Usage:/);
   assert.match(result.stdout, /profile/);
+  assert.match(result.stdout, /refresh/);
+  assert.match(result.stdout, /update/);
 });

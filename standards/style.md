@@ -18,6 +18,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.
+- If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass a single `options` parameter.
 - Always use braces in control flow (`if`, `else`, `for`, `while`, `do`).
 
 ## Naming

@@ -21,6 +21,12 @@ If you just want to start now:
 npx @sha3/code-standards init --template node-service --yes
 ```
 
+If your project was already scaffolded and you updated this package:
+
+```bash
+npx @sha3/code-standards refresh
+```
+
 Then in your AI chat, paste this:
 
 ```txt
@@ -113,6 +119,7 @@ After `init`, your new repo contains:
 - `src/config.ts` for centralized hardcoded configuration values
 - `.gitignore` preconfigured for Node/TypeScript output
 - lint/format/typecheck/test-ready project template
+- `package.json.codeStandards` metadata used by `refresh` (`template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
 
 That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
 
@@ -270,6 +277,22 @@ npm run check
 
 Then use the prompts above in your AI tool.
 
+### 4) Sync updates from `@sha3/code-standards`
+
+Run this inside an already scaffolded project:
+
+```bash
+npx @sha3/code-standards refresh
+```
+
+`refresh` default behavior:
+
+- scope `Managed + AI` (template files + `AGENTS.md` + `ai/*` + `ai/examples/*`)
+- overwrite conflicts
+- auto-detect template (or force with `--template`)
+- selective merge for `package.json` (managed scripts/devDependencies updated, custom keys preserved)
+- no dependency install unless `--install`
+
 ---
 
 ## CLI Reference
@@ -279,6 +302,8 @@ code-standards <command> [options]
 
 Commands:
   init                  Initialize a project in the current directory
+  refresh               Re-apply managed standards files and AI instructions
+  update                Alias of refresh
   profile               Create or update the AI style profile
 ```
 
@@ -294,6 +319,18 @@ An existing `.git/` directory is allowed without `--force`.
 - `--with-ai-adapters`
 - `--no-ai-adapters`
 - `--profile <path>`
+
+### `refresh` options
+
+`refresh` always uses the current working directory as target.
+
+- `--template <node-lib|node-service>`
+- `--profile <path>`
+- `--with-ai-adapters`
+- `--no-ai-adapters`
+- `--dry-run`
+- `--install`
+- `--yes`
 
 ### `profile` options
 

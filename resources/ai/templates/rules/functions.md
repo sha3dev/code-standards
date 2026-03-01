@@ -7,6 +7,7 @@
 - New implementation and test files MUST be `.ts`.
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
 - If a declaration/expression fits in one line within 160 chars, it MUST stay on one line.
+- If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass one `options` parameter.
 
 Good example:
 
