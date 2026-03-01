@@ -6,28 +6,8 @@
 
 Good example:
 
-```ts
-public toStatusLabel(status: InvoiceStatus): string {
-  let label: string;
-
-  if (status === "paid") {
-    label = "Paid";
-  } else if (status === "void") {
-    label = "Void";
-  } else {
-    label = "Pending";
-  }
-
-  return label;
-}
-```
+- `ai/examples/rules/returns-good.ts`
 
 Bad example:
 
-```ts
-public toStatusLabel(status: InvoiceStatus): string {
-  if (status === "paid") return "Paid";
-  if (status === "void") return "Void";
-  return "Pending";
-}
-```
+- `ai/examples/rules/returns-bad.ts`

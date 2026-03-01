@@ -166,13 +166,12 @@ function printUsage() {
   code-standards <command> [options]
 
 Commands:
-  init [project-name]   Initialize a project from templates
+  init                  Initialize a project in the current directory
   profile               Create or update the AI style profile
 
 Init options:
   --template <node-lib|node-service>
   --yes
-  --target <dir>
   --no-install
   --force
   --with-ai-adapters
@@ -192,11 +191,9 @@ function parseInitArgs(argv) {
   const options = {
     template: undefined,
     yes: false,
-    target: undefined,
     install: true,
     force: false,
     withAiAdapters: true,
-    projectName: undefined,
     profilePath: undefined,
     help: false
   };
@@ -205,12 +202,9 @@ function parseInitArgs(argv) {
     const token = argv[i];
 
     if (!token.startsWith("-")) {
-      if (!options.projectName) {
-        options.projectName = token;
-        continue;
-      }
-
-      throw new Error(`Unexpected positional argument: ${token}`);
+      throw new Error(
+        `Positional project names are not supported: ${token}. Run init from your target directory.`
+      );
     }
 
     if (token === "--template") {
@@ -230,15 +224,7 @@ function parseInitArgs(argv) {
     }
 
     if (token === "--target") {
-      const value = argv[i + 1];
-
-      if (!value || value.startsWith("-")) {
-        throw new Error("Missing value for --target");
-      }
-
-      options.target = value;
-      i += 1;
-      continue;
+      throw new Error("--target is not supported. Run init from your target directory.");
     }
 
     if (token === "--profile") {
@@ -354,6 +340,15 @@ function replaceTokens(content, tokens) {
   return output;
 }
 
+function mapTemplateFileName(fileName) {
+  // npm may rewrite .gitignore to .npmignore in published tarballs.
+  if (fileName === "gitignore" || fileName === ".npmignore") {
+    return ".gitignore";
+  }
+
+  return fileName;
+}
+
 function normalizeProfile(rawProfile) {
   const normalized = {};
 
@@ -413,9 +408,9 @@ async function copyTemplateDirectory(sourceDir, targetDir, tokens) {
 
   for (const entry of entries) {
     const sourcePath = path.join(sourceDir, entry.name);
-    const targetPath = path.join(targetDir, entry.name);
 
     if (entry.isDirectory()) {
+      const targetPath = path.join(targetDir, entry.name);
       await copyTemplateDirectory(sourcePath, targetPath, tokens);
       continue;
     }
@@ -426,6 +421,8 @@ async function copyTemplateDirectory(sourceDir, targetDir, tokens) {
 
     const raw = await readFile(sourcePath, "utf8");
     const rendered = replaceTokens(raw, tokens);
+    const targetName = mapTemplateFileName(entry.name);
+    const targetPath = path.join(targetDir, targetName);
     await writeFile(targetPath, rendered, "utf8");
   }
 }
@@ -790,9 +787,16 @@ async function renderAdapterFiles(packageRoot, targetDir, tokens) {
   }
 }
 
+async function renderExampleFiles(packageRoot, targetDir, tokens) {
+  const examplesTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "examples");
+  const examplesTarget = path.join(targetDir, "ai", "examples");
+  await copyTemplateDirectory(examplesTemplateDir, examplesTarget, tokens);
+}
+
 async function generateAiInstructions(packageRoot, targetDir, tokens, profile) {
   await renderProjectAgents(packageRoot, targetDir, tokens.projectName, profile);
   await renderAdapterFiles(packageRoot, targetDir, tokens);
+  await renderExampleFiles(packageRoot, targetDir, tokens);
 }
 
 async function maybeInitializeProfileInteractively(packageRoot, profilePath) {
@@ -881,17 +885,6 @@ async function promptForMissing(options) {
       resolved.template = normalized;
     }
 
-    if (!resolved.projectName) {
-      const nameAnswer = await rl.question("Project name [my-project]: ");
-      resolved.projectName = nameAnswer.trim() || "my-project";
-    }
-
-    if (!resolved.target) {
-      const targetDefault = resolved.projectName;
-      const targetAnswer = await rl.question(`Target directory [${targetDefault}]: `);
-      resolved.target = targetAnswer.trim() || targetDefault;
-    }
-
     if (options.install) {
       const installAnswer = await rl.question("Install dependencies now? (Y/n): ");
       const normalized = installAnswer.trim().toLowerCase();
@@ -914,10 +907,12 @@ async function validateInitResources(packageRoot, templateName) {
     "agents.project.template.md"
   );
   const adaptersTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "adapters");
+  const examplesTemplateDir = path.join(packageRoot, "resources", "ai", "templates", "examples");
 
   await access(templateDir, constants.R_OK);
   await access(agentsTemplatePath, constants.R_OK);
   await access(adaptersTemplateDir, constants.R_OK);
+  await access(examplesTemplateDir, constants.R_OK);
 
   return { templateDir };
 }
@@ -932,8 +927,6 @@ async function runInit(rawOptions) {
 
   if (options.yes) {
     options.template ??= "node-lib";
-    options.projectName ??= "my-project";
-    options.target ??= options.projectName;
   } else {
     options = await promptForMissing(options);
   }
@@ -948,9 +941,11 @@ async function runInit(rawOptions) {
   const schema = await loadProfileSchema(packageRoot);
   const profile = await resolveProfileForInit(packageRoot, options, schema);
 
-  const projectName = options.projectName ?? path.basename(options.target ?? "my-project");
+  const targetPath = path.resolve(process.cwd());
+  const inferredProjectName = path.basename(targetPath);
+  const projectName =
+    inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
   const packageName = sanitizePackageName(projectName);
-  const targetPath = path.resolve(process.cwd(), options.target ?? projectName);
 
   await ensureTargetReady(targetPath, options.force);
 
@@ -975,7 +970,6 @@ async function runInit(rawOptions) {
 
   console.log(`Project created at ${targetPath}`);
   console.log("Next steps:");
-  console.log(`  cd ${targetPath}`);
   console.log("  npm run check");
 }
 

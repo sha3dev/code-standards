@@ -6,18 +6,8 @@
 
 Good example:
 
-```ts
-public async execute(command: SyncInvoicesCommand): Promise<SyncResult> {
-  const invoices: Invoice[] = await this.source.fetch(command.accountId);
-  const result: SyncResult = await this.writer.persist(invoices);
-  return result;
-}
-```
+- `ai/examples/rules/async-good.ts`
 
 Bad example:
 
-```ts
-public execute(command: SyncInvoicesCommand): Promise<SyncResult> {
-  return this.source.fetch(command.accountId).then((invoices) => this.writer.persist(invoices));
-}
-```
+- `ai/examples/rules/async-bad.ts`

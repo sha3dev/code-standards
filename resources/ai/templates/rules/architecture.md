@@ -6,21 +6,11 @@
 
 Good example:
 
-```text
-src/
-  invoices/
-    invoice-service.ts
-    invoice-repository.ts
-    invoice-types.ts
-  billing/
-    billing-service.ts
-```
+- `ai/examples/demo/src/invoices/invoice-service.ts`
+- `ai/examples/demo/src/invoices/invoice-errors.ts`
+- `ai/examples/demo/src/invoices/invoice-types.ts`
+- `ai/examples/demo/src/billing/billing-service.ts`
 
 Bad example:
 
-```text
-src/
-  services/
-  repositories/
-  models/
-```
+- `ai/examples/rules/class-first-bad.ts` (mixes concerns and does not keep feature boundaries)

@@ -6,14 +6,8 @@
 
 Good example:
 
-```ts
-if (isEnabled) {
-  executeTask();
-}
-```
+- `ai/examples/rules/control-flow-good.ts`
 
 Bad example:
 
-```ts
-if (isEnabled) executeTask();
-```
+- `ai/examples/rules/control-flow-bad.ts`

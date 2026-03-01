@@ -7,21 +7,8 @@
 
 Good example:
 
-```ts
-private normalize(input: PaymentInput): PaymentDraft {
-  const amount: number = normalizeAmount(input.amount);
-  const currency: CurrencyCode = normalizeCurrency(input.currency);
-  const metadata: PaymentMetadata = sanitizeMetadata(input.metadata);
-  return { amount, currency, metadata };
-}
-```
+- `ai/examples/rules/functions-good.ts`
 
 Bad example:
 
-```ts
-private normalize(input: any): any {
-  // huge branchy function with parsing, IO, validation and persistence mixed together
-  // ... 80+ lines omitted
-  return input;
-}
-```
+- `ai/examples/rules/functions-bad.ts`

@@ -6,17 +6,8 @@
 
 Good example:
 
-```ts
-export class InvoiceNotFoundError extends Error {
-  public constructor(invoiceId: string) {
-    super(`Invoice not found: ${invoiceId}`);
-    this.name = "InvoiceNotFoundError";
-  }
-}
-```
+- `ai/examples/rules/errors-good.ts`
 
 Bad example:
 
-```ts
-throw new Error("Oops");
-```
+- `ai/examples/rules/errors-bad.ts`

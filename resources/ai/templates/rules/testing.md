@@ -7,20 +7,8 @@
 
 Good example:
 
-```ts
-// Business rule: invoices older than 30 days are escalated for manual review.
-public evaluateEscalation(invoice: Invoice, now: Date): EscalationDecision {
-  const ageInDays: number = daysBetween(invoice.issuedAt, now);
-  const decision: EscalationDecision =
-    ageInDays > 30 ? "manual-review" : "no-escalation";
-  return decision;
-}
-```
+- `ai/examples/rules/testing-good.ts`
 
 Bad example:
 
-```ts
-public evaluateEscalation(invoice: any, now: Date): any {
-  return Promise.resolve(invoice).then((it) => (Date.now() - it.issuedAt > 0 ? "x" : "y"));
-}
-```
+- `ai/examples/rules/testing-bad.ts`

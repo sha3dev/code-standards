@@ -25,7 +25,15 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 
 ## Class File Comment Blocks
 
-Class-oriented files MUST use `/** @section ... */` markers in this exact order:
+Class-oriented files MUST use 3-line JSDoc section markers in this exact order:
+
+```ts
+/**
+ * @section <block-name>
+ */
+```
+
+Required block names:
 
 1. `imports:externals`
 2. `imports:internals`
