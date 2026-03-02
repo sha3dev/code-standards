@@ -408,8 +408,8 @@ function sanitizePackageName(input) {
 }
 
 function isValidNpmPackageName(input) {
-  const unscopedPattern = /^[a-z0-9][a-z0-9._-]*$/;
-  const scopedPattern = /^@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*$/;
+  const unscopedPattern = /^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/;
+  const scopedPattern = /^@[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/;
   return unscopedPattern.test(input) || scopedPattern.test(input);
 }
 

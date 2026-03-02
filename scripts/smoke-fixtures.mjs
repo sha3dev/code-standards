@@ -363,6 +363,12 @@ async function main() {
 
   const tsconfigFiles = await readdir(path.join(repoRoot, "tsconfig"));
   assert(tsconfigFiles.includes("node-lib.json"));
+  const sharedLibTsconfigRaw = await readFile(path.join(repoRoot, "tsconfig", "node-lib.json"), "utf8");
+  assert.doesNotMatch(sharedLibTsconfigRaw, /"rootDir"/);
+  assert.doesNotMatch(sharedLibTsconfigRaw, /"outDir"/);
+  const sharedServiceTsconfigRaw = await readFile(path.join(repoRoot, "tsconfig", "node-service.json"), "utf8");
+  assert.doesNotMatch(sharedServiceTsconfigRaw, /"rootDir"/);
+  assert.doesNotMatch(sharedServiceTsconfigRaw, /"outDir"/);
 
   console.log("smoke fixtures passed");
 }
