@@ -713,6 +713,8 @@ function isRefreshManagedPath(targetRelativePath) {
   return (
     targetRelativePath === "package.json" ||
     targetRelativePath === ".gitignore" ||
+    targetRelativePath === ".vscode/settings.json" ||
+    targetRelativePath === ".vscode/extensions.json" ||
     targetRelativePath === "eslint.config.mjs" ||
     targetRelativePath === "prettier.config.cjs" ||
     targetRelativePath === "tsconfig.json" ||

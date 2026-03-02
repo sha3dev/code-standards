@@ -118,6 +118,12 @@ async function main() {
   assert.equal(libPackageAfterInit.name, "demo-lib");
   assert.equal(libPackageAfterInit.repository.type, "git");
   assert.match(libPackageAfterInit.repository.url, /github\.com/);
+  const libVscodeSettingsRaw = await readFile(path.join(libTarget, ".vscode", "settings.json"), "utf8");
+  assert.match(libVscodeSettingsRaw, /"editor\.formatOnSave": true/);
+  assert.match(libVscodeSettingsRaw, /"source\.fixAll\.eslint"/);
+  const libVscodeExtensionsRaw = await readFile(path.join(libTarget, ".vscode", "extensions.json"), "utf8");
+  assert.match(libVscodeExtensionsRaw, /esbenp\.prettier-vscode/);
+  assert.match(libVscodeExtensionsRaw, /dbaeumer\.vscode-eslint/);
 
   const agentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(agentsRaw, /Class-First Design/);
@@ -175,6 +181,7 @@ async function main() {
 
   await writeFile(path.join(libTarget, "AGENTS.md"), "# temporary marker\n", "utf8");
   await writeFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "// temporary marker\n", "utf8");
+  await writeFile(path.join(libTarget, ".vscode", "settings.json"), '{ "editor.formatOnSave": false }\n', "utf8");
   result = runCliWithFakeNpm(["refresh", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Project refreshed/);
@@ -182,6 +189,8 @@ async function main() {
   assert.doesNotMatch(refreshedAgentsRaw, /temporary marker/);
   const refreshedAsyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
   assert.doesNotMatch(refreshedAsyncGoodRaw, /temporary marker/);
+  const refreshedVscodeSettingsRaw = await readFile(path.join(libTarget, ".vscode", "settings.json"), "utf8");
+  assert.match(refreshedVscodeSettingsRaw, /"editor\.formatOnSave": true/);
 
   await writeFile(path.join(libTarget, "src", "index.ts"), "// overwritten marker\n", "utf8");
   result = runCliWithFakeNpm(["refresh", "--yes"], libTarget);
@@ -261,6 +270,12 @@ async function main() {
   assert.equal(servicePackageAfterInit.name, "demo-service");
   assert.equal(servicePackageAfterInit.repository.type, "git");
   assert.match(servicePackageAfterInit.repository.url, /github\.com/);
+  const serviceVscodeSettingsRaw = await readFile(path.join(serviceTarget, ".vscode", "settings.json"), "utf8");
+  assert.match(serviceVscodeSettingsRaw, /"editor\.formatOnSave": true/);
+  assert.match(serviceVscodeSettingsRaw, /"source\.fixAll\.eslint"/);
+  const serviceVscodeExtensionsRaw = await readFile(path.join(serviceTarget, ".vscode", "extensions.json"), "utf8");
+  assert.match(serviceVscodeExtensionsRaw, /esbenp\.prettier-vscode/);
+  assert.match(serviceVscodeExtensionsRaw, /dbaeumer\.vscode-eslint/);
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
   assert.match(serviceConfigRaw, /const CONFIG = \{/);

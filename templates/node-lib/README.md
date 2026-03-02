@@ -62,6 +62,11 @@ Hardcoded configuration is centralized in `src/config.ts`.
 - `npm run test`: tests with Node test runner
 - `npm run publish`: publish package to npm (`--access public`)
 
+## Editor Autoformat (VS Code)
+
+- Autoformat on save is preconfigured in `.vscode/settings.json`.
+- Install recommended extensions from `.vscode/extensions.json`.
+
 ## Structure
 
 - `src/`: implementation

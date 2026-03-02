@@ -119,6 +119,7 @@ After `init`, your new repo contains:
 - `src/config.ts` for centralized hardcoded configuration values
 - `README.md` generated with an icon emoji and complete integration docs (API + config + integration contract for other LLMs)
 - `.gitignore` preconfigured for Node/TypeScript output
+- `.vscode/settings.json` + `.vscode/extensions.json` for autoformat-on-save and eslint autofix-on-save in VS Code
 - lint/format/typecheck/test-ready project template
 - `package.json.codeStandards` metadata used by `refresh` (`template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
 
