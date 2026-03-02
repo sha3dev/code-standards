@@ -124,6 +124,7 @@ async function main() {
   const libVscodeExtensionsRaw = await readFile(path.join(libTarget, ".vscode", "extensions.json"), "utf8");
   assert.match(libVscodeExtensionsRaw, /esbenp\.prettier-vscode/);
   assert.match(libVscodeExtensionsRaw, /dbaeumer\.vscode-eslint/);
+  assert.match(libVscodeExtensionsRaw, /rvest\.vs-code-prettier-eslint/);
 
   const agentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(agentsRaw, /Class-First Design/);
@@ -185,6 +186,8 @@ async function main() {
   result = runCliWithFakeNpm(["refresh", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Project refreshed/);
+  assert.match(result.stdout, /LLM prompt \(copy\/paste\):/);
+  assert.match(result.stdout, /re-read AGENTS\.md and ai\/<assistant>\.md/);
   const refreshedAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.doesNotMatch(refreshedAgentsRaw, /temporary marker/);
   const refreshedAsyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
@@ -233,6 +236,7 @@ async function main() {
   await writeFile(path.join(libTarget, "AGENTS.md"), "# keep me\n", "utf8");
   result = runCliWithFakeNpm(["refresh", "--no-ai-adapters", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /re-read package\.json, eslint\.config\.mjs, prettier\.config\.cjs, and tsconfig\.json/);
   const agentsAfterNoAi = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.equal(agentsAfterNoAi, "# keep me\n");
   const packageAfterNoAiRefresh = JSON.parse(await readFile(libPackagePath, "utf8"));
@@ -276,6 +280,7 @@ async function main() {
   const serviceVscodeExtensionsRaw = await readFile(path.join(serviceTarget, ".vscode", "extensions.json"), "utf8");
   assert.match(serviceVscodeExtensionsRaw, /esbenp\.prettier-vscode/);
   assert.match(serviceVscodeExtensionsRaw, /dbaeumer\.vscode-eslint/);
+  assert.match(serviceVscodeExtensionsRaw, /rvest\.vs-code-prettier-eslint/);
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
   assert.match(serviceConfigRaw, /const CONFIG = \{/);

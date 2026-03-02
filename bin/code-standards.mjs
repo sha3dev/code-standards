@@ -1439,6 +1439,34 @@ async function runRefresh(rawOptions) {
 
   console.log(`Project refreshed at ${targetPath}`);
   console.log("Refresh verification completed.");
+  console.log("");
+  console.log("LLM prompt (copy/paste):");
+  console.log("");
+
+  if (rawOptions.withAiAdapters) {
+    console.log("```txt");
+    console.log("Before writing code, re-read AGENTS.md and ai/<assistant>.md.");
+    console.log("Treat @sha3/code-standards conventions as highest priority over existing code.");
+    console.log("Task:");
+    console.log("1) Summarize updated blocking rules introduced by the latest refresh.");
+    console.log("2) Scan the repository and list non-compliant files.");
+    console.log("3) Refactor code to fully align with updated conventions (style, structure, architecture, tests, README).");
+    console.log("4) Run npm run fix and npm run check.");
+    console.log("5) Return changed files + a compliance checklist mapped to AGENTS.md rules.");
+    console.log("```");
+    return;
+  }
+
+  console.log("```txt");
+  console.log("Before writing code, re-read package.json, eslint.config.mjs, prettier.config.cjs, and tsconfig.json.");
+  console.log("Treat @sha3/code-standards conventions as highest priority over existing code.");
+  console.log("Task:");
+  console.log("1) Summarize updated blocking conventions introduced by the latest refresh.");
+  console.log("2) Scan the repository and list non-compliant files.");
+  console.log("3) Refactor code to fully align with updated conventions (style, structure, architecture, tests, README).");
+  console.log("4) Run npm run fix and npm run check.");
+  console.log("5) Return changed files + a compliance checklist mapped to updated conventions.");
+  console.log("```");
 }
 
 async function main() {

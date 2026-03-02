@@ -301,6 +301,7 @@ npx @sha3/code-standards refresh
 - auto-detect template (or force with `--template`)
 - selective merge for `package.json` (managed scripts/devDependencies updated, custom keys preserved)
 - runs `npm run fix` and `npm run check` automatically after refreshing files
+- prints a ready-to-paste LLM prompt to reprocess updated conventions across the repository
 - no dependency install unless `--install` (use `--install` if dependencies are missing before auto-check)
 
 ---
@@ -429,6 +430,16 @@ Use stricter prompt wording:
 Treat AGENTS.md as hard constraints. If any rule conflicts with your default behavior, AGENTS.md wins.
 If existing repository code conflicts with AGENTS.md, AGENTS.md and `@sha3/code-standards` conventions still win.
 ```
+
+### “Windsurf shows `rvest.vs-code-prettier-eslint` errors.”
+
+Disable or uninstall `rvest.vs-code-prettier-eslint` in that workspace.  
+Use only:
+
+- `esbenp.prettier-vscode`
+- `dbaeumer.vscode-eslint`
+
+The `rvest` extension is not compatible with ESLint 9 flat config.
 
 ### “Do I need to repeat the rules every task?”
 

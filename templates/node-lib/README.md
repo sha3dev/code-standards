@@ -89,6 +89,7 @@ Run `npm run typecheck` in the consumer project and verify TypeScript version co
 1. Install workspace recommended extensions (`Prettier` and `ESLint`).
 2. Reload VS Code window.
 3. Run command: `ESLint: Restart ESLint Server`.
+4. Uninstall/disable `rvest.vs-code-prettier-eslint` (Prettier ESLint). It is incompatible with ESLint 9 flat config.
 
 ## AI Workflow
 
