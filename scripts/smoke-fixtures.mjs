@@ -281,6 +281,11 @@ async function main() {
   const servicePackageAfterInit = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
   assert.equal(servicePackageAfterInit.scripts.publish, "node scripts/release-publish.mjs");
   assert.equal(servicePackageAfterInit.scripts.test, "node scripts/run-tests.mjs");
+  assert.equal(servicePackageAfterInit.dependencies.dotenv, "^16.6.1");
+  const servicePm2EcosystemRaw = await readFile(path.join(serviceTarget, "ecosystem.config.cjs"), "utf8");
+  assert.match(servicePm2EcosystemRaw, /name: "demo-service"/);
+  assert.match(servicePm2EcosystemRaw, /script: "node"/);
+  assert.match(servicePm2EcosystemRaw, /args: "--import tsx src\/index\.ts"/);
   const servicePublishScriptRaw = await readFile(path.join(serviceTarget, "scripts", "release-publish.mjs"), "utf8");
   assert.match(servicePublishScriptRaw, /versionExistsOnNpm/);
   const serviceRunTestsScriptRaw = await readFile(path.join(serviceTarget, "scripts", "run-tests.mjs"), "utf8");
@@ -296,6 +301,10 @@ async function main() {
   assert.match(serviceVscodeExtensionsRaw, /dbaeumer\.vscode-eslint/);
   assert.match(serviceVscodeExtensionsRaw, /rvest\.vs-code-prettier-eslint/);
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
+  assert.match(serviceConfigRaw, /import "dotenv\/config";/);
+  assert.match(serviceConfigRaw, /readStringEnv\("RESPONSE_CONTENT_TYPE"/);
+  assert.match(serviceConfigRaw, /readIntegerEnv\("PORT"/);
+  assert.match(serviceConfigRaw, /readStringEnv\("EXTERNAL_STATUS_URL"/);
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
   assert.match(serviceConfigRaw, /const CONFIG = \{/);
   assert.match(serviceConfigRaw, /export default CONFIG/);
@@ -316,6 +325,21 @@ async function main() {
     );
   });
   assert.equal(serviceForbiddenJs.length, 0, `unexpected JS files in service scaffold: ${serviceForbiddenJs}`);
+
+  const servicePackagePath = path.join(serviceTarget, "package.json");
+  const servicePackageBeforeMergeRefresh = JSON.parse(await readFile(servicePackagePath, "utf8"));
+  servicePackageBeforeMergeRefresh.dependencies.dotenv = "0.0.1";
+  servicePackageBeforeMergeRefresh.dependencies.customdep = "1.2.3";
+  await writeFile(servicePackagePath, `${JSON.stringify(servicePackageBeforeMergeRefresh, null, 2)}\n`, "utf8");
+  await writeFile(path.join(serviceTarget, "ecosystem.config.cjs"), "// refresh me\n", "utf8");
+  result = runCliWithFakeNpm(["refresh", "--template", "node-service", "--no-ai-adapters", "--yes"], serviceTarget);
+  assert.equal(result.status, 0, result.stderr);
+  const servicePackageAfterMergeRefresh = JSON.parse(await readFile(servicePackagePath, "utf8"));
+  assert.equal(servicePackageAfterMergeRefresh.dependencies.dotenv, "^16.6.1");
+  assert.equal(servicePackageAfterMergeRefresh.dependencies.customdep, "1.2.3");
+  const servicePm2EcosystemAfterRefresh = await readFile(path.join(serviceTarget, "ecosystem.config.cjs"), "utf8");
+  assert.match(servicePm2EcosystemAfterRefresh, /name: "demo-service"/);
+  assert.match(servicePm2EcosystemAfterRefresh, /args: "--import tsx src\/index\.ts"/);
 
   result = runCliWithFakeNpm(["refresh", "--template", "node-lib", "--no-ai-adapters", "--yes"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);

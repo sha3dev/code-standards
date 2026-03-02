@@ -10,9 +10,8 @@ export function buildServer() {
 }
 
 if (process.env.NODE_ENV !== "test") {
-  const port = Number(process.env.PORT ?? String(CONFIG.DEFAULT_PORT));
   const server = buildServer();
-  server.listen(port, () => {
-    console.log(`service listening on http://localhost:${port}`);
+  server.listen(CONFIG.DEFAULT_PORT, () => {
+    console.log(`service listening on http://localhost:${CONFIG.DEFAULT_PORT}`);
   });
 }

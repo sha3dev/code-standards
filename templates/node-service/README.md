@@ -18,6 +18,8 @@ npm run start
 
 The service starts on `http://localhost:3000` by default.
 
+You can override runtime configuration with a `.env` file (loaded via `dotenv`).
+
 ## Compatibility
 
 - Node.js 20+
@@ -40,11 +42,19 @@ The service starts on `http://localhost:3000` by default.
 
 ## Configuration (`src/config.ts`)
 
-Hardcoded configuration is centralized:
+`src/config.ts` defines defaults and allows environment overrides via `.env` and `process.env`.
 
-- `CONFIG.RESPONSE_CONTENT_TYPE`
-- `CONFIG.DEFAULT_PORT`
-- `CONFIG.EXTERNAL_STATUS_URL`
+- `PORT` overrides `CONFIG.DEFAULT_PORT`
+- `RESPONSE_CONTENT_TYPE` overrides `CONFIG.RESPONSE_CONTENT_TYPE`
+- `EXTERNAL_STATUS_URL` overrides `CONFIG.EXTERNAL_STATUS_URL`
+
+Example `.env`:
+
+```dotenv
+PORT=8080
+RESPONSE_CONTENT_TYPE=application/json
+EXTERNAL_STATUS_URL=https://status.my-env.internal/health
+```
 
 ## Contract for LLM Integrators
 
@@ -68,7 +78,7 @@ Hardcoded configuration is centralized:
 ## Structure
 
 - `src/`: implementation
-- `src/config.ts`: centralized hardcoded configuration
+- `src/config.ts`: centralized configuration with env overrides
 - `test/`: tests
 
 ## Troubleshooting

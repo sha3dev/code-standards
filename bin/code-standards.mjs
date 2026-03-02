@@ -640,10 +640,16 @@ function updateCodeStandardsMetadata(projectPackageJson, metadataPatch) {
 
 function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson, templateName) {
   const mergedPackageJson = { ...projectPackageJson };
+  const templateDependencies = asPlainObject(templatePackageJson.dependencies);
   const templateScripts = asPlainObject(templatePackageJson.scripts);
   const templateDevDependencies = asPlainObject(templatePackageJson.devDependencies);
+  const mergedDependencies = { ...asPlainObject(projectPackageJson.dependencies) };
   const mergedScripts = { ...asPlainObject(projectPackageJson.scripts) };
   const mergedDevDependencies = { ...asPlainObject(projectPackageJson.devDependencies) };
+
+  for (const [dependencyName, dependencyVersion] of Object.entries(templateDependencies)) {
+    mergedDependencies[dependencyName] = dependencyVersion;
+  }
 
   for (const [scriptName, scriptValue] of Object.entries(templateScripts)) {
     mergedScripts[scriptName] = scriptValue;
@@ -655,6 +661,10 @@ function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson, t
 
   if (Object.keys(mergedScripts).length > 0) {
     mergedPackageJson.scripts = mergedScripts;
+  }
+
+  if (Object.keys(mergedDependencies).length > 0) {
+    mergedPackageJson.dependencies = mergedDependencies;
   }
 
   if (Object.keys(mergedDevDependencies).length > 0) {
@@ -715,6 +725,7 @@ function isRefreshManagedPath(targetRelativePath) {
   return (
     targetRelativePath === "package.json" ||
     targetRelativePath === ".gitignore" ||
+    targetRelativePath === "ecosystem.config.cjs" ||
     targetRelativePath === ".vscode/settings.json" ||
     targetRelativePath === ".vscode/extensions.json" ||
     targetRelativePath === "eslint.config.mjs" ||
