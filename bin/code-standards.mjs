@@ -58,14 +58,12 @@ const DEFAULT_PROFILE = {
     "consts",
     "types",
     "private:attributes",
-    "protected:attributes",
     "private:properties",
     "public:properties",
     "constructor",
     "static:properties",
     "factory",
     "private:methods",
-    "protected:methods",
     "public:methods",
     "static:methods"
   ],
@@ -110,6 +108,8 @@ Commands:
 
 Init options:
   --template <node-lib|node-service>
+  --package-name <name>
+  --repository-url <url>
   --yes
   --no-install
   --force
@@ -119,6 +119,8 @@ Init options:
 
 Refresh options:
   --template <node-lib|node-service>
+  --package-name <name>
+  --repository-url <url>
   --profile <path>
   --with-ai-adapters
   --no-ai-adapters
@@ -136,7 +138,17 @@ Global:
 }
 
 function parseInitArgs(argv) {
-  const options = { template: undefined, yes: false, install: true, force: false, withAiAdapters: true, profilePath: undefined, help: false };
+  const options = {
+    template: undefined,
+    packageName: undefined,
+    repositoryUrl: undefined,
+    yes: false,
+    install: true,
+    force: false,
+    withAiAdapters: true,
+    profilePath: undefined,
+    help: false
+  };
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -173,6 +185,30 @@ function parseInitArgs(argv) {
       }
 
       options.profilePath = value;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--package-name") {
+      const value = argv[i + 1];
+
+      if (!value || value.startsWith("-")) {
+        throw new Error("Missing value for --package-name");
+      }
+
+      options.packageName = value;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--repository-url") {
+      const value = argv[i + 1];
+
+      if (!value || value.startsWith("-")) {
+        throw new Error("Missing value for --repository-url");
+      }
+
+      options.repositoryUrl = value;
       i += 1;
       continue;
     }
@@ -214,7 +250,17 @@ function parseInitArgs(argv) {
 }
 
 function parseRefreshArgs(argv) {
-  const options = { template: undefined, profilePath: undefined, withAiAdapters: true, dryRun: false, install: false, yes: false, help: false };
+  const options = {
+    template: undefined,
+    packageName: undefined,
+    repositoryUrl: undefined,
+    profilePath: undefined,
+    withAiAdapters: true,
+    dryRun: false,
+    install: false,
+    yes: false,
+    help: false
+  };
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -247,6 +293,30 @@ function parseRefreshArgs(argv) {
       }
 
       options.profilePath = value;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--package-name") {
+      const value = argv[i + 1];
+
+      if (!value || value.startsWith("-")) {
+        throw new Error("Missing value for --package-name");
+      }
+
+      options.packageName = value;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--repository-url") {
+      const value = argv[i + 1];
+
+      if (!value || value.startsWith("-")) {
+        throw new Error("Missing value for --repository-url");
+      }
+
+      options.repositoryUrl = value;
       i += 1;
       continue;
     }
@@ -335,6 +405,93 @@ function sanitizePackageName(input) {
       .replace(/-+/g, "-")
       .replace(/^-+|-+$/g, "") || "my-project"
   );
+}
+
+function isValidNpmPackageName(input) {
+  const unscopedPattern = /^[a-z0-9][a-z0-9._-]*$/;
+  const scopedPattern = /^@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*$/;
+  return unscopedPattern.test(input) || scopedPattern.test(input);
+}
+
+function normalizePackageName(input, fallbackProjectName) {
+  if (typeof input !== "string" || input.trim().length === 0) {
+    return sanitizePackageName(fallbackProjectName);
+  }
+
+  const normalized = input.trim().toLowerCase();
+
+  if (!isValidNpmPackageName(normalized)) {
+    throw new Error(`Invalid npm package name: ${input}`);
+  }
+
+  return normalized;
+}
+
+function defaultRepositoryUrlForPackage(packageName) {
+  const unscoped = packageName.includes("/") ? packageName.split("/")[1] : packageName;
+  return `https://github.com/your-org/${unscoped}`;
+}
+
+function normalizeRepositoryUrl(input, packageName) {
+  const fallback = defaultRepositoryUrlForPackage(packageName);
+
+  if (typeof input !== "string" || input.trim().length === 0) {
+    return fallback;
+  }
+
+  return input.trim();
+}
+
+function extractRepositoryUrl(projectPackageJson) {
+  const repository = projectPackageJson.repository;
+
+  if (typeof repository === "string" && repository.trim().length > 0) {
+    return repository.trim();
+  }
+
+  if (repository && typeof repository === "object" && typeof repository.url === "string") {
+    const trimmed = repository.url.trim();
+    if (trimmed.length > 0) {
+      return trimmed;
+    }
+  }
+
+  return null;
+}
+
+function normalizeGithubHttpUrl(repositoryUrl) {
+  const trimmed = repositoryUrl.trim();
+
+  if (trimmed.startsWith("git@github.com:")) {
+    const cleanedPath = trimmed.replace(/^git@github\.com:/, "").replace(/\.git$/, "");
+    return `https://github.com/${cleanedPath}`;
+  }
+
+  if (trimmed.startsWith("git+https://github.com/")) {
+    return trimmed.replace(/^git\+/, "").replace(/\.git$/, "");
+  }
+
+  if (trimmed.startsWith("https://github.com/")) {
+    return trimmed.replace(/\.git$/, "");
+  }
+
+  return null;
+}
+
+function applyPackageCoordinates(projectPackageJson, packageName, repositoryUrl) {
+  const nextPackageJson = { ...projectPackageJson, name: packageName };
+  const normalizedRepositoryUrl = normalizeRepositoryUrl(repositoryUrl, packageName);
+
+  nextPackageJson.repository = { type: "git", url: normalizedRepositoryUrl };
+
+  const githubUrl = normalizeGithubHttpUrl(normalizedRepositoryUrl);
+
+  if (githubUrl) {
+    nextPackageJson.homepage = `${githubUrl}#readme`;
+    nextPackageJson.bugs = { url: `${githubUrl}/issues` };
+  }
+
+  return nextPackageJson;
 }
 
 function replaceTokens(content, tokens) {
@@ -552,13 +709,29 @@ async function collectTemplateFiles(templateDir, baseDir = templateDir) {
   return files.sort((left, right) => left.targetRelativePath.localeCompare(right.targetRelativePath));
 }
 
+function isRefreshManagedPath(targetRelativePath) {
+  return (
+    targetRelativePath === "package.json" ||
+    targetRelativePath === ".gitignore" ||
+    targetRelativePath === "eslint.config.mjs" ||
+    targetRelativePath === "prettier.config.cjs" ||
+    targetRelativePath === "tsconfig.json" ||
+    targetRelativePath === "tsconfig.build.json" ||
+    targetRelativePath === "scripts/release-publish.mjs"
+  );
+}
+
 async function applyManagedFiles(options) {
-  const { templateDir, targetDir, tokens, templateName, projectPackageJson, dryRun } = options;
+  const { templateDir, targetDir, tokens, templateName, projectPackageJson, dryRun, refreshMode } = options;
   const templateFiles = await collectTemplateFiles(templateDir);
   const updatedFiles = [];
   let mergedPackageJson = { ...projectPackageJson };
 
   for (const templateFile of templateFiles) {
+    if (refreshMode && !isRefreshManagedPath(templateFile.targetRelativePath)) {
+      continue;
+    }
+
     if (templateFile.targetRelativePath === "package.json") {
       const rawTemplatePackageJson = await readFile(templateFile.sourcePath, "utf8");
       const renderedTemplatePackageJson = replaceTokens(rawTemplatePackageJson, tokens);
@@ -1061,11 +1234,14 @@ async function collectAiFiles(packageRoot) {
   return aiFiles.sort((left, right) => left.localeCompare(right));
 }
 
-async function promptForMissing(options) {
+async function promptForMissing(options, targetPath) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
   try {
     const resolved = { ...options };
+    const inferredProjectName = path.basename(targetPath);
+    const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
+    const defaultPackageName = sanitizePackageName(projectName);
 
     if (!resolved.template) {
       const templateAnswer = await rl.question("Choose template (node-lib/node-service) [node-lib]: ");
@@ -1076,6 +1252,17 @@ async function promptForMissing(options) {
       }
 
       resolved.template = normalized;
+    }
+
+    if (!resolved.packageName) {
+      const packageAnswer = await rl.question(`npm package name [${defaultPackageName}]: `);
+      resolved.packageName = packageAnswer.trim() || defaultPackageName;
+    }
+
+    if (!resolved.repositoryUrl) {
+      const defaultRepositoryUrl = defaultRepositoryUrlForPackage(resolved.packageName);
+      const repositoryAnswer = await rl.question(`GitHub repository URL [${defaultRepositoryUrl}]: `);
+      resolved.repositoryUrl = repositoryAnswer.trim() || defaultRepositoryUrl;
     }
 
     if (options.install) {
@@ -1111,11 +1298,18 @@ async function runInit(rawOptions) {
   }
 
   let options = { ...rawOptions };
+  const targetPath = path.resolve(process.cwd());
+  const inferredProjectName = path.basename(targetPath);
+  const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
+  const defaultPackageName = sanitizePackageName(projectName);
+  const canPrompt = process.stdin.isTTY;
 
-  if (options.yes) {
+  if (options.yes || !canPrompt) {
     options.template ??= "node-lib";
+    options.packageName ??= defaultPackageName;
+    options.repositoryUrl ??= defaultRepositoryUrlForPackage(options.packageName);
   } else {
-    options = await promptForMissing(options);
+    options = await promptForMissing(options, targetPath);
   }
 
   const template = options.template ?? "node-lib";
@@ -1124,15 +1318,13 @@ async function runInit(rawOptions) {
     throw new Error(`Invalid template: ${template}`);
   }
 
-  const targetPath = path.resolve(process.cwd());
   const packageRoot = resolvePackageRoot();
   const packageVersion = await readPackageVersion(packageRoot);
   const schema = await loadProfileSchema(packageRoot);
   const profileResolution = await resolveProfileForInit(packageRoot, targetPath, options, schema);
   const profile = profileResolution.profile;
-  const inferredProjectName = path.basename(targetPath);
-  const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
-  const packageName = sanitizePackageName(projectName);
+  const packageName = normalizePackageName(options.packageName, projectName);
+  const repositoryUrl = normalizeRepositoryUrl(options.repositoryUrl, packageName);
 
   await ensureTargetReady(targetPath, options.force);
 
@@ -1151,7 +1343,8 @@ async function runInit(rawOptions) {
   }
 
   const { packageJsonPath, packageJson } = await readProjectPackageJson(targetPath);
-  const packageWithMetadata = updateCodeStandardsMetadata(packageJson, {
+  const packageWithCoordinates = applyPackageCoordinates(packageJson, packageName, repositoryUrl);
+  const packageWithMetadata = updateCodeStandardsMetadata(packageWithCoordinates, {
     template,
     profilePath: profileResolution.profilePathForMetadata,
     withAiAdapters: options.withAiAdapters,
@@ -1181,8 +1374,11 @@ async function runRefresh(rawOptions) {
   const profileResolution = await resolveProfileForRefresh(packageRoot, targetPath, rawOptions, schema, projectMetadata);
   const inferredProjectName = path.basename(targetPath);
   const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
-  const currentPackageName =
+  const existingPackageName =
     typeof projectPackageJson.name === "string" && projectPackageJson.name.length > 0 ? projectPackageJson.name : sanitizePackageName(projectName);
+  const currentPackageName = normalizePackageName(rawOptions.packageName ?? existingPackageName, projectName);
+  const existingRepositoryUrl = extractRepositoryUrl(projectPackageJson);
+  const currentRepositoryUrl = normalizeRepositoryUrl(rawOptions.repositoryUrl ?? existingRepositoryUrl, currentPackageName);
   const tokens = {
     projectName,
     packageName: currentPackageName,
@@ -1196,7 +1392,8 @@ async function runRefresh(rawOptions) {
     tokens,
     templateName: template,
     projectPackageJson,
-    dryRun: rawOptions.dryRun
+    dryRun: rawOptions.dryRun,
+    refreshMode: true
   });
   const aiFiles = rawOptions.withAiAdapters ? await collectAiFiles(packageRoot) : [];
 
@@ -1224,7 +1421,8 @@ async function runRefresh(rawOptions) {
     await runCommand("npm", ["install"], targetPath);
   }
 
-  const packageWithMetadata = updateCodeStandardsMetadata(managedResults.mergedPackageJson, {
+  const packageWithCoordinates = applyPackageCoordinates(managedResults.mergedPackageJson, currentPackageName, currentRepositoryUrl);
+  const packageWithMetadata = updateCodeStandardsMetadata(packageWithCoordinates, {
     template,
     profilePath: profileResolution.profilePathForMetadata,
     withAiAdapters: rawOptions.withAiAdapters,
@@ -1232,9 +1430,13 @@ async function runRefresh(rawOptions) {
   });
   await writeProjectPackageJson(packageJsonPath, packageWithMetadata);
 
+  console.log("Running npm run fix...");
+  await runCommand("npm", ["run", "fix"], targetPath);
+  console.log("Running npm run check...");
+  await runCommand("npm", ["run", "check"], targetPath);
+
   console.log(`Project refreshed at ${targetPath}`);
-  console.log("Next steps:");
-  console.log("  npm run check");
+  console.log("Refresh verification completed.");
 }
 
 async function main() {

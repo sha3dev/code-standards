@@ -44,8 +44,8 @@
     "mutability": { "type": "string", "enum": ["immutability_preferred", "immutability_strict", "mutable_pragmatic"] },
     "comment_section_blocks": {
       "type": "array",
-      "minItems": 15,
-      "maxItems": 15,
+      "minItems": 13,
+      "maxItems": 13,
       "items": {
         "type": "string",
         "enum": [
@@ -54,14 +54,12 @@
           "consts",
           "types",
           "private:attributes",
-          "protected:attributes",
           "private:properties",
           "public:properties",
           "constructor",
           "static:properties",
           "factory",
           "private:methods",
-          "protected:methods",
           "public:methods",
           "static:methods"
         ]
@@ -72,14 +70,12 @@
         "consts",
         "types",
         "private:attributes",
-        "protected:attributes",
         "private:properties",
         "public:properties",
         "constructor",
         "static:properties",
         "factory",
         "private:methods",
-        "protected:methods",
         "public:methods",
         "static:methods"
       ]

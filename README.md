@@ -255,6 +255,11 @@ Run this inside the directory you want to initialize.
 npx @sha3/code-standards init --template node-service --yes
 ```
 
+Without `--yes`, `init` prompts for:
+
+- npm package name
+- GitHub repository URL
+
 With explicit profile:
 
 ```bash
@@ -290,11 +295,12 @@ npx @sha3/code-standards refresh
 
 `refresh` default behavior:
 
-- scope `Managed + AI` (template files + `AGENTS.md` + `ai/*` + `ai/examples/*`)
-- overwrite conflicts
+- scope `Managed + AI` (`package.json`, config files, `AGENTS.md`, `ai/*`, `ai/examples/*`)
+- non-destructive for project source code (`src/**`, `test/**` are preserved)
 - auto-detect template (or force with `--template`)
 - selective merge for `package.json` (managed scripts/devDependencies updated, custom keys preserved)
-- no dependency install unless `--install`
+- runs `npm run fix` and `npm run check` automatically after refreshing files
+- no dependency install unless `--install` (use `--install` if dependencies are missing before auto-check)
 
 ---
 
@@ -316,6 +322,8 @@ Commands:
 An existing `.git/` directory is allowed without `--force`.
 
 - `--template <node-lib|node-service>`
+- `--package-name <name>`
+- `--repository-url <url>`
 - `--yes`
 - `--no-install`
 - `--force`
@@ -328,6 +336,8 @@ An existing `.git/` directory is allowed without `--force`.
 `refresh` always uses the current working directory as target.
 
 - `--template <node-lib|node-service>`
+- `--package-name <name>`
+- `--repository-url <url>`
 - `--profile <path>`
 - `--with-ai-adapters`
 - `--no-ai-adapters`
@@ -450,3 +460,10 @@ Yes, with `--no-ai-adapters`. You still get scaffold + tooling exports.
 npm run release:check
 npm run release:publish
 ```
+
+`release:publish` behavior:
+
+- validates quality gates (unless `--skip-checks`)
+- checks npm registry for `package.json` current version
+- if current version already exists on npm: runs `npm version minor --no-git-tag-version` automatically
+- if current version does not exist on npm: keeps your manual version as-is

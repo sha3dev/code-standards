@@ -1,4 +1,4 @@
-import { access } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
@@ -83,6 +83,72 @@ function run(command, args, cwd) {
   });
 }
 
+function runCapture(command, args, cwd) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { cwd, stdio: ["ignore", "pipe", "pipe"], shell: process.platform === "win32" });
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
+
+    child.on("error", reject);
+    child.on("exit", (code) => {
+      resolve({ code: code ?? 1, stdout, stderr });
+    });
+  });
+}
+
+async function readPackageJson(packageJsonPath) {
+  const raw = await readFile(packageJsonPath, "utf8");
+  return JSON.parse(raw);
+}
+
+function parseVersion(version) {
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
+
+  if (!match) {
+    return null;
+  }
+
+  return { major: Number.parseInt(match[1], 10), minor: Number.parseInt(match[2], 10), patch: Number.parseInt(match[3], 10) };
+}
+
+function predictMinorBump(version) {
+  const parsed = parseVersion(version);
+
+  if (!parsed) {
+    return null;
+  }
+
+  return `${parsed.major}.${parsed.minor + 1}.0`;
+}
+
+function isNotFoundError(output) {
+  const lower = output.toLowerCase();
+  return lower.includes("e404") || lower.includes("404 not found") || lower.includes("no match found");
+}
+
+async function versionExistsOnRegistry(packageName, version, cwd) {
+  const result = await runCapture("npm", ["view", `${packageName}@${version}`, "version", "--json"], cwd);
+  const combinedOutput = `${result.stdout}\n${result.stderr}`;
+
+  if (result.code === 0) {
+    return true;
+  }
+
+  if (isNotFoundError(combinedOutput)) {
+    return false;
+  }
+
+  throw new Error(`Unable to verify npm registry version for ${packageName}@${version}: ${combinedOutput.trim()}`);
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
 
@@ -96,6 +162,15 @@ async function main() {
   const packageJsonPath = path.join(repoRoot, "package.json");
 
   await access(packageJsonPath, constants.R_OK);
+  let packageJson = await readPackageJson(packageJsonPath);
+
+  if (typeof packageJson.name !== "string" || packageJson.name.length === 0) {
+    throw new Error("package.json name is required.");
+  }
+
+  if (typeof packageJson.version !== "string" || packageJson.version.length === 0) {
+    throw new Error("package.json version is required.");
+  }
 
   if (!options.skipChecks) {
     if (options.dryRun) {
@@ -103,6 +178,25 @@ async function main() {
     } else {
       await run("npm", ["run", "release:check"], repoRoot);
     }
+  }
+
+  const publishedVersionExists = await versionExistsOnRegistry(packageJson.name, packageJson.version, repoRoot);
+
+  if (publishedVersionExists) {
+    const predictedNextVersion = predictMinorBump(packageJson.version);
+    console.log(
+      `Version ${packageJson.version} already exists on npm. ` + `Minor bump will be applied${predictedNextVersion ? ` (${predictedNextVersion})` : ""}.`
+    );
+
+    if (options.dryRun) {
+      console.log("[dry-run] npm version minor --no-git-tag-version");
+    } else {
+      await run("npm", ["version", "minor", "--no-git-tag-version"], repoRoot);
+      packageJson = await readPackageJson(packageJsonPath);
+      console.log(`Version updated to ${packageJson.version}`);
+    }
+  } else {
+    console.log(`Version ${packageJson.version} is not published yet. Using package.json version as-is.`);
   }
 
   const publishArgs = ["publish", "--access", options.access];
@@ -115,7 +209,7 @@ async function main() {
     publishArgs.push("--dry-run");
   }
 
-  console.log("Publishing @sha3/code-standards from repository root");
+  console.log(`Publishing ${packageJson.name}@${packageJson.version} from repository root`);
 
   if (options.dryRun) {
     console.log(`[dry-run] npm ${publishArgs.join(" ")} (cwd: .)`);
