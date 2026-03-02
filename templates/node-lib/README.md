@@ -82,3 +82,4 @@ Run `npm run typecheck` in the consumer project and verify TypeScript version co
 ## AI Workflow
 
 If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.
+If existing repository code conflicts with these rules, `@sha3/code-standards` conventions MUST win and code must be refactored.

@@ -1,1 +1,5 @@
-{ "extends": "@sha3/code-standards/tsconfig/node-service.json", "compilerOptions": { "types": ["node"] }, "include": ["src/**/*.ts", "test/**/*.ts"] }
+{
+  "extends": "@sha3/code-standards/tsconfig/node-service.json",
+  "compilerOptions": { "types": ["node"], "rootDir": ".", "allowImportingTsExtensions": true, "rewriteRelativeImportExtensions": true },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

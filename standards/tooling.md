@@ -15,6 +15,7 @@ In addition to tooling, each generated project MUST include profile-driven AI in
 - `ai/codex.md`, `ai/cursor.md`, `ai/copilot.md`, `ai/windsurf.md`
 
 The generated instructions are blocking rules and MUST be treated as the top local AI coding contract.
+When generated instructions conflict with existing repository code, the generated `@sha3/code-standards` conventions MUST win.
 
 ## Enforcement
 

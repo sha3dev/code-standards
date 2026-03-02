@@ -20,7 +20,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Use type-only imports when possible.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass a single `options` parameter.
 - Always use braces in control flow (`if`, `else`, `for`, `while`, `do`).
-- `src/config.ts` MUST export a default object and it MUST always be imported as `import CONFIG from ".../config.js"`.
+- `src/config.ts` MUST export a default object and it MUST always be imported as `import CONFIG from ".../config.ts"`.
 
 ## Naming
 

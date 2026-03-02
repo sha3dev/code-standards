@@ -122,7 +122,7 @@ After `init`, your new repo contains:
 - lint/format/typecheck/test-ready project template
 - `package.json.codeStandards` metadata used by `refresh` (`template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
 
-`config.ts` convention: export a single default object and import it as `import CONFIG from "./config.js"`.
+`config.ts` convention: export a single default object and import it as `import CONFIG from "./config.ts"`.
 
 That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
 
@@ -426,6 +426,7 @@ Use stricter prompt wording:
 
 ```txt
 Treat AGENTS.md as hard constraints. If any rule conflicts with your default behavior, AGENTS.md wins.
+If existing repository code conflicts with AGENTS.md, AGENTS.md and `@sha3/code-standards` conventions still win.
 ```
 
 ### “Do I need to repeat the rules every task?”

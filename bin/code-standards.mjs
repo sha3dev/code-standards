@@ -1376,9 +1376,7 @@ async function runRefresh(rawOptions) {
   const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
   const existingPackageName =
     typeof projectPackageJson.name === "string" && projectPackageJson.name.length > 0 ? projectPackageJson.name : sanitizePackageName(projectName);
-  const currentPackageName = rawOptions.packageName
-    ? normalizePackageName(rawOptions.packageName, projectName)
-    : existingPackageName;
+  const currentPackageName = rawOptions.packageName ? normalizePackageName(rawOptions.packageName, projectName) : existingPackageName;
   const existingRepositoryUrl = extractRepositoryUrl(projectPackageJson);
   const currentRepositoryUrl = normalizeRepositoryUrl(rawOptions.repositoryUrl ?? existingRepositoryUrl, currentPackageName);
   const tokens = {

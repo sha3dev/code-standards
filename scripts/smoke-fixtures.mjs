@@ -102,7 +102,11 @@ async function main() {
   assert.match(libConfigRaw, /const CONFIG = \{/);
   assert.match(libConfigRaw, /export default CONFIG/);
   const libIndexRaw = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
-  assert.match(libIndexRaw, /import CONFIG from "\.\/config\.js";/);
+  assert.match(libIndexRaw, /import CONFIG from "\.\/config\.ts";/);
+  const libTsconfigRaw = await readFile(path.join(libTarget, "tsconfig.json"), "utf8");
+  assert.match(libTsconfigRaw, /"rootDir": "\."/);
+  assert.match(libTsconfigRaw, /"allowImportingTsExtensions": true/);
+  assert.match(libTsconfigRaw, /"rewriteRelativeImportExtensions": true/);
   const libPackageAfterInit = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
   assert.equal(libPackageAfterInit.codeStandards.template, "node-lib");
   assert.equal(libPackageAfterInit.codeStandards.withAiAdapters, true);
@@ -136,10 +140,13 @@ async function main() {
   assert.match(agentsRaw, /Bad example/);
   assert.match(agentsRaw, /ai\/examples\/rules\/class-first-good\.ts/);
   assert.match(agentsRaw, /ai\/examples\/rules\/constructor-good\.ts/);
+  assert.match(agentsRaw, /no grandfathered style exceptions/i);
 
   const libAiEntries = await readdir(path.join(libTarget, "ai"));
   assert(libAiEntries.includes("windsurf.md"));
   assert(libAiEntries.includes("examples"));
+  const codexAdapterRaw = await readFile(path.join(libTarget, "ai", "codex.md"), "utf8");
+  assert.match(codexAdapterRaw, /conventions MUST win/);
   const libProjectFiles = await listRelativeFiles(libTarget);
   const libForbiddenJs = libProjectFiles.filter((filePath) => {
     return (
@@ -151,7 +158,7 @@ async function main() {
   const demoServiceRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "invoices", "invoice-service.ts"), "utf8");
   assert.match(demoServiceRaw, /@section constructor/);
   assert.match(demoServiceRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
-  assert.match(demoServiceRaw, /import CONFIG from "\.\.\/config\.js";/);
+  assert.match(demoServiceRaw, /import CONFIG from "\.\.\/config\.ts";/);
   const demoInvoiceEntries = await readdir(path.join(libTarget, "ai", "examples", "demo", "src", "invoices"));
   assert(!demoInvoiceEntries.includes("invoice-repository.ts"));
   const demoConfigRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "config.ts"), "utf8");
@@ -159,7 +166,7 @@ async function main() {
   assert.match(demoConfigRaw, /const CONFIG = \{/);
   assert.match(demoConfigRaw, /export default CONFIG/);
   const demoBillingRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "billing", "billing-service.ts"), "utf8");
-  assert.match(demoBillingRaw, /import CONFIG from "\.\.\/config\.js";/);
+  assert.match(demoBillingRaw, /import CONFIG from "\.\.\/config\.ts";/);
 
   const asyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
   assert.match(asyncGoodRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
@@ -259,7 +266,11 @@ async function main() {
   assert.match(serviceConfigRaw, /const CONFIG = \{/);
   assert.match(serviceConfigRaw, /export default CONFIG/);
   const serviceIndexRaw = await readFile(path.join(serviceTarget, "src", "index.ts"), "utf8");
-  assert.match(serviceIndexRaw, /import CONFIG from "\.\/config\.js";/);
+  assert.match(serviceIndexRaw, /import CONFIG from "\.\/config\.ts";/);
+  const serviceTsconfigRaw = await readFile(path.join(serviceTarget, "tsconfig.json"), "utf8");
+  assert.match(serviceTsconfigRaw, /"rootDir": "\."/);
+  assert.match(serviceTsconfigRaw, /"allowImportingTsExtensions": true/);
+  assert.match(serviceTsconfigRaw, /"rewriteRelativeImportExtensions": true/);
 
   const serviceEntries = await readdir(serviceTarget);
   assert(!serviceEntries.includes("AGENTS.md"));

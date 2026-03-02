@@ -23,4 +23,4 @@ Both templates SHOULD keep this baseline structure:
 - Keep feature modules cohesive.
 - Avoid cyclic dependencies.
 - Keep hardcoded application configuration centralized in `src/config.ts`.
-- `src/config.ts` MUST export a default object (for example `CONFIG`) and consumers MUST import it as `import CONFIG from "./config.js"`.
+- `src/config.ts` MUST export a default object (for example `CONFIG`) and consumers MUST import it as `import CONFIG from "./config.ts"`.

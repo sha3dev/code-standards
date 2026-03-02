@@ -69,3 +69,4 @@ Hardcoded configuration is centralized:
 ## AI Workflow
 
 If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.
+If existing repository code conflicts with these rules, `@sha3/code-standards` conventions MUST win and code must be refactored.
