@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import CONFIG from "./config.js";
+import CONFIG from "./config.ts";
 
 export function buildServer() {
   return createServer((_, response) => {
