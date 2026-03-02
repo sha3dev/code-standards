@@ -19,18 +19,37 @@ If two rules conflict, the higher rule in this list MUST win.
 If existing repository code conflicts with these rules, the code MUST be updated to match `@sha3/code-standards` conventions.
 There are no grandfathered style exceptions in pre-existing files.
 
-## 2. Code Generation Rules
+## 2. Managed Files Protection (MUST)
+
+The following files and paths are managed by `@sha3/code-standards` and are read-only during normal implementation work:
+
+- `AGENTS.md`
+- `ai/*.md`
+- `ai/examples/**`
+- `eslint.config.mjs`
+- `prettier.config.cjs`
+- `tsconfig.json`
+- `tsconfig.build.json`
+- `.vscode/settings.json`
+- `.vscode/extensions.json`
+- `scripts/release-publish.mjs`
+- `scripts/run-tests.mjs`
+
+Assistants MUST NOT modify these files unless the user explicitly requests a standards/tooling contract update.
+For standards refresh, assistants MUST instruct to run `npx @sha3/code-standards refresh`.
+
+## 3. Code Generation Rules
 
 {{codeGenerationRules}}
 
-## 3. Architecture Rules
+## 4. Architecture Rules
 
 {{architectureRules}}
 
-## 4. Testing and Review Rules
+## 5. Testing and Review Rules
 
 {{testingReviewRules}}
 
-## 5. Assistant Execution Notes
+## 6. Assistant Execution Notes
 
 {{assistantExecutionNotes}}

@@ -429,6 +429,7 @@ Use stricter prompt wording:
 ```txt
 Treat AGENTS.md as hard constraints. If any rule conflicts with your default behavior, AGENTS.md wins.
 If existing repository code conflicts with AGENTS.md, AGENTS.md and `@sha3/code-standards` conventions still win.
+Do not modify `@sha3/code-standards` managed files (`AGENTS.md`, `ai/*`, `ai/examples/*`, tooling configs) unless explicitly requested.
 ```
 
 ### “Windsurf shows `rvest.vs-code-prettier-eslint` errors.”

@@ -113,8 +113,11 @@ async function main() {
   assert.equal(libPackageAfterInit.codeStandards.profilePath, null);
   assert.match(libPackageAfterInit.codeStandards.lastRefreshWith, /\d+\.\d+\.\d+/);
   assert.equal(libPackageAfterInit.scripts.publish, "node scripts/release-publish.mjs");
+  assert.equal(libPackageAfterInit.scripts.test, "node scripts/run-tests.mjs");
   const libPublishScriptRaw = await readFile(path.join(libTarget, "scripts", "release-publish.mjs"), "utf8");
   assert.match(libPublishScriptRaw, /versionExistsOnNpm/);
+  const libRunTestsScriptRaw = await readFile(path.join(libTarget, "scripts", "run-tests.mjs"), "utf8");
+  assert.match(libRunTestsScriptRaw, /endsWith\("\.test\.ts"\)/);
   assert.equal(libPackageAfterInit.name, "demo-lib");
   assert.equal(libPackageAfterInit.repository.type, "git");
   assert.match(libPackageAfterInit.repository.url, /github\.com/);
@@ -150,12 +153,15 @@ async function main() {
   assert.match(agentsRaw, /ai\/examples\/rules\/class-first-good\.ts/);
   assert.match(agentsRaw, /ai\/examples\/rules\/constructor-good\.ts/);
   assert.match(agentsRaw, /no grandfathered style exceptions/i);
+  assert.match(agentsRaw, /Managed Files Protection/);
+  assert.match(agentsRaw, /read-only during normal implementation work/);
 
   const libAiEntries = await readdir(path.join(libTarget, "ai"));
   assert(libAiEntries.includes("windsurf.md"));
   assert(libAiEntries.includes("examples"));
   const codexAdapterRaw = await readFile(path.join(libTarget, "ai", "codex.md"), "utf8");
   assert.match(codexAdapterRaw, /conventions MUST win/);
+  assert.match(codexAdapterRaw, /Never modify .* managed files/);
   const libProjectFiles = await listRelativeFiles(libTarget);
   const libForbiddenJs = libProjectFiles.filter((filePath) => {
     return (
@@ -190,6 +196,7 @@ async function main() {
   assert.match(result.stdout, /Project refreshed/);
   assert.match(result.stdout, /LLM prompt \(copy\/paste\):/);
   assert.match(result.stdout, /re-read AGENTS\.md and ai\/<assistant>\.md/);
+  assert.match(result.stdout, /Do not edit @sha3\/code-standards managed files/);
   const refreshedAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.doesNotMatch(refreshedAgentsRaw, /temporary marker/);
   const refreshedAsyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
@@ -239,6 +246,7 @@ async function main() {
   result = runCliWithFakeNpm(["refresh", "--no-ai-adapters", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /re-read package\.json, eslint\.config\.mjs, prettier\.config\.cjs, and tsconfig\.json/);
+  assert.match(result.stdout, /Do not edit @sha3\/code-standards managed files/);
   const agentsAfterNoAi = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.equal(agentsAfterNoAi, "# keep me\n");
   const packageAfterNoAiRefresh = JSON.parse(await readFile(libPackagePath, "utf8"));
@@ -271,8 +279,11 @@ async function main() {
   assert.match(serviceReadmeRaw, /## Contract for LLM Integrators/);
   const servicePackageAfterInit = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
   assert.equal(servicePackageAfterInit.scripts.publish, "node scripts/release-publish.mjs");
+  assert.equal(servicePackageAfterInit.scripts.test, "node scripts/run-tests.mjs");
   const servicePublishScriptRaw = await readFile(path.join(serviceTarget, "scripts", "release-publish.mjs"), "utf8");
   assert.match(servicePublishScriptRaw, /versionExistsOnNpm/);
+  const serviceRunTestsScriptRaw = await readFile(path.join(serviceTarget, "scripts", "run-tests.mjs"), "utf8");
+  assert.match(serviceRunTestsScriptRaw, /endsWith\("\.test\.ts"\)/);
   assert.equal(servicePackageAfterInit.name, "demo-service");
   assert.equal(servicePackageAfterInit.repository.type, "git");
   assert.match(servicePackageAfterInit.repository.url, /github\.com/);

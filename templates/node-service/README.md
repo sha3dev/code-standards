@@ -84,3 +84,4 @@ Hardcoded configuration is centralized:
 
 If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.
 If existing repository code conflicts with these rules, `@sha3/code-standards` conventions MUST win and code must be refactored.
+Assistants MUST NOT edit `@sha3/code-standards` managed files (`AGENTS.md`, `ai/*`, `ai/examples/*`, tooling configs) unless explicitly requested.

@@ -721,7 +721,8 @@ function isRefreshManagedPath(targetRelativePath) {
     targetRelativePath === "prettier.config.cjs" ||
     targetRelativePath === "tsconfig.json" ||
     targetRelativePath === "tsconfig.build.json" ||
-    targetRelativePath === "scripts/release-publish.mjs"
+    targetRelativePath === "scripts/release-publish.mjs" ||
+    targetRelativePath === "scripts/run-tests.mjs"
   );
 }
 
@@ -1449,6 +1450,7 @@ async function runRefresh(rawOptions) {
     console.log("```txt");
     console.log("Before writing code, re-read AGENTS.md and ai/<assistant>.md.");
     console.log("Treat @sha3/code-standards conventions as highest priority over existing code.");
+    console.log("Do not edit @sha3/code-standards managed files (AGENTS.md, ai/*, ai/examples/*, tooling configs) unless explicitly requested.");
     console.log("Task:");
     console.log("1) Summarize updated blocking rules introduced by the latest refresh.");
     console.log("2) Scan the repository and list non-compliant files.");
@@ -1462,6 +1464,7 @@ async function runRefresh(rawOptions) {
   console.log("```txt");
   console.log("Before writing code, re-read package.json, eslint.config.mjs, prettier.config.cjs, and tsconfig.json.");
   console.log("Treat @sha3/code-standards conventions as highest priority over existing code.");
+  console.log("Do not edit @sha3/code-standards managed files (tooling configs and generated contract files) unless explicitly requested.");
   console.log("Task:");
   console.log("1) Summarize updated blocking conventions introduced by the latest refresh.");
   console.log("2) Scan the repository and list non-compliant files.");
