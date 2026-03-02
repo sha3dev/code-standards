@@ -71,6 +71,14 @@ Hardcoded configuration is centralized:
 - `src/config.ts`: centralized hardcoded configuration
 - `test/`: tests
 
+## Troubleshooting
+
+### VS Code does not format on save
+
+1. Install workspace recommended extensions (`Prettier` and `ESLint`).
+2. Reload VS Code window.
+3. Run command: `ESLint: Restart ESLint Server`.
+
 ## AI Workflow
 
 If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.
