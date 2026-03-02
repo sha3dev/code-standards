@@ -116,6 +116,7 @@ async function main() {
   assert.equal(libPackageAfterInit.scripts.test, "node scripts/run-tests.mjs");
   const libPublishScriptRaw = await readFile(path.join(libTarget, "scripts", "release-publish.mjs"), "utf8");
   assert.match(libPublishScriptRaw, /versionExistsOnNpm/);
+  assert.match(libPublishScriptRaw, /run\("npm", \["run", "build"\], projectRoot\)/);
   const libRunTestsScriptRaw = await readFile(path.join(libTarget, "scripts", "run-tests.mjs"), "utf8");
   assert.match(libRunTestsScriptRaw, /endsWith\("\.test\.ts"\)/);
   assert.equal(libPackageAfterInit.name, "demo-lib");
