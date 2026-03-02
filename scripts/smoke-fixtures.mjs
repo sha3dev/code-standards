@@ -135,7 +135,9 @@ async function main() {
   assert.match(agentsRaw, /imports:externals/);
   assert.match(agentsRaw, /consts/);
   assert.match(agentsRaw, /types/);
+  assert.match(agentsRaw, /protected:attributes/);
   assert.match(agentsRaw, /factory/);
+  assert.match(agentsRaw, /protected:methods/);
   assert.match(agentsRaw, /@section/);
   assert.match(agentsRaw, /\/\/ empty/);
   assert.match(agentsRaw, /Control Flow Braces/);
