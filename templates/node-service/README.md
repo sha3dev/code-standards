@@ -34,6 +34,25 @@ You can override runtime configuration with a `.env` file (loaded via `dotenv`).
 - `content-type`: `application/json`
 - body: `{ "ok": true, "statusSource": "<url>" }`
 
+## Public Module API
+
+### `buildServer(): http.Server`
+
+Factory for the HTTP server used by the service runtime.
+
+Parameters:
+
+- None.
+
+Returns:
+
+- `http.Server`: Node.js HTTP server with the route contract documented in `API HTTP`.
+
+Behavior notes:
+
+- Creates a new server instance on each call.
+- Does not call `listen` by itself; startup is handled in the runtime bootstrap block.
+
 ## Integration Guide (External Projects)
 
 1. Start the service with `npm run start`.

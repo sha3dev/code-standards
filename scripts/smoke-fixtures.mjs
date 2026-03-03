@@ -95,6 +95,9 @@ async function main() {
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
   assert.match(libReadmeRaw, /# 📚 demo-lib/);
   assert.match(libReadmeRaw, /## Public API/);
+  assert.match(libReadmeRaw, /### `greet\(name: string\): string`/);
+  assert.match(libReadmeRaw, /Parameters:/);
+  assert.match(libReadmeRaw, /- `name` \(`string`\):/);
   assert.match(libReadmeRaw, /## Integration Guide \(External Projects\)/);
   assert.match(libReadmeRaw, /## Contract for LLM Integrators/);
   const libConfigRaw = await readFile(path.join(libTarget, "src", "config.ts"), "utf8");
@@ -277,6 +280,10 @@ async function main() {
   const serviceReadmeRaw = await readFile(path.join(serviceTarget, "README.md"), "utf8");
   assert.match(serviceReadmeRaw, /# 🚀 demo-service/);
   assert.match(serviceReadmeRaw, /## API HTTP/);
+  assert.match(serviceReadmeRaw, /## Public Module API/);
+  assert.match(serviceReadmeRaw, /### `buildServer\(\): http\.Server`/);
+  assert.match(serviceReadmeRaw, /Parameters:/);
+  assert.match(serviceReadmeRaw, /- None\./);
   assert.match(serviceReadmeRaw, /## Contract for LLM Integrators/);
   const servicePackageAfterInit = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
   assert.equal(servicePackageAfterInit.scripts.publish, "node scripts/release-publish.mjs");

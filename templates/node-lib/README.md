@@ -28,6 +28,19 @@ npm install <library-name>
 
 Returns a greeting using the configured prefix.
 
+Parameters:
+
+- `name` (`string`): name or label appended to the greeting prefix. This value is interpolated without extra normalization.
+
+Returns:
+
+- `string`: final greeting with format `<CONFIG.GREETING_PREFIX>, <name>`.
+
+Behavior notes:
+
+- Pure function (no IO, no side effects).
+- Output depends on `CONFIG.GREETING_PREFIX` and the received `name`.
+
 ```ts
 import { greet } from "<library-name>";
 
