@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import CONFIG from "./config.ts";
+import LOGGER from "./logger.ts";
 
 export function buildServer() {
   return createServer((_, response) => {
@@ -12,6 +13,6 @@ export function buildServer() {
 if (process.env.NODE_ENV !== "test") {
   const server = buildServer();
   server.listen(CONFIG.DEFAULT_PORT, () => {
-    console.log(`service listening on http://localhost:${CONFIG.DEFAULT_PORT}`);
+    LOGGER.info(`service listening on http://localhost:${CONFIG.DEFAULT_PORT}`);
   });
 }
