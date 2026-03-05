@@ -14,7 +14,7 @@
  * @section consts
  */
 
-const FALLBACK_PREFIX = "INV";
+const fallbackPrefix = "INV";
 
 /**
  * @section types
@@ -58,7 +58,7 @@ export class InvoiceIdBuilder {
     // Bad: constructor wires concrete dependencies and environment details directly.
     this.clock = () => new Date();
     this.idFactory = () => Math.random().toString(36).slice(2, 8);
-    this.prefix = process.env.INVOICE_PREFIX || FALLBACK_PREFIX;
+    this.prefix = process.env.INVOICE_PREFIX || fallbackPrefix;
   }
 
   /**

@@ -14,7 +14,7 @@
  * @section consts
  */
 
-const DEFAULT_INVOICE_PREFIX = "INV";
+const defaultInvoicePrefix = "INV";
 
 /**
  * @section types
@@ -54,7 +54,7 @@ export class InvoiceIdBuilder {
    * @section constructor
    */
 
-  public constructor(clock: Clock, idFactory: IdFactory, prefix = DEFAULT_INVOICE_PREFIX) {
+  public constructor(clock: Clock, idFactory: IdFactory, prefix = defaultInvoicePrefix) {
     this.clock = clock;
     this.idFactory = idFactory;
     this.prefix = prefix;

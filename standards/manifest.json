@@ -5,7 +5,19 @@
   "naming": {
     "files": "kebab-case",
     "directories": "kebab-case",
-    "typescript": { "types": "PascalCase", "interfaces": "PascalCase", "constants": "SCREAMING_SNAKE_CASE" }
+    "typescript": {
+      "classes": "PascalCase_nouns",
+      "types": "PascalCase",
+      "interfaces": "PascalCase",
+      "functions": "camelCase_verbs",
+      "methods": "camelCase_verbs",
+      "variables": "camelCase",
+      "booleans": "camelCase_with_is_has_can_should_prefix",
+      "constants": "SCREAMING_SNAKE_CASE_private_class_only",
+      "moduleConstants": "camelCase_or_PascalCase_singleton",
+      "acronyms": "lowercase_in_identifiers_except_well_known_id_url_http_json",
+      "forbiddenGenericNames": ["data", "obj", "tmp", "val", "thing", "helper", "utils", "common"]
+    }
   },
   "architecture": { "strictness": "moderate", "templates": ["node-lib", "node-service"] },
   "testing": { "runner": "node-test-runner", "coverage": false, "testLocation": "test/" },

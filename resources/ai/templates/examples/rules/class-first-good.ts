@@ -14,7 +14,7 @@ import { randomUUID } from "node:crypto";
  * @section consts
  */
 
-const SERVICE_NAME = "invoice-service";
+const serviceName = "invoice-service";
 
 /**
  * @section types
@@ -55,7 +55,7 @@ export class InvoiceService {
   public constructor() {
     this.invoicesById = new Map<string, Invoice>();
     this.requestId = randomUUID();
-    this.serviceName = SERVICE_NAME;
+    this.serviceName = serviceName;
   }
 
   /**

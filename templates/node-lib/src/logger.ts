@@ -1,6 +1,6 @@
 import Logger from "@sha3/logger";
 
-const PACKAGE_NAME = "{{packageName}}";
+const packageName = "{{packageName}}";
 
 function resolveLoggerName(packageName: string): string {
   if (!packageName.startsWith("@")) {
@@ -11,6 +11,6 @@ function resolveLoggerName(packageName: string): string {
   return unscopedName || packageName;
 }
 
-const LOGGER = new Logger({ loggerName: resolveLoggerName(PACKAGE_NAME) });
+const LOGGER = new Logger({ loggerName: resolveLoggerName(packageName) });
 
 export default LOGGER;

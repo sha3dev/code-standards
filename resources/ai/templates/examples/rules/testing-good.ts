@@ -14,7 +14,7 @@
  * @section consts
  */
 
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 /**
  * @section types
@@ -75,7 +75,7 @@ export class InvoiceEscalationPolicy {
 
   private daysBetween(from: Date, to: Date): number {
     const diffInMilliseconds = to.getTime() - from.getTime();
-    const dayCount = Math.floor(diffInMilliseconds / MILLISECONDS_PER_DAY);
+    const dayCount = Math.floor(diffInMilliseconds / millisecondsPerDay);
     return dayCount;
   }
 

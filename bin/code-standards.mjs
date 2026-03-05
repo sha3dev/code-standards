@@ -1035,6 +1035,7 @@ async function buildRuleSections(packageRoot, profile) {
 
   const classRule = await readRule("class-first.md");
   const functionRule = await readRule("functions.md");
+  const namingRule = await readRule("naming.md");
   const returnRule = await readRule("returns.md");
   const controlFlowRule = await readRule("control-flow.md");
   const errorRule = await readRule("errors.md");
@@ -1044,7 +1045,7 @@ async function buildRuleSections(packageRoot, profile) {
   const readmeRule = await readRule("readme.md");
 
   const alternatives = buildAlternativeRules(profile);
-  const codeGenerationRules = [classRule, functionRule, returnRule, controlFlowRule, errorRule, asyncRule];
+  const codeGenerationRules = [classRule, namingRule, functionRule, returnRule, controlFlowRule, errorRule, asyncRule];
 
   if (alternatives.codeRules.length > 0) {
     codeGenerationRules.push(...alternatives.codeRules);

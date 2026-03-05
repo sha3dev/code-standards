@@ -44,11 +44,38 @@
         "typescript": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["types", "interfaces", "constants"],
+          "required": [
+            "classes",
+            "types",
+            "interfaces",
+            "functions",
+            "methods",
+            "variables",
+            "booleans",
+            "constants",
+            "moduleConstants",
+            "acronyms",
+            "forbiddenGenericNames"
+          ],
           "properties": {
+            "classes": { "type": "string", "enum": ["PascalCase_nouns"] },
             "types": { "type": "string", "enum": ["PascalCase"] },
             "interfaces": { "type": "string", "enum": ["PascalCase"] },
-            "constants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE"] }
+            "functions": { "type": "string", "enum": ["camelCase_verbs"] },
+            "methods": { "type": "string", "enum": ["camelCase_verbs"] },
+            "variables": { "type": "string", "enum": ["camelCase"] },
+            "booleans": { "type": "string", "enum": ["camelCase_with_is_has_can_should_prefix"] },
+            "constants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE_private_class_only"] },
+            "moduleConstants": { "type": "string", "enum": ["camelCase_or_PascalCase_singleton"] },
+            "acronyms": { "type": "string", "enum": ["lowercase_in_identifiers_except_well_known_id_url_http_json"] },
+            "forbiddenGenericNames": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 8,
+              "maxItems": 8,
+              "uniqueItems": true,
+              "const": ["data", "obj", "tmp", "val", "thing", "helper", "utils", "common"]
+            }
           }
         }
       }
