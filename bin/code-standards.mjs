@@ -47,7 +47,7 @@ const DEFAULT_PROFILE = {
   comments_policy: "extensive",
   testing_policy: "tests_required_for_behavior_change",
   architecture: "feature_folders",
-  error_handling: "exceptions_with_typed_errors",
+  error_handling: "mixed",
   async_style: "async_await_only",
   class_file_policy: "one_public_class_per_file",
   type_contract_policy: "prefer_types_over_interfaces",
@@ -87,7 +87,7 @@ const PROFILE_QUESTIONS = [
   { key: "comments_policy", prompt: "Comments policy", options: ["extensive", "complex_logic_only", "minimal"] },
   { key: "testing_policy", prompt: "Testing policy", options: ["tests_required_for_behavior_change", "tests_critical_only", "tests_optional"] },
   { key: "architecture", prompt: "Architecture style", options: ["feature_folders", "layered", "simple_src_lib"] },
-  { key: "error_handling", prompt: "Error handling style", options: ["exceptions_with_typed_errors", "result_either", "mixed"] },
+  { key: "error_handling", prompt: "Error handling style", options: ["mixed", "exceptions_with_typed_errors", "result_either"] },
   { key: "async_style", prompt: "Async style", options: ["async_await_only", "promise_chains", "both"] },
   { key: "class_file_policy", prompt: "Class/file policy", options: ["one_public_class_per_file", "multiple_classes_allowed", "no_rule"] },
   { key: "type_contract_policy", prompt: "Type contract policy", options: ["prefer_types_over_interfaces", "interfaces_everywhere", "interfaces_public_only"] },
@@ -1002,7 +1002,7 @@ function buildAlternativeRules(profile) {
     codeRules.push("### Function Size Override (MUST)\n\n" + `- The active function-size policy is \`${profile.function_size_policy}\` and MUST be enforced.`);
   }
 
-  if (profile.error_handling !== "exceptions_with_typed_errors") {
+  if (profile.error_handling !== "mixed") {
     codeRules.push("### Error Handling Override (MUST)\n\n" + `- The active error-handling policy is \`${profile.error_handling}\`.`);
   }
 
@@ -1068,7 +1068,7 @@ async function renderProjectAgents(packageRoot, targetDir, projectName, profile)
     testingReviewRules: sections.testingReviewRules,
     assistantExecutionNotes:
       "All assistant-specific adapter files in `ai/*.md` MUST remain aligned with these rules. " +
-      "Before finalizing code generation, assistants MUST run `npm run check`."
+      "Before finalizing code generation, assistants MUST run `npm run check`; if TypeScript errors appear, they MUST fix code and rerun checks."
   });
 
   const agentsTarget = path.join(targetDir, "AGENTS.md");
@@ -1466,7 +1466,7 @@ async function runRefresh(rawOptions) {
     console.log("1) Summarize updated blocking rules introduced by the latest refresh.");
     console.log("2) Scan the repository and list non-compliant files.");
     console.log("3) Refactor code to fully align with updated conventions (style, structure, architecture, tests, README).");
-    console.log("4) Run npm run fix and npm run check.");
+    console.log("4) Run npm run fix and npm run check; if typecheck fails, fix code and rerun.");
     console.log("5) Return changed files + a compliance checklist mapped to AGENTS.md rules.");
     console.log("```");
     return;
@@ -1480,7 +1480,7 @@ async function runRefresh(rawOptions) {
   console.log("1) Summarize updated blocking conventions introduced by the latest refresh.");
   console.log("2) Scan the repository and list non-compliant files.");
   console.log("3) Refactor code to fully align with updated conventions (style, structure, architecture, tests, README).");
-  console.log("4) Run npm run fix and npm run check.");
+  console.log("4) Run npm run fix and npm run check; if typecheck fails, fix code and rerun.");
   console.log("5) Return changed files + a compliance checklist mapped to updated conventions.");
   console.log("```");
 }

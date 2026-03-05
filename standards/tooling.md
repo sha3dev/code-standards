@@ -27,7 +27,7 @@ Required scripts:
 - `npm run fix`
 - `npm run lint`
 - `npm run format:check`
-- `npm run typecheck`
+- `npm run typecheck` (MUST fail on any TypeScript error)
 - `npm run test`
 
 No remote CI is required for v1.

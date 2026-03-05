@@ -22,7 +22,7 @@
 
 // empty
 
-export class InvoiceNotFoundError extends Error {
+export class InvoiceLookup {
   /**
    * @section private:attributes
    */
@@ -39,7 +39,7 @@ export class InvoiceNotFoundError extends Error {
    * @section private:properties
    */
 
-  private readonly invoiceId: string;
+  // empty
 
   /**
    * @section public:properties
@@ -51,11 +51,7 @@ export class InvoiceNotFoundError extends Error {
    * @section constructor
    */
 
-  public constructor(invoiceId: string) {
-    super(`Invoice not found: ${invoiceId}`);
-    this.name = "InvoiceNotFoundError";
-    this.invoiceId = invoiceId;
-  }
+  // empty
 
   /**
    * @section static:properties
@@ -67,9 +63,9 @@ export class InvoiceNotFoundError extends Error {
    * @section factory
    */
 
-  public static forId(invoiceId: string): InvoiceNotFoundError {
-    const error = new InvoiceNotFoundError(invoiceId);
-    return error;
+  public static create(): InvoiceLookup {
+    const lookup = new InvoiceLookup();
+    return lookup;
   }
 
   /**
@@ -88,9 +84,10 @@ export class InvoiceNotFoundError extends Error {
    * @section public:methods
    */
 
-  public toLogContext(): string {
-    const context = `invoiceId=${this.invoiceId}`;
-    return context;
+  public ensureInvoiceExists(invoiceId: string, exists: boolean): void {
+    if (!exists) {
+      throw new Error(`Invoice not found: invoiceId=${invoiceId}`);
+    }
   }
 
   /**

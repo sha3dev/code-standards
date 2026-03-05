@@ -27,6 +27,15 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Use `kebab-case` for files and directories.
 - Use `PascalCase` for types and interfaces.
 - Use `SCREAMING_SNAKE_CASE` for constants.
+- Prefer explicit role-based file names:
+  - `*.service.ts` for business services
+  - `*.controller.ts` for transport controllers
+  - `*.repository.ts` for persistence adapters
+  - `*.types.ts` for feature-level types and DTOs
+  - `*.schema.ts` for validation schemas
+  - `*.mapper.ts` for data transformation logic
+  - `*.constants.ts` for constants
+- Avoid ambiguous names such as `utils.ts`, `helpers.ts`, or `common.ts`; use domain-specific names instead.
 
 ## Class File Comment Blocks
 

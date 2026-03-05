@@ -6,3 +6,4 @@
 - Keep feature-folder organization intact.
 - Enforce single-return functions even during quick refactors.
 - Run `npm run check` after modifications.
+- If TypeScript fails in `npm run check`, repair the implementation instead of bypassing type safety.

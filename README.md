@@ -34,7 +34,7 @@ Before writing code:
 1) Read AGENTS.md and ai/<assistant>.md in this repo.
 2) List the blocking rules you will follow.
 3) Implement the task following those rules.
-4) Run npm run check and fix all issues.
+4) Run npm run check and fix all issues (including TypeScript errors).
 5) Return changed files and which AGENTS rules were applied.
 ```
 
@@ -173,7 +173,7 @@ Before generating code:
 - Read AGENTS.md and ai/<assistant>.md.
 - Summarize the blocking rules you must follow.
 - Implement the task with those rules.
-- Run npm run check and fix issues until it passes.
+- Run npm run check and fix issues (including TypeScript errors) until it passes.
 - Return changed files + a short compliance checklist.
 ```
 

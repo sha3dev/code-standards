@@ -85,9 +85,19 @@ export class InvoiceLookup {
    */
 
   public ensureInvoiceExists(invoiceId: string, exists: boolean): void {
-    if (!exists) {
-      throw new Error(`Missing invoice ${invoiceId}`);
+    try {
+      if (!exists) {
+        throw "missing";
+      }
+    } catch {
+      // bad: error is silently swallowed
     }
+
+    if (!exists) {
+      throw new Error("failed");
+    }
+
+    console.log(invoiceId);
   }
 
   /**

@@ -6,3 +6,4 @@
 - Follow class-first and feature-folder conventions.
 - Avoid early returns; keep a single return per function.
 - Execute local deterministic checks with `npm run check`.
+- If `npm run check` surfaces TypeScript errors, fix code and rerun checks until green.

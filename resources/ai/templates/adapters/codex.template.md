@@ -6,3 +6,4 @@
 - Do not bypass the single-return policy.
 - Prefer class-based implementations with constructor injection.
 - Always run `npm run check` before finalizing changes.
+- If `npm run check` reports TypeScript errors, fix the code and rerun checks until all pass.

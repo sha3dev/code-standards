@@ -7,7 +7,7 @@
   "comments_policy": "extensive",
   "testing_policy": "tests_required_for_behavior_change",
   "architecture": "feature_folders",
-  "error_handling": "exceptions_with_typed_errors",
+  "error_handling": "mixed",
   "async_style": "async_await_only",
   "class_file_policy": "one_public_class_per_file",
   "type_contract_policy": "prefer_types_over_interfaces",

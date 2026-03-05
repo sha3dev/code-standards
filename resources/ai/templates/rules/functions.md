@@ -6,6 +6,7 @@
 - Types MUST be preferred over interfaces for local modeling unless a public contract requires an interface.
 - New implementation and test files MUST be `.ts`.
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
+- Feature filenames MUST be domain-specific and role-specific (for example: `invoice.service.ts`, `invoice.repository.ts`).
 - If a declaration/expression fits in one line within 160 chars, it MUST stay on one line.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass one `options` parameter.
 
