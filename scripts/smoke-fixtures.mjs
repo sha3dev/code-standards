@@ -286,15 +286,22 @@ async function main() {
   assert.match(serviceReadmeRaw, /- None\./);
   assert.match(serviceReadmeRaw, /## Contract for LLM Integrators/);
   const servicePackageAfterInit = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
+  assert.equal(servicePackageAfterInit.main, "dist/index.js");
+  assert.equal(servicePackageAfterInit.types, "dist/index.d.ts");
+  assert.deepEqual(servicePackageAfterInit.files, ["dist"]);
+  assert.equal(servicePackageAfterInit.exports["."].types, "./dist/index.d.ts");
+  assert.equal(servicePackageAfterInit.exports["."].import, "./dist/index.js");
   assert.equal(servicePackageAfterInit.scripts.publish, "node scripts/release-publish.mjs");
+  assert.equal(servicePackageAfterInit.scripts.build, "tsc -p tsconfig.build.json");
   assert.equal(servicePackageAfterInit.scripts.test, "node scripts/run-tests.mjs");
   assert.equal(servicePackageAfterInit.dependencies.dotenv, "^16.6.1");
   const servicePm2EcosystemRaw = await readFile(path.join(serviceTarget, "ecosystem.config.cjs"), "utf8");
   assert.match(servicePm2EcosystemRaw, /name: "demo-service"/);
   assert.match(servicePm2EcosystemRaw, /script: "node"/);
-  assert.match(servicePm2EcosystemRaw, /args: "--import tsx src\/index\.ts"/);
+  assert.match(servicePm2EcosystemRaw, /args: "--import tsx src\/main\.ts"/);
   const servicePublishScriptRaw = await readFile(path.join(serviceTarget, "scripts", "release-publish.mjs"), "utf8");
   assert.match(servicePublishScriptRaw, /versionExistsOnNpm/);
+  assert.match(servicePublishScriptRaw, /run\("npm", \["run", "build"\], projectRoot\)/);
   const serviceRunTestsScriptRaw = await readFile(path.join(serviceTarget, "scripts", "run-tests.mjs"), "utf8");
   assert.match(serviceRunTestsScriptRaw, /endsWith\("\.test\.ts"\)/);
   assert.equal(servicePackageAfterInit.name, "demo-service");
@@ -346,7 +353,7 @@ async function main() {
   assert.equal(servicePackageAfterMergeRefresh.dependencies.customdep, "1.2.3");
   const servicePm2EcosystemAfterRefresh = await readFile(path.join(serviceTarget, "ecosystem.config.cjs"), "utf8");
   assert.match(servicePm2EcosystemAfterRefresh, /name: "demo-service"/);
-  assert.match(servicePm2EcosystemAfterRefresh, /args: "--import tsx src\/index\.ts"/);
+  assert.match(servicePm2EcosystemAfterRefresh, /args: "--import tsx src\/main\.ts"/);
 
   result = runCliWithFakeNpm(["refresh", "--template", "node-lib", "--no-ai-adapters", "--yes"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);

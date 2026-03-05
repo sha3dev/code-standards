@@ -12,7 +12,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 const TEMPLATE_NAMES = ["node-lib", "node-service"];
 const CODE_STANDARDS_METADATA_KEY = "codeStandards";
 const NODE_LIB_REFRESH_SIGNATURE = { main: "dist/index.js", types: "dist/index.d.ts" };
-const NODE_SERVICE_START_SIGNATURE = "node --import tsx src/index.ts";
+const NODE_SERVICE_START_SIGNATURE = "node --import tsx src/main.ts";
 const PROFILE_KEY_ORDER = [
   "version",
   "paradigm",
@@ -638,7 +638,7 @@ function updateCodeStandardsMetadata(projectPackageJson, metadataPatch) {
   return { ...projectPackageJson, [CODE_STANDARDS_METADATA_KEY]: nextMetadata };
 }
 
-function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson, templateName) {
+function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson) {
   const mergedPackageJson = { ...projectPackageJson };
   const templateDependencies = asPlainObject(templatePackageJson.dependencies);
   const templateScripts = asPlainObject(templatePackageJson.scripts);
@@ -675,18 +675,20 @@ function mergePackageJsonFromTemplate(projectPackageJson, templatePackageJson, t
     mergedPackageJson.type = templatePackageJson.type;
   }
 
-  if (templateName === "node-lib") {
-    if (typeof templatePackageJson.main === "string") {
-      mergedPackageJson.main = templatePackageJson.main;
-    }
+  if (typeof templatePackageJson.main === "string") {
+    mergedPackageJson.main = templatePackageJson.main;
+  }
 
-    if (typeof templatePackageJson.types === "string") {
-      mergedPackageJson.types = templatePackageJson.types;
-    }
+  if (typeof templatePackageJson.types === "string") {
+    mergedPackageJson.types = templatePackageJson.types;
+  }
 
-    if (Array.isArray(templatePackageJson.files)) {
-      mergedPackageJson.files = templatePackageJson.files;
-    }
+  if (Array.isArray(templatePackageJson.files)) {
+    mergedPackageJson.files = templatePackageJson.files;
+  }
+
+  if (templatePackageJson.exports && typeof templatePackageJson.exports === "object" && !Array.isArray(templatePackageJson.exports)) {
+    mergedPackageJson.exports = { ...templatePackageJson.exports };
   }
 
   return mergedPackageJson;
@@ -738,7 +740,7 @@ function isRefreshManagedPath(targetRelativePath) {
 }
 
 async function applyManagedFiles(options) {
-  const { templateDir, targetDir, tokens, templateName, projectPackageJson, dryRun, refreshMode } = options;
+  const { templateDir, targetDir, tokens, projectPackageJson, dryRun, refreshMode } = options;
   const templateFiles = await collectTemplateFiles(templateDir);
   const updatedFiles = [];
   let mergedPackageJson = { ...projectPackageJson };
@@ -752,7 +754,7 @@ async function applyManagedFiles(options) {
       const rawTemplatePackageJson = await readFile(templateFile.sourcePath, "utf8");
       const renderedTemplatePackageJson = replaceTokens(rawTemplatePackageJson, tokens);
       const templatePackageJson = JSON.parse(renderedTemplatePackageJson);
-      mergedPackageJson = mergePackageJsonFromTemplate(mergedPackageJson, templatePackageJson, templateName);
+      mergedPackageJson = mergePackageJsonFromTemplate(mergedPackageJson, templatePackageJson);
       updatedFiles.push("package.json");
       continue;
     }
@@ -1180,6 +1182,12 @@ async function resolveTemplateForRefresh(rawOptions, projectPackageJson, targetP
   }
 
   const projectScripts = asPlainObject(projectPackageJson.scripts);
+  const startScript = typeof projectScripts.start === "string" ? projectScripts.start : "";
+
+  if (startScript.includes(NODE_SERVICE_START_SIGNATURE)) {
+    return "node-service";
+  }
+
   const hasNodeLibSignature =
     (await pathExists(path.join(targetPath, "tsconfig.build.json"))) &&
     projectPackageJson.main === NODE_LIB_REFRESH_SIGNATURE.main &&
@@ -1187,12 +1195,6 @@ async function resolveTemplateForRefresh(rawOptions, projectPackageJson, targetP
 
   if (hasNodeLibSignature) {
     return "node-lib";
-  }
-
-  const startScript = typeof projectScripts.start === "string" ? projectScripts.start : "";
-
-  if (startScript.includes(NODE_SERVICE_START_SIGNATURE)) {
-    return "node-service";
   }
 
   throw new Error("Unable to infer template for refresh. Use --template <node-lib|node-service>.");
@@ -1406,7 +1408,6 @@ async function runRefresh(rawOptions) {
     templateDir,
     targetDir: targetPath,
     tokens,
-    templateName: template,
     projectPackageJson,
     dryRun: rawOptions.dryRun,
     refreshMode: true

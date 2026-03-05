@@ -53,11 +53,34 @@ Behavior notes:
 - Creates a new server instance on each call.
 - Does not call `listen` by itself; startup is handled in the runtime bootstrap block.
 
+### `startServer(): http.Server`
+
+Starts the HTTP server using project configuration.
+
+Parameters:
+
+- None.
+
+Returns:
+
+- `http.Server`: listening server instance.
+
+Behavior notes:
+
+- Intended for runtime bootstrap (`src/main.ts`).
+- `import`-ing the package does not start the server automatically.
+
 ## Integration Guide (External Projects)
 
-1. Start the service with `npm run start`.
-2. Consume the root endpoint for health/status.
-3. Integrate through the HTTP contract, not through internal files.
+1. Start the service with `npm run start` for standalone execution.
+2. You can also import the package from another project:
+
+```ts
+import { buildServer, startServer } from "<service-name>";
+```
+
+3. Consume the root endpoint for health/status when integrating over HTTP.
+4. Do not import internal files (`src/*` or private `dist/*` paths).
 
 ## Configuration (`src/config.ts`)
 
@@ -84,6 +107,7 @@ EXTERNAL_STATUS_URL=https://status.my-env.internal/health
 ## Scripts
 
 - `npm run start`: start the service with `tsx`
+- `npm run build`: compile public module output to `dist/`
 - `npm run check`: lint + format check + typecheck + tests
 - `npm run fix`: apply lint/prettier autofix
 - `npm run test`: run tests with Node test runner
@@ -97,8 +121,10 @@ EXTERNAL_STATUS_URL=https://status.my-env.internal/health
 ## Structure
 
 - `src/`: implementation
+- `src/main.ts`: runtime bootstrap
 - `src/config.ts`: centralized configuration with env overrides
 - `test/`: tests
+- `dist/`: published module output
 
 ## Troubleshooting
 
