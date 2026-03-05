@@ -1,33 +1,29 @@
+/**
+ * Module Overview
+ * File: src/config.ts
+ * Purpose: Centralize environment-based runtime configuration.
+ * Role: Expose deterministic defaults for service execution.
+ */
+/**
+ * imports
+ */
+
 import "dotenv/config";
 
-const defaultConfig = { RESPONSE_CONTENT_TYPE: "application/json", DEFAULT_PORT: 3000, EXTERNAL_STATUS_URL: "https://status.example.com/health" } as const;
+/**
+ * consts
+ */
 
-function readStringEnv(key: string, fallback: string): string {
-  const rawValue = process.env[key];
+const env = process.env;
 
-  if (typeof rawValue !== "string") {
-    return fallback;
-  }
+/**
+ * env vars and defaults
+ */
 
-  const trimmedValue = rawValue.trim();
-  return trimmedValue.length > 0 ? trimmedValue : fallback;
-}
-
-function readIntegerEnv(key: string, fallback: number): number {
-  const rawValue = process.env[key];
-
-  if (typeof rawValue !== "string") {
-    return fallback;
-  }
-
-  const parsedValue = Number.parseInt(rawValue, 10);
-  return Number.isFinite(parsedValue) ? parsedValue : fallback;
-}
-
-const CONFIG = {
-  RESPONSE_CONTENT_TYPE: readStringEnv("RESPONSE_CONTENT_TYPE", defaultConfig.RESPONSE_CONTENT_TYPE),
-  DEFAULT_PORT: readIntegerEnv("PORT", defaultConfig.DEFAULT_PORT),
-  EXTERNAL_STATUS_URL: readStringEnv("EXTERNAL_STATUS_URL", defaultConfig.EXTERNAL_STATUS_URL)
+const config = {
+  RESPONSE_CONTENT_TYPE: env.RESPONSE_CONTENT_TYPE || "application/json",
+  DEFAULT_PORT: Number(env.PORT || 3000),
+  EXTERNAL_STATUS_URL: env.EXTERNAL_STATUS_URL || "https://status.example.com/health"
 } as const;
 
-export default CONFIG;
+export default config;

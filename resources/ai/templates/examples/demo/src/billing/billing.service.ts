@@ -9,8 +9,8 @@
  */
 
 import CONFIG from "../config.ts";
-import type { InvoiceService } from "../invoices/invoice-service.ts";
-import type { InvoiceSummary } from "../invoices/invoice-types.ts";
+import type { InvoiceService } from "../invoice/invoice.service.ts";
+import type { InvoiceSummary } from "../invoice/invoice.types.ts";
 
 /**
  * @section consts

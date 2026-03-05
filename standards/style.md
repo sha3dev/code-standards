@@ -26,6 +26,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 
 - Use English technical/domain terms for all identifiers.
 - Use `kebab-case` for files and directories.
+- Feature folder names MUST be singular (`src/invoice`, `src/user`, `src/billing`).
 - Class names MUST be `PascalCase` nouns.
 - Type and interface names MUST be `PascalCase`.
 - Function and method names MUST be `camelCase` verbs.
@@ -35,13 +36,14 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Module-level and exported constants MUST use `camelCase` (or `PascalCase` for singleton-like exports), never `SCREAMING_SNAKE_CASE`.
 - Use lowercase acronyms in identifiers (`userId`, `statusUrl`, `httpServer`) except well-known compact tokens (`id`, `url`, `http`, `json`).
 - Prefer explicit role-based file names:
-  - `*.service.ts` for business services
-  - `*.controller.ts` for transport controllers
-  - `*.repository.ts` for persistence adapters
-  - `*.types.ts` for feature-level types and DTOs
-  - `*.schema.ts` for validation schemas
-  - `*.mapper.ts` for data transformation logic
-  - `*.constants.ts` for constants
+  - `<feature>.service.ts` for business services
+  - `<feature>.controller.ts` for transport controllers
+  - `<feature>.repository.ts` for persistence adapters
+  - `<feature>.types.ts` for feature-level types and DTOs
+  - `<feature>.schema.ts` for validation schemas
+  - `<feature>.mapper.ts` for data transformation logic
+  - `<feature>.constants.ts` for constants
+- `<feature>` SHOULD be singular.
 - Avoid ambiguous names such as `data`, `obj`, `tmp`, `val`, `thing`, `helper`, `utils`, `common`; use domain-specific names instead.
 
 ## Class File Comment Blocks

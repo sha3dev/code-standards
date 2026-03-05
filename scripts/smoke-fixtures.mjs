@@ -174,17 +174,17 @@ async function main() {
   });
   assert.equal(libForbiddenJs.length, 0, `unexpected JS files in lib scaffold: ${libForbiddenJs}`);
 
-  const demoServiceRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "invoices", "invoice-service.ts"), "utf8");
+  const demoServiceRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "invoice", "invoice.service.ts"), "utf8");
   assert.match(demoServiceRaw, /@section constructor/);
   assert.match(demoServiceRaw, /\/\*\*\n \* @section imports:externals\n \*\/\n\n/);
   assert.match(demoServiceRaw, /import CONFIG from "\.\.\/config\.ts";/);
-  const demoInvoiceEntries = await readdir(path.join(libTarget, "ai", "examples", "demo", "src", "invoices"));
+  const demoInvoiceEntries = await readdir(path.join(libTarget, "ai", "examples", "demo", "src", "invoice"));
   assert(!demoInvoiceEntries.includes("invoice-repository.ts"));
   const demoConfigRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "config.ts"), "utf8");
   assert.match(demoConfigRaw, /STATUS_SERVICE_URL/);
   assert.match(demoConfigRaw, /const CONFIG = \{/);
   assert.match(demoConfigRaw, /export default CONFIG/);
-  const demoBillingRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "billing", "billing-service.ts"), "utf8");
+  const demoBillingRaw = await readFile(path.join(libTarget, "ai", "examples", "demo", "src", "billing", "billing.service.ts"), "utf8");
   assert.match(demoBillingRaw, /import CONFIG from "\.\.\/config\.ts";/);
 
   const asyncGoodRaw = await readFile(path.join(libTarget, "ai", "examples", "rules", "async-good.ts"), "utf8");
@@ -316,12 +316,12 @@ async function main() {
   assert.match(serviceVscodeExtensionsRaw, /rvest\.vs-code-prettier-eslint/);
   const serviceConfigRaw = await readFile(path.join(serviceTarget, "src", "config.ts"), "utf8");
   assert.match(serviceConfigRaw, /import "dotenv\/config";/);
-  assert.match(serviceConfigRaw, /readStringEnv\("RESPONSE_CONTENT_TYPE"/);
-  assert.match(serviceConfigRaw, /readIntegerEnv\("PORT"/);
-  assert.match(serviceConfigRaw, /readStringEnv\("EXTERNAL_STATUS_URL"/);
+  assert.match(serviceConfigRaw, /RESPONSE_CONTENT_TYPE: env\.RESPONSE_CONTENT_TYPE \|\| "application\/json"/);
+  assert.match(serviceConfigRaw, /DEFAULT_PORT: Number\(env\.PORT \|\| 3000\)/);
+  assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL: env\.EXTERNAL_STATUS_URL \|\| "https:\/\/status\.example\.com\/health"/);
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
-  assert.match(serviceConfigRaw, /const CONFIG = \{/);
-  assert.match(serviceConfigRaw, /export default CONFIG/);
+  assert.match(serviceConfigRaw, /const config = \{/);
+  assert.match(serviceConfigRaw, /export default config/);
   const serviceIndexRaw = await readFile(path.join(serviceTarget, "src", "index.ts"), "utf8");
   assert.match(serviceIndexRaw, /import CONFIG from "\.\/config\.ts";/);
   const serviceTsconfigRaw = await readFile(path.join(serviceTarget, "tsconfig.json"), "utf8");

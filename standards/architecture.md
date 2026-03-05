@@ -30,13 +30,14 @@ Both templates SHOULD keep this baseline structure:
 - `src/app/` for composition and dependency wiring.
 - `src/shared/` for cross-feature reusable modules.
 - `src/<feature>/` for feature modules.
+- Feature folder names SHOULD be singular (for example: `src/user`, `src/invoice`, `src/billing`).
 
 Template-specific additions:
 
 - `node-lib`: MAY add `src/public/` and `src/internal/` to separate stable API from private implementation.
 - `node-service`: SHOULD keep transport concerns under `src/http/` (`routes`, `controllers`, `middleware`).
 
-Within each feature folder, files SHOULD be role-oriented and explicit (`*.service.ts`, `*.repository.ts`, `*.types.ts`, `*.schema.ts`, `*.mapper.ts`).
+Within each feature folder, files SHOULD be role-oriented and explicit (`*.service.ts`, `*.repository.ts`, `*.types.ts`, `*.schema.ts`, `*.mapper.ts`), and the domain base name SHOULD be singular (`invoice.service.ts`).
 
 ## Boundary Rules
 

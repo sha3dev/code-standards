@@ -31,7 +31,7 @@ Good example:
 
 - `ai/examples/rules/class-first-good.ts`
 - `ai/examples/rules/constructor-good.ts`
-- `ai/examples/demo/src/invoices/invoice-service.ts`
+- `ai/examples/demo/src/invoice/invoice.service.ts`
 
 Bad example:
 
