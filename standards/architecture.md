@@ -1,6 +1,7 @@
 # Architecture Guide
 
 Architecture strictness is **moderate**.
+Simplicity policy is **minimal pragmatic (no speculative abstractions)**.
 
 ## Project Templates
 
@@ -45,3 +46,6 @@ Within each feature folder, files SHOULD be role-oriented and explicit (`*.servi
 - Avoid cyclic dependencies.
 - Keep hardcoded application configuration centralized in `src/config.ts`.
 - `src/config.ts` MUST export a default object (for example `CONFIG`) and consumers MUST import it as `import CONFIG from "./config.ts"`.
+- Prefer the smallest design that satisfies current requirements.
+- Do not introduce extra files, layers, or abstractions unless they reduce real current complexity.
+- Avoid speculative structure for future scenarios that are not implemented yet.

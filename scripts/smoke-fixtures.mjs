@@ -93,7 +93,7 @@ async function main() {
   assert.match(libPrettierConfigRaw, /printWidth: 160/);
   assert.match(libPrettierConfigRaw, /objectWrap: "collapse"/);
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
-  assert.match(libReadmeRaw, /# 📚 demo-lib/);
+  assert.match(libReadmeRaw, /# 📚 @sha3\/demo-lib/);
   assert.match(libReadmeRaw, /## Public API/);
   assert.match(libReadmeRaw, /### `greet\(name: string\): string`/);
   assert.match(libReadmeRaw, /Parameters:/);
@@ -122,9 +122,9 @@ async function main() {
   assert.match(libPublishScriptRaw, /run\("npm", \["run", "build"\], projectRoot\)/);
   const libRunTestsScriptRaw = await readFile(path.join(libTarget, "scripts", "run-tests.mjs"), "utf8");
   assert.match(libRunTestsScriptRaw, /endsWith\("\.test\.ts"\)/);
-  assert.equal(libPackageAfterInit.name, "demo-lib");
+  assert.equal(libPackageAfterInit.name, "@sha3/demo-lib");
   assert.equal(libPackageAfterInit.repository.type, "git");
-  assert.match(libPackageAfterInit.repository.url, /github\.com/);
+  assert.equal(libPackageAfterInit.repository.url, "https://github.com/sha3dev/demo-lib");
   const libVscodeSettingsRaw = await readFile(path.join(libTarget, ".vscode", "settings.json"), "utf8");
   assert.match(libVscodeSettingsRaw, /"editor\.formatOnSave": true/);
   assert.match(libVscodeSettingsRaw, /"source\.fixAll\.eslint"/);
@@ -278,7 +278,7 @@ async function main() {
   assert.match(servicePrettierConfigRaw, /printWidth: 160/);
   assert.match(servicePrettierConfigRaw, /objectWrap: "collapse"/);
   const serviceReadmeRaw = await readFile(path.join(serviceTarget, "README.md"), "utf8");
-  assert.match(serviceReadmeRaw, /# 🚀 demo-service/);
+  assert.match(serviceReadmeRaw, /# 🚀 @sha3\/demo-service/);
   assert.match(serviceReadmeRaw, /## API HTTP/);
   assert.match(serviceReadmeRaw, /## Public Module API/);
   assert.match(serviceReadmeRaw, /### `buildServer\(\): http\.Server`/);
@@ -296,7 +296,7 @@ async function main() {
   assert.equal(servicePackageAfterInit.scripts.test, "node scripts/run-tests.mjs");
   assert.equal(servicePackageAfterInit.dependencies.dotenv, "^16.6.1");
   const servicePm2EcosystemRaw = await readFile(path.join(serviceTarget, "ecosystem.config.cjs"), "utf8");
-  assert.match(servicePm2EcosystemRaw, /name: "demo-service"/);
+  assert.match(servicePm2EcosystemRaw, /name: "@sha3\/demo-service"/);
   assert.match(servicePm2EcosystemRaw, /script: "node"/);
   assert.match(servicePm2EcosystemRaw, /args: "--import tsx src\/main\.ts"/);
   const servicePublishScriptRaw = await readFile(path.join(serviceTarget, "scripts", "release-publish.mjs"), "utf8");
@@ -304,9 +304,9 @@ async function main() {
   assert.match(servicePublishScriptRaw, /run\("npm", \["run", "build"\], projectRoot\)/);
   const serviceRunTestsScriptRaw = await readFile(path.join(serviceTarget, "scripts", "run-tests.mjs"), "utf8");
   assert.match(serviceRunTestsScriptRaw, /endsWith\("\.test\.ts"\)/);
-  assert.equal(servicePackageAfterInit.name, "demo-service");
+  assert.equal(servicePackageAfterInit.name, "@sha3/demo-service");
   assert.equal(servicePackageAfterInit.repository.type, "git");
-  assert.match(servicePackageAfterInit.repository.url, /github\.com/);
+  assert.equal(servicePackageAfterInit.repository.url, "https://github.com/sha3dev/demo-service");
   const serviceVscodeSettingsRaw = await readFile(path.join(serviceTarget, ".vscode", "settings.json"), "utf8");
   assert.match(serviceVscodeSettingsRaw, /"editor\.formatOnSave": true/);
   assert.match(serviceVscodeSettingsRaw, /"source\.fixAll\.eslint"/);
@@ -320,8 +320,8 @@ async function main() {
   assert.match(serviceConfigRaw, /DEFAULT_PORT: Number\(env\.PORT \|\| 3000\)/);
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL: env\.EXTERNAL_STATUS_URL \|\| "https:\/\/status\.example\.com\/health"/);
   assert.match(serviceConfigRaw, /EXTERNAL_STATUS_URL/);
-  assert.match(serviceConfigRaw, /const config = \{/);
-  assert.match(serviceConfigRaw, /export default config/);
+  assert.match(serviceConfigRaw, /const CONFIG = \{/);
+  assert.match(serviceConfigRaw, /export default CONFIG/);
   const serviceIndexRaw = await readFile(path.join(serviceTarget, "src", "index.ts"), "utf8");
   assert.match(serviceIndexRaw, /import CONFIG from "\.\/config\.ts";/);
   const serviceTsconfigRaw = await readFile(path.join(serviceTarget, "tsconfig.json"), "utf8");
@@ -352,7 +352,7 @@ async function main() {
   assert.equal(servicePackageAfterMergeRefresh.dependencies.dotenv, "^16.6.1");
   assert.equal(servicePackageAfterMergeRefresh.dependencies.customdep, "1.2.3");
   const servicePm2EcosystemAfterRefresh = await readFile(path.join(serviceTarget, "ecosystem.config.cjs"), "utf8");
-  assert.match(servicePm2EcosystemAfterRefresh, /name: "demo-service"/);
+  assert.match(servicePm2EcosystemAfterRefresh, /name: "@sha3\/demo-service"/);
   assert.match(servicePm2EcosystemAfterRefresh, /args: "--import tsx src\/main\.ts"/);
 
   result = runCliWithFakeNpm(["refresh", "--template", "node-lib", "--no-ai-adapters", "--yes"], serviceTarget);

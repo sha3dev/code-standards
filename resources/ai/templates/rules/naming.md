@@ -6,7 +6,6 @@
 - Functions and methods MUST use `camelCase` verbs.
 - Variables and properties MUST use `camelCase`.
 - Boolean identifiers MUST use `is*`, `has*`, `can*`, or `should*`.
-- `SCREAMING_SNAKE_CASE` is reserved for class-private constants only.
-- Module-level and exported constants MUST use `camelCase` or `PascalCase` (singleton-style), never `SCREAMING_SNAKE_CASE`.
+- Constants MUST use `SCREAMING_SNAKE_CASE`.
 - Exported schema-like values MUST use `camelCase` or `PascalCase`.
 - Generic names are forbidden for new code (`data`, `obj`, `tmp`, `val`, `thing`, `helper`, `utils`, `common`).

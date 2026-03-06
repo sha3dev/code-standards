@@ -13,6 +13,8 @@
 - Ambiguous filenames (`utils.ts`, `helpers.ts`, `common.ts`) are forbidden for new feature code.
 - Hardcoded, non-parameterized configuration MUST be centralized in `src/config.ts` (for example, external service URLs).
 - `src/config.ts` MUST export a single default object and it MUST always be imported as `import CONFIG from ".../config.ts"`.
+- Architecture decisions MUST default to the simplest structure that satisfies current requirements.
+- New files, modules, or layers MUST be introduced only when they solve present complexity, not anticipated future needs.
 
 Good example:
 

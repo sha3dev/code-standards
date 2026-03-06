@@ -15,6 +15,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Use strict TypeScript mode.
 - Project implementation and tests MUST be TypeScript-only (`.ts`).
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
+- Favor the simplest correct implementation that solves the current requirement.
+- Prefer fewer lines and fewer moving parts when readability and correctness are preserved.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.
@@ -32,8 +34,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Function and method names MUST be `camelCase` verbs.
 - Variable and property names MUST be `camelCase`.
 - Boolean identifiers MUST use `is*`, `has*`, `can*`, or `should*` prefixes.
-- Reserve `SCREAMING_SNAKE_CASE` for class-private constants only.
-- Module-level and exported constants MUST use `camelCase` (or `PascalCase` for singleton-like exports), never `SCREAMING_SNAKE_CASE`.
+- Constants MUST use `SCREAMING_SNAKE_CASE`.
 - Use lowercase acronyms in identifiers (`userId`, `statusUrl`, `httpServer`) except well-known compact tokens (`id`, `url`, `http`, `json`).
 - Prefer explicit role-based file names:
   - `<feature>.service.ts` for business services

@@ -1,9 +1,8 @@
 /**
- * Module Overview
- * File: src/config.ts
- * Purpose: Centralize environment-based runtime configuration.
- * Role: Expose deterministic defaults for service execution.
+ * @file Service runtime configuration module.
+ * @description Centralizes environment-based defaults for service execution.
  */
+
 /**
  * imports
  */

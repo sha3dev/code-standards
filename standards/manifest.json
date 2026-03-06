@@ -13,13 +13,13 @@
       "methods": "camelCase_verbs",
       "variables": "camelCase",
       "booleans": "camelCase_with_is_has_can_should_prefix",
-      "constants": "SCREAMING_SNAKE_CASE_private_class_only",
-      "moduleConstants": "camelCase_or_PascalCase_singleton",
+      "constants": "SCREAMING_SNAKE_CASE",
+      "moduleConstants": "SCREAMING_SNAKE_CASE",
       "acronyms": "lowercase_in_identifiers_except_well_known_id_url_http_json",
       "forbiddenGenericNames": ["data", "obj", "tmp", "val", "thing", "helper", "utils", "common"]
     }
   },
-  "architecture": { "strictness": "moderate", "templates": ["node-lib", "node-service"] },
+  "architecture": { "strictness": "moderate", "simplicity": "minimal_pragmatic_no_speculative_abstractions", "templates": ["node-lib", "node-service"] },
   "testing": { "runner": "node-test-runner", "coverage": false, "testLocation": "test/" },
   "tooling": {
     "eslintConfig": "@sha3/code-standards/eslint/node",

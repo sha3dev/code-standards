@@ -409,6 +409,10 @@ function sanitizePackageName(input) {
   );
 }
 
+function defaultPackageNameForProject(projectName) {
+  return `@sha3/${sanitizePackageName(projectName)}`;
+}
+
 function isValidNpmPackageName(input) {
   const unscopedPattern = /^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/;
   const scopedPattern = /^@[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/;
@@ -431,7 +435,7 @@ function normalizePackageName(input, fallbackProjectName) {
 
 function defaultRepositoryUrlForPackage(packageName) {
   const unscoped = packageName.includes("/") ? packageName.split("/")[1] : packageName;
-  return `https://github.com/your-org/${unscoped}`;
+  return `https://github.com/sha3dev/${unscoped}`;
 }
 
 function normalizeRepositoryUrl(input, packageName) {
@@ -1260,7 +1264,7 @@ async function promptForMissing(options, targetPath) {
     const resolved = { ...options };
     const inferredProjectName = path.basename(targetPath);
     const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
-    const defaultPackageName = sanitizePackageName(projectName);
+    const defaultPackageName = defaultPackageNameForProject(projectName);
 
     if (!resolved.template) {
       const templateAnswer = await rl.question("Choose template (node-lib/node-service) [node-lib]: ");
@@ -1320,7 +1324,7 @@ async function runInit(rawOptions) {
   const targetPath = path.resolve(process.cwd());
   const inferredProjectName = path.basename(targetPath);
   const projectName = inferredProjectName && inferredProjectName !== path.sep ? inferredProjectName : "my-project";
-  const defaultPackageName = sanitizePackageName(projectName);
+  const defaultPackageName = defaultPackageNameForProject(projectName);
   const canPrompt = process.stdin.isTTY;
 
   if (options.yes || !canPrompt) {

@@ -65,8 +65,8 @@
             "methods": { "type": "string", "enum": ["camelCase_verbs"] },
             "variables": { "type": "string", "enum": ["camelCase"] },
             "booleans": { "type": "string", "enum": ["camelCase_with_is_has_can_should_prefix"] },
-            "constants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE_private_class_only"] },
-            "moduleConstants": { "type": "string", "enum": ["camelCase_or_PascalCase_singleton"] },
+            "constants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE"] },
+            "moduleConstants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE"] },
             "acronyms": { "type": "string", "enum": ["lowercase_in_identifiers_except_well_known_id_url_http_json"] },
             "forbiddenGenericNames": {
               "type": "array",
@@ -83,9 +83,10 @@
     "architecture": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["strictness", "templates"],
+      "required": ["strictness", "simplicity", "templates"],
       "properties": {
         "strictness": { "type": "string", "enum": ["moderate"] },
+        "simplicity": { "type": "string", "enum": ["minimal_pragmatic_no_speculative_abstractions"] },
         "templates": { "type": "array", "items": { "type": "string", "enum": ["node-lib", "node-service"] }, "minItems": 2, "uniqueItems": true }
       }
     },
