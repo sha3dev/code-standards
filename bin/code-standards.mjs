@@ -421,7 +421,7 @@ function isValidNpmPackageName(input) {
 
 function normalizePackageName(input, fallbackProjectName) {
   if (typeof input !== "string" || input.trim().length === 0) {
-    return sanitizePackageName(fallbackProjectName);
+    return defaultPackageNameForProject(fallbackProjectName);
   }
 
   const normalized = input.trim().toLowerCase();

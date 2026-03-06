@@ -26,12 +26,13 @@
     "formatting": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["prettier", "lineLength", "semi", "singleQuote"],
+      "required": ["prettier", "lineLength", "semi", "singleQuote", "simpleCallbackStyle"],
       "properties": {
         "prettier": { "type": "boolean" },
         "lineLength": { "type": "integer", "minimum": 80, "maximum": 200 },
         "semi": { "type": "boolean" },
-        "singleQuote": { "type": "boolean" }
+        "singleQuote": { "type": "boolean" },
+        "simpleCallbackStyle": { "type": "string", "enum": ["arrow_concise_for_simple_callbacks"] }
       }
     },
     "naming": {
@@ -65,7 +66,7 @@
             "methods": { "type": "string", "enum": ["camelCase_verbs"] },
             "variables": { "type": "string", "enum": ["camelCase"] },
             "booleans": { "type": "string", "enum": ["camelCase_with_is_has_can_should_prefix"] },
-            "constants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE"] },
+            "constants": { "type": "string", "enum": ["camelCase"] },
             "moduleConstants": { "type": "string", "enum": ["SCREAMING_SNAKE_CASE"] },
             "acronyms": { "type": "string", "enum": ["lowercase_in_identifiers_except_well_known_id_url_http_json"] },
             "forbiddenGenericNames": {

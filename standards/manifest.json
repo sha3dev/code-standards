@@ -1,7 +1,7 @@
 {
   "meta": { "version": "v1", "scope": "@sha3", "packageManager": "npm", "moduleSystem": "esm" },
   "language": { "runtime": "node", "typescript": true, "target": "ES2022" },
-  "formatting": { "prettier": true, "lineLength": 160, "semi": true, "singleQuote": false },
+  "formatting": { "prettier": true, "lineLength": 160, "semi": true, "singleQuote": false, "simpleCallbackStyle": "arrow_concise_for_simple_callbacks" },
   "naming": {
     "files": "kebab-case",
     "directories": "kebab-case",
@@ -13,7 +13,7 @@
       "methods": "camelCase_verbs",
       "variables": "camelCase",
       "booleans": "camelCase_with_is_has_can_should_prefix",
-      "constants": "SCREAMING_SNAKE_CASE",
+      "constants": "camelCase",
       "moduleConstants": "SCREAMING_SNAKE_CASE",
       "acronyms": "lowercase_in_identifiers_except_well_known_id_url_http_json",
       "forbiddenGenericNames": ["data", "obj", "tmp", "val", "thing", "helper", "utils", "common"]

@@ -17,6 +17,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
 - Favor the simplest correct implementation that solves the current requirement.
 - Prefer fewer lines and fewer moving parts when readability and correctness are preserved.
+- Prefer concise arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`).
+- Avoid block-bodied callbacks with explicit `return` when a concise expression arrow function is sufficient.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.
@@ -34,7 +36,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Function and method names MUST be `camelCase` verbs.
 - Variable and property names MUST be `camelCase`.
 - Boolean identifiers MUST use `is*`, `has*`, `can*`, or `should*` prefixes.
-- Constants MUST use `SCREAMING_SNAKE_CASE`.
+- Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
+- Local constants (for example inside functions/methods) MUST use `camelCase`.
 - Use lowercase acronyms in identifiers (`userId`, `statusUrl`, `httpServer`) except well-known compact tokens (`id`, `url`, `http`, `json`).
 - Prefer explicit role-based file names:
   - `<feature>.service.ts` for business services
