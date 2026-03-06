@@ -20,16 +20,13 @@ async function collectTestsFrom(directoryPath, collector) {
 
   for (const entry of entries) {
     const absolutePath = path.join(directoryPath, entry.name);
-
     if (entry.isDirectory()) {
       await collectTestsFrom(absolutePath, collector);
       continue;
     }
-
     if (!entry.isFile()) {
       continue;
     }
-
     if (entry.name.endsWith(".test.ts")) {
       collector.push(path.relative(rootDir, absolutePath));
     }
@@ -57,7 +54,6 @@ async function main() {
 
   const uniqueFiles = [...new Set(testFiles)].sort((left, right) => left.localeCompare(right));
   const exitCode = await runNodeTests(uniqueFiles);
-
   if (exitCode !== 0) {
     process.exit(exitCode);
   }

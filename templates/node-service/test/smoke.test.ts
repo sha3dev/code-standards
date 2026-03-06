@@ -13,7 +13,6 @@ test("service responds with ok payload", async () => {
   });
 
   const address = server.address();
-
   if (!address || typeof address === "string") {
     throw new Error("failed to bind test server");
   }
