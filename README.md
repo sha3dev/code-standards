@@ -31,7 +31,7 @@ Then in your AI chat, paste this:
 
 ```txt
 Before writing code:
-1) Read AGENTS.md and ai/<assistant>.md in this repo.
+1) Read AGENTS.md, ai/contract.json, and ai/<assistant>.md in this repo.
 2) List the blocking rules you will follow.
 3) Implement the task following those rules.
 4) Run npm run check and fix all issues (including TypeScript errors).
@@ -48,7 +48,7 @@ This package combines 3 things in one:
 
 1. Project scaffolding (`init`) for `node-lib` and `node-service`.
 2. Shared tooling exports (`eslint`, `prettier`, `tsconfig`).
-3. AI behavior contract generation (`AGENTS.md` + `ai/*.md`) based on a style profile.
+3. AI behavior contract generation (`AGENTS.md` + `ai/contract.json` + optional `ai/*.md`) based on a style profile.
 
 So it is not only formatting/linting. It also defines **how AI should think and generate code**.
 
@@ -76,7 +76,7 @@ Section marker format is fixed to:
 - ` * @section <block-name>`
 - ` */`
 
-All blocks MUST exist even when empty (`// empty`).
+Blocks without members should be omitted.
 
 Additional blocking defaults:
 
@@ -112,8 +112,9 @@ npx @sha3/code-standards init --template node-service --yes --profile ./profiles
 
 After `init`, your new repo contains:
 
-- `AGENTS.md` (blocking rules for AI)
-- `ai/codex.md`, `ai/cursor.md`, `ai/copilot.md`, `ai/windsurf.md`
+- `AGENTS.md` (human-readable contract entrypoint)
+- `ai/contract.json` (machine-readable contract)
+- `ai/codex.md`, `ai/cursor.md`, `ai/copilot.md`, `ai/windsurf.md` when adapters are enabled
 - `ai/examples/rules/*.ts` (good/bad examples per rule)
 - `ai/examples/demo/src/*` (feature-folder demo with classes and section blocks)
 - `src/config.ts` for centralized hardcoded configuration values
@@ -121,9 +122,9 @@ After `init`, your new repo contains:
 - `.gitignore` preconfigured for Node/TypeScript output
 - `.vscode/settings.json` + `.vscode/extensions.json` for autoformat-on-save and eslint autofix-on-save in VS Code
 - lint/format/typecheck/test-ready project template
-- `package.json.codeStandards` metadata used by `refresh` (`template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
+- `package.json.codeStandards` metadata used by `refresh` and `verify` (`contractVersion`, `template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
 
-`config.ts` convention: export a single default object and import it as `import CONFIG from "./config.ts"`.
+`config.ts` convention: export a single default object named `config` and import it as `import config from "./config.ts"`.
 
 That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
 
@@ -170,7 +171,7 @@ Use this as your first message in any coding session:
 
 ```txt
 Before generating code:
-- Read AGENTS.md and ai/<assistant>.md.
+- Read AGENTS.md, ai/contract.json, and ai/<assistant>.md.
 - Summarize the blocking rules you must follow.
 - Implement the task with those rules.
 - Run npm run check and fix issues (including TypeScript errors) until it passes.

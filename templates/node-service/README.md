@@ -1,6 +1,6 @@
 # 🚀 {{packageName}}
 
-TypeScript service template ready for local execution and feature-based evolution.
+Feature-first TypeScript service scaffolded with deterministic standards checks and a generated AI contract.
 
 ## TL;DR
 
@@ -10,15 +10,11 @@ npm run check
 npm run start
 ```
 
-## Run
+## Installation
 
 ```bash
-npm run start
+npm install
 ```
-
-The service starts on `http://localhost:3000` by default.
-
-You can override runtime configuration with a `.env` file (loaded via `dotenv`).
 
 ## Compatibility
 
@@ -26,118 +22,67 @@ You can override runtime configuration with a `.env` file (loaded via `dotenv`).
 - ESM (`"type": "module"`)
 - Strict TypeScript
 
-## API HTTP
+## Public API
 
-### `GET /`
-
-- Response: `200 OK`
-- `content-type`: `application/json`
-- body: `{ "ok": true, "statusSource": "<url>" }`
-
-## Public Module API
-
-### `buildServer(): http.Server`
-
-Factory for the HTTP server used by the service runtime.
-
-Parameters:
-
-- None.
-
-Returns:
-
-- `http.Server`: Node.js HTTP server with the route contract documented in `API HTTP`.
-
-Behavior notes:
-
-- Creates a new server instance on each call.
-- Does not call `listen` by itself; startup is handled in the runtime bootstrap block.
-
-### `startServer(): http.Server`
-
-Starts the HTTP server using project configuration.
-
-Parameters:
-
-- None.
-
-Returns:
-
-- `http.Server`: listening server instance.
-
-Behavior notes:
-
-- Intended for runtime bootstrap (`src/main.ts`).
-- `import`-ing the package does not start the server automatically.
-
-## Integration Guide (External Projects)
-
-1. Start the service with `npm run start` for standalone execution.
-2. You can also import the package from another project:
+### `ServiceRuntime`
 
 ```ts
-import { buildServer, startServer } from "<service-name>";
+import { ServiceRuntime } from "{{packageName}}";
+
+const serviceRuntime = ServiceRuntime.createDefault();
+const server = serviceRuntime.buildServer();
 ```
 
-3. Consume the root endpoint for health/status when integrating over HTTP.
-4. Do not import internal files (`src/*` or private `dist/*` paths).
+Behavior notes:
 
-## Configuration (`src/config.ts`)
+- `ServiceRuntime.createDefault()` wires `StatusService` and `HttpServerService`.
+- `buildServer()` returns a Node HTTP server without listening.
+- `startServer()` binds the server to `config.DEFAULT_PORT`.
 
-`src/config.ts` defines defaults and allows environment overrides via `.env` and `process.env`.
+## Integration Guide
 
-- `PORT` overrides `CONFIG.DEFAULT_PORT`
-- `RESPONSE_CONTENT_TYPE` overrides `CONFIG.RESPONSE_CONTENT_TYPE`
-- `EXTERNAL_STATUS_URL` overrides `CONFIG.EXTERNAL_STATUS_URL`
+1. Run the service locally with `npm run start`.
+2. Integrate through HTTP `GET /` or import `ServiceRuntime` from the package.
+3. Do not import private source paths.
+4. Treat this README plus the generated AI contract as the local integration boundary.
 
-Example `.env`:
+## Configuration
 
-```dotenv
-PORT=8080
-RESPONSE_CONTENT_TYPE=application/json
-EXTERNAL_STATUS_URL=https://status.my-env.internal/health
-```
+Configuration is centralized in `src/config.ts`.
 
-## Contract for LLM Integrators
-
-- This README defines the expected HTTP contract.
-- Payload/status/header changes require a README update in the same change.
-- For integration, use documented endpoints and do not assume internal details.
+- `config.RESPONSE_CONTENT_TYPE`: response header for the root endpoint
+- `config.DEFAULT_PORT`: port used by `startServer()`
+- `config.EXTERNAL_STATUS_URL`: status source embedded in the response payload
 
 ## Scripts
 
-- `npm run start`: start the service with `tsx`
-- `npm run build`: compile public module output to `dist/`
-- `npm run check`: lint + format check + typecheck + tests
-- `npm run fix`: apply lint/prettier autofix
-- `npm run test`: run tests with Node test runner
-- `npm run publish`: publish package to npm (`--access public`)
-
-## Editor Autoformat (VS Code)
-
-- Autoformat on save is preconfigured in `.vscode/settings.json`.
-- Install recommended extensions from `.vscode/extensions.json`.
+- `npm run standards:check`: verify deterministic project contract rules
+- `npm run check`: standards + lint + format + typecheck + tests
+- `npm run fix`: lint/prettier autofix
+- `npm run start`: launch the service with `tsx`
+- `npm run build`: compile the module output to `dist/`
 
 ## Structure
 
-- `src/`: implementation
-- `src/main.ts`: runtime bootstrap
-- `src/config.ts`: centralized configuration with env overrides
-- `test/`: tests
-- `dist/`: published module output
+- `src/config.ts`: canonical runtime configuration
+- `src/status/status.service.ts`: status payload logic
+- `src/http/http-server.service.ts`: HTTP server construction
+- `src/app/service-runtime.service.ts`: runtime orchestration
+- `src/main.ts`: bootstrap entrypoint
+- `test/service-runtime.test.ts`: behavior test
 
 ## Troubleshooting
 
-### VS Code does not format on save
+### Port conflicts
 
-1. Install workspace recommended extensions (`Prettier` and `ESLint`).
-2. Reload VS Code window.
-3. Run command: `ESLint: Restart ESLint Server`.
-4. Uninstall/disable `rvest.vs-code-prettier-eslint` (Prettier ESLint). It is incompatible with ESLint 9 flat config.
+Override `PORT` in `.env` or your shell before running `npm run start`.
+
+### Contract failures
+
+Run `npm run standards:check` to detect missing managed files, README sections, or structural drift from the scaffold contract.
 
 ## AI Workflow
 
-If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.
-If existing repository code conflicts with these rules, `@sha3/code-standards` conventions MUST win and code must be refactored.
-Assistants MUST NOT edit `@sha3/code-standards` managed files (`AGENTS.md`, `ai/*`, `ai/examples/*`, tooling configs) unless explicitly requested.
-If `npm run check` reports TypeScript errors, assistants MUST fix code and rerun checks.
+- Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` before coding.
+- Keep managed contract/tooling files read-only during feature work.
+- Run `npm run check` before finalizing changes.

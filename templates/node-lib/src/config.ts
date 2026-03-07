@@ -1,3 +1,3 @@
-const CONFIG = { GREETING_PREFIX: "Hello" } as const;
+const config = { GREETING_PREFIX: "Hello" } as const;
 
-export default CONFIG;
+export default config;

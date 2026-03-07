@@ -24,7 +24,9 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Use type-only imports when possible.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass a single `options` parameter.
 - Always use braces in control flow (`if`, `else`, `for`, `while`, `do`).
-- `src/config.ts` MUST export a default object and it MUST always be imported as `import CONFIG from ".../config.ts"`.
+- In `src/`, business/domain logic MUST be implemented with classes by default.
+- Module-level exported functions in `src/` SHOULD be limited to minimal entrypoint/bootstrap wrappers.
+- `src/config.ts` MUST export a default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
 
 ## Naming
 
@@ -38,6 +40,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Boolean identifiers MUST use `is*`, `has*`, `can*`, or `should*` prefixes.
 - Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
+- `src/config.ts` default export `config` is a canonical naming exception to module-level constant naming.
 - Use lowercase acronyms in identifiers (`userId`, `statusUrl`, `httpServer`) except well-known compact tokens (`id`, `url`, `http`, `json`).
 - Prefer explicit role-based file names:
   - `<feature>.service.ts` for business services
@@ -78,8 +81,4 @@ Required block names:
 14. `public:methods`
 15. `static:methods`
 
-All section blocks MUST be present even when empty. Empty sections MUST include:
-
-```ts
-// empty
-```
+Section blocks without content SHOULD be omitted.

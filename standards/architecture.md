@@ -25,13 +25,16 @@ Both templates SHOULD keep this baseline structure:
 
 ## Source Layout Standard
 
-`src/` SHOULD follow a feature-first layout with shared composition boundaries:
+`src/` SHOULD follow a feature-first layout:
 
 - `src/index.ts` as the entrypoint.
-- `src/app/` for composition and dependency wiring.
-- `src/shared/` for cross-feature reusable modules.
 - `src/<feature>/` for feature modules.
 - Feature folder names SHOULD be singular (for example: `src/user`, `src/invoice`, `src/billing`).
+
+Optional shared boundaries:
+
+- `src/app/` when composition/wiring becomes non-trivial.
+- `src/shared/` when cross-feature modules actually exist.
 
 Template-specific additions:
 
@@ -45,7 +48,7 @@ Within each feature folder, files SHOULD be role-oriented and explicit (`*.servi
 - Keep feature modules cohesive.
 - Avoid cyclic dependencies.
 - Keep hardcoded application configuration centralized in `src/config.ts`.
-- `src/config.ts` MUST export a default object (for example `CONFIG`) and consumers MUST import it as `import CONFIG from "./config.ts"`.
+- `src/config.ts` MUST export a default object named `config` and consumers MUST import it as `import config from "./config.ts"`.
 - Prefer the smallest design that satisfies current requirements.
 - Do not introduce extra files, layers, or abstractions unless they reduce real current complexity.
 - Avoid speculative structure for future scenarios that are not implemented yet.

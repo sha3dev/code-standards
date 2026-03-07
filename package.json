@@ -23,6 +23,7 @@
     "bin",
     "eslint",
     "index.mjs",
+    "lib",
     "prettier",
     "resources",
     "standards",
@@ -37,9 +38,10 @@
     "node": ">=20.11.0"
   },
   "scripts": {
-    "check": "npm run standards:validate && npm run profile:validate && npm run lint && npm run format:check && npm run typecheck && npm run test",
+    "check": "npm run standards:validate && npm run profile:validate && npm run ai:validate && npm run lint && npm run format:check && npm run typecheck && npm run test",
     "fix": "npm run lint:fix && npm run format:write",
     "standards:validate": "node scripts/validate-standards.mjs",
+    "ai:validate": "node scripts/validate-ai-resources.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format:check": "prettier --check .",

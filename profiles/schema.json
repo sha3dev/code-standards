@@ -85,7 +85,7 @@
       ]
     },
     "comment_section_format": { "type": "string", "const": "jsdoc-section-tag" },
-    "comment_sections_required_when_empty": { "type": "boolean", "const": true },
+    "comment_sections_required_when_empty": { "type": "boolean" },
     "if_requires_braces": { "type": "boolean", "const": true },
     "readme_style": { "type": "string", "const": "top-tier" },
     "rule_severity_model": { "type": "string", "enum": ["all_blocking", "tiered", "all_preferred"] },

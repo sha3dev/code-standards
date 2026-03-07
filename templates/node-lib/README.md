@@ -1,6 +1,6 @@
 # 📚 {{packageName}}
 
-Reusable TypeScript library with a clear integration contract for external projects and LLM agents.
+Feature-first TypeScript library scaffolded with an AI contract and deterministic standards checks.
 
 ## TL;DR
 
@@ -13,7 +13,7 @@ npm run build
 ## Installation
 
 ```bash
-npm install <library-name>
+npm install {{packageName}}
 ```
 
 ## Compatibility
@@ -24,89 +24,60 @@ npm install <library-name>
 
 ## Public API
 
-### `greet(name: string): string`
+### `GreeterService`
 
-Returns a greeting using the configured prefix.
+```ts
+import { GreeterService } from "{{packageName}}";
 
-Parameters:
-
-- `name` (`string`): name or label appended to the greeting prefix. This value is interpolated without extra normalization.
-
-Returns:
-
-- `string`: final greeting with format `<CONFIG.GREETING_PREFIX>, <name>`.
+const greeterService = GreeterService.createDefault();
+console.log(greeterService.greet("world"));
+```
 
 Behavior notes:
 
-- Pure function (no IO, no side effects).
-- Output depends on `CONFIG.GREETING_PREFIX` and the received `name`.
+- `GreeterService.createDefault()` wires the service with `src/config.ts`.
+- `GreeterService.greet(name)` returns `<config.GREETING_PREFIX>, <name>`.
 
-```ts
-import { greet } from "<library-name>";
+## Integration Guide
 
-const greeting = greet("world");
-console.log(greeting);
-```
+1. Install the package with `npm install {{packageName}}`.
+2. Import only from the public entrypoint.
+3. Do not import private source paths.
+4. If another LLM consumes this library, treat this README and `AGENTS.md` as the local contract.
 
-## Integration Guide (External Projects)
+## Configuration
 
-1. Install the library with `npm install <library-name>`.
-2. Import only from the public entrypoint (`<library-name>`).
-3. Do not import internal paths (`src/*`, private `dist/*` files, or private modules).
-4. If you integrate with an LLM, treat this section as the integration contract.
+Configuration is centralized in `src/config.ts`.
 
-## Configuration (`src/config.ts`)
-
-Hardcoded configuration is centralized in `src/config.ts`.
-
-- `CONFIG.GREETING_PREFIX`: prefix used by `greet`.
-
-## Contract for LLM Integrators
-
-- This README is the source of truth for external integration.
-- The stable API is the one documented in `Public API`.
-- If API shape or observable behavior changes, update this README in the same change.
+- `config.GREETING_PREFIX`: prefix used by the default greeter factory.
 
 ## Scripts
 
-- `npm run check`: lint + format check + typecheck + tests
+- `npm run standards:check`: verify deterministic project contract rules
+- `npm run check`: standards + lint + format + typecheck + tests
 - `npm run fix`: lint/prettier autofix
 - `npm run build`: compile to `dist/`
-- `npm run test`: tests with Node test runner
-- `npm run publish`: publish package to npm (`--access public`)
-
-## Editor Autoformat (VS Code)
-
-- Autoformat on save is preconfigured in `.vscode/settings.json`.
-- Install recommended extensions from `.vscode/extensions.json`.
+- `npm run test`: run Node test runner with `tsx`
 
 ## Structure
 
-- `src/`: implementation
-- `src/config.ts`: centralized configuration
-- `test/`: tests
-- `dist/`: build output
+- `src/config.ts`: canonical hardcoded configuration
+- `src/greeter/greeter.service.ts`: feature service with section markers
+- `src/index.ts`: public exports
+- `test/greeter.test.ts`: behavior test
 
 ## Troubleshooting
 
-### Import errors (ESM)
+### Import errors
 
-Ensure the consumer project uses Node.js-compatible ESM.
+Ensure the consumer project supports Node.js ESM and TypeScript extension rewriting.
 
-### Type errors
+### Contract failures
 
-Run `npm run typecheck` in the consumer project and verify TypeScript version compatibility.
-
-### VS Code does not format on save
-
-1. Install workspace recommended extensions (`Prettier` and `ESLint`).
-2. Reload VS Code window.
-3. Run command: `ESLint: Restart ESLint Server`.
-4. Uninstall/disable `rvest.vs-code-prettier-eslint` (Prettier ESLint). It is incompatible with ESLint 9 flat config.
+Run `npm run standards:check` to see deterministic contract violations such as missing managed files or README sections.
 
 ## AI Workflow
 
-If you work with assistants, treat `AGENTS.md` and `ai/*.md` as blocking rules.
-If existing repository code conflicts with these rules, `@sha3/code-standards` conventions MUST win and code must be refactored.
-Assistants MUST NOT edit `@sha3/code-standards` managed files (`AGENTS.md`, `ai/*`, `ai/examples/*`, tooling configs) unless explicitly requested.
-If `npm run check` reports TypeScript errors, assistants MUST fix code and rerun checks.
+- Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` file before coding.
+- Do not edit managed contract/tooling files during normal implementation.
+- Run `npm run check` before finalizing changes.

@@ -30,7 +30,7 @@
     "static:methods"
   ],
   "comment_section_format": "jsdoc-section-tag",
-  "comment_sections_required_when_empty": true,
+  "comment_sections_required_when_empty": false,
   "if_requires_braces": true,
   "readme_style": "top-tier",
   "rule_severity_model": "all_blocking",

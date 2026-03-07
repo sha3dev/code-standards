@@ -1,6 +1,8 @@
 ### Class-First Design (MUST)
 
 - New business/domain logic MUST be modeled with classes by default.
+- In `src/`, module-level exported functions SHOULD be avoided for business/domain logic.
+- Exceptions for exported functions are limited to minimal entrypoint/bootstrap wrappers.
 - Each class MUST use constructor injection for dependencies.
 - A source file MUST expose one public class.
 - Mutable shared state MUST be avoided; prefer `readonly` fields and deterministic methods.
@@ -24,7 +26,7 @@
   - `protected:methods`
   - `public:methods`
   - `static:methods`
-- All section blocks MUST exist even when empty, using `// empty` after the section marker.
+- Section blocks without class members SHOULD be omitted.
 - `factory` MUST only contain methods that create and return instances of the same class.
 
 Good example:

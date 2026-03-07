@@ -1,0 +1,155 @@
+{
+  "version": "v1",
+  "rules": [
+    {
+      "id": "single-return",
+      "title": "Single Return",
+      "summary": "Functions and methods in src/ must use a single return statement.",
+      "severity": "blocking-deterministic",
+      "kind": "style",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": { "good": ["ai/examples/rules/returns-good.ts"], "bad": ["ai/examples/rules/returns-bad.ts"] },
+      "profileOverrides": [{ "key": "return_policy", "equals": "single_return_strict_no_exceptions" }]
+    },
+    {
+      "id": "async-await-only",
+      "title": "Async Await Only",
+      "summary": "Asynchronous code in src/ must use async/await instead of promise chains.",
+      "severity": "blocking-deterministic",
+      "kind": "style",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": { "good": ["ai/examples/rules/async-good.ts"], "bad": ["ai/examples/rules/async-bad.ts"] },
+      "profileOverrides": [{ "key": "async_style", "equals": "async_await_only" }]
+    },
+    {
+      "id": "one-public-class-per-file",
+      "title": "One Public Class Per File",
+      "summary": "Each source file may expose at most one public class.",
+      "severity": "blocking-deterministic",
+      "kind": "architecture",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": { "good": ["ai/examples/rules/class-first-good.ts"], "bad": ["ai/examples/rules/class-first-bad.ts"] },
+      "profileOverrides": [{ "key": "class_file_policy", "equals": "one_public_class_per_file" }]
+    },
+    {
+      "id": "class-section-order",
+      "title": "Class Section Order",
+      "summary": "Files that expose a public class must include valid ordered @section markers.",
+      "severity": "blocking-deterministic",
+      "kind": "style",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": {
+        "good": ["ai/examples/rules/class-first-good.ts", "ai/examples/rules/constructor-good.ts"],
+        "bad": ["ai/examples/rules/class-first-bad.ts", "ai/examples/rules/constructor-bad.ts"]
+      },
+      "profileOverrides": [{ "key": "paradigm", "equals": "class-first" }]
+    },
+    {
+      "id": "canonical-config-import",
+      "title": "Canonical Config Import",
+      "summary": "Imports of config.ts must use the config identifier and include the .ts extension.",
+      "severity": "blocking-deterministic",
+      "kind": "architecture",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": { "good": ["ai/examples/demo/src/billing/billing.service.ts", "ai/examples/demo/src/invoice/invoice.service.ts"], "bad": [] },
+      "profileOverrides": []
+    },
+    {
+      "id": "domain-specific-identifiers",
+      "title": "Domain Specific Identifiers",
+      "summary": "New identifiers must avoid generic names such as data, obj, tmp, val, thing, helper, utils, and common.",
+      "severity": "blocking-deterministic",
+      "kind": "style",
+      "appliesTo": ["src/**/*.ts", "test/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": { "good": ["ai/examples/rules/functions-good.ts"], "bad": ["ai/examples/rules/functions-bad.ts"] },
+      "profileOverrides": []
+    },
+    {
+      "id": "boolean-prefix",
+      "title": "Boolean Prefix",
+      "summary": "Boolean variables and properties must start with is, has, can, or should.",
+      "severity": "blocking-deterministic",
+      "kind": "style",
+      "appliesTo": ["src/**/*.ts", "test/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint"],
+      "examples": { "good": ["ai/examples/rules/functions-good.ts"], "bad": ["ai/examples/rules/functions-bad.ts"] },
+      "profileOverrides": []
+    },
+    {
+      "id": "feature-filename-role",
+      "title": "Feature File Naming",
+      "summary": "Feature files must use the feature name plus an explicit role suffix such as .service.ts or .types.ts.",
+      "severity": "blocking-deterministic",
+      "kind": "architecture",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["eslint", "verify"],
+      "examples": {
+        "good": ["ai/examples/demo/src/invoice/invoice.service.ts", "ai/examples/demo/src/invoice/invoice.types.ts"],
+        "bad": ["ai/examples/rules/class-first-bad.ts"]
+      },
+      "profileOverrides": [{ "key": "architecture", "equals": "feature_folders" }]
+    },
+    {
+      "id": "typescript-only",
+      "title": "TypeScript Only",
+      "summary": "Implementation and test code must stay in TypeScript files only.",
+      "severity": "blocking-deterministic",
+      "kind": "style",
+      "appliesTo": ["src/**/*", "test/**/*"],
+      "deterministic": true,
+      "enforcedBy": ["verify", "eslint"],
+      "examples": { "good": ["ai/examples/rules/functions-good.ts"], "bad": [] },
+      "profileOverrides": []
+    },
+    {
+      "id": "managed-files-read-only",
+      "title": "Managed Files Are Read Only",
+      "summary": "Managed contract and tooling files must not be edited during normal feature work.",
+      "severity": "guidance",
+      "kind": "workflow",
+      "appliesTo": ["AGENTS.md", "ai/*.md", "ai/contract.json", "tooling config files"],
+      "deterministic": false,
+      "enforcedBy": ["AGENTS"],
+      "examples": { "good": [], "bad": [] },
+      "profileOverrides": []
+    },
+    {
+      "id": "behavior-change-tests",
+      "title": "Behavior Changes Need Tests",
+      "summary": "Behavior changes must update or add tests, and tests should focus on observable behavior.",
+      "severity": "guidance",
+      "kind": "testing",
+      "appliesTo": ["src/**/*.ts", "test/**/*.ts"],
+      "deterministic": false,
+      "enforcedBy": ["AGENTS", "human-review"],
+      "examples": { "good": ["ai/examples/rules/testing-good.ts"], "bad": ["ai/examples/rules/testing-bad.ts"] },
+      "profileOverrides": [{ "key": "testing_policy", "equals": "tests_required_for_behavior_change" }]
+    },
+    {
+      "id": "readme-sections",
+      "title": "README Required Sections",
+      "summary": "README.md must keep the required sections for setup, API, config, troubleshooting, and AI workflow.",
+      "severity": "blocking-deterministic",
+      "kind": "documentation",
+      "appliesTo": ["README.md"],
+      "deterministic": true,
+      "enforcedBy": ["verify"],
+      "examples": { "good": [], "bad": [] },
+      "profileOverrides": []
+    }
+  ]
+}

@@ -4,7 +4,9 @@
 - Feature folder names MUST be singular.
 - Each feature MUST keep its own domain model, application services, and infrastructure adapters grouped by feature.
 - Cross-feature imports MUST happen through explicit public entry points.
-- `src/` MUST keep explicit composition boundaries: `src/index.ts`, `src/app/`, `src/shared/`, and `src/<feature>/`.
+- `src/` MUST stay feature-first with `src/index.ts` and `src/<feature>/`.
+- `src/app/` MUST exist only when the project has explicit composition/wiring that justifies it.
+- `src/shared/` MUST exist only when cross-feature modules actually exist.
 - Project layout MUST include `src/`, `test/`, `scripts/`, `docs/`, and `ai/` at minimum.
 - For `node-service`, HTTP transport concerns SHOULD live in `src/http/` (`routes`, `controllers`, `middleware`).
 - For `node-lib`, API boundary separation MAY use `src/public/` and `src/internal/`.
@@ -12,7 +14,7 @@
 - Feature file domain base names SHOULD be singular (for example: `invoice.service.ts`).
 - Ambiguous filenames (`utils.ts`, `helpers.ts`, `common.ts`) are forbidden for new feature code.
 - Hardcoded, non-parameterized configuration MUST be centralized in `src/config.ts` (for example, external service URLs).
-- `src/config.ts` MUST export a single default object and it MUST always be imported as `import CONFIG from ".../config.ts"`.
+- `src/config.ts` MUST export a single default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
 - Architecture decisions MUST default to the simplest structure that satisfies current requirements.
 - New files, modules, or layers MUST be introduced only when they solve present complexity, not anticipated future needs.
 

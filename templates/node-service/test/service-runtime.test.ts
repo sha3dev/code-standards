@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { buildServer } from "../src/index.ts";
+import { ServiceRuntime } from "../src/index.ts";
 
-test("service responds with ok payload", async () => {
-  const server = buildServer();
+test("ServiceRuntime serves the status payload", async () => {
+  const serviceRuntime = ServiceRuntime.createDefault();
+  const server = serviceRuntime.buildServer();
 
-  await new Promise<void>((resolve) => {
+  await new Promise((resolve) => {
     server.listen(0, () => {
-      resolve();
+      resolve(undefined);
     });
   });
 
@@ -23,14 +24,14 @@ test("service responds with ok payload", async () => {
   assert.equal(response.status, 200);
   assert.deepEqual(json, { ok: true, statusSource: "https://status.example.com/health" });
 
-  await new Promise<void>((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     server.close((error) => {
       if (error) {
         reject(error);
         return;
       }
 
-      resolve();
+      resolve(undefined);
     });
   });
 });

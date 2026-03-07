@@ -8,7 +8,7 @@
  * @section imports:internals
  */
 
-import CONFIG from "../config.ts";
+import config from "../config.ts";
 import type { InvoiceService } from "../invoice/invoice.service.ts";
 import type { InvoiceSummary } from "../invoice/invoice.types.ts";
 
@@ -77,7 +77,7 @@ export class BillingService {
    */
 
   private formatCurrency(amount: number): string {
-    const formattedAmount = `${CONFIG.BILLING_CURRENCY_SYMBOL}${amount.toFixed(2)}`;
+    const formattedAmount = `${config.BILLING_CURRENCY_SYMBOL}${amount.toFixed(2)}`;
     return formattedAmount;
   }
 
@@ -98,7 +98,7 @@ export class BillingService {
       invoiceCount: summary.count,
       totalAmount: summary.totalAmount,
       formattedTotal: this.formatCurrency(summary.totalAmount),
-      statusServiceUrl: CONFIG.STATUS_SERVICE_URL
+      statusServiceUrl: config.STATUS_SERVICE_URL
     };
     return snapshot;
   }

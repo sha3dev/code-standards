@@ -12,9 +12,10 @@ All new projects MUST use this package and its subpath exports:
 In addition to tooling, each generated project MUST include profile-driven AI instructions:
 
 - `AGENTS.md` generated from the active style profile
-- `ai/codex.md`, `ai/cursor.md`, `ai/copilot.md`, `ai/windsurf.md`
+- `ai/contract.json` as the machine-readable contract
+- optional assistant adapters in `ai/*.md`
 
-The generated instructions are blocking rules and MUST be treated as the top local AI coding contract.
+The generated contract files are blocking rules and MUST be treated as the top local AI coding contract.
 When generated instructions conflict with existing repository code, the generated `@sha3/code-standards` conventions MUST win.
 
 ## Enforcement
@@ -23,11 +24,14 @@ Enforcement is local and strict.
 
 Required scripts:
 
+- `npm run standards:check`
 - `npm run check`
 - `npm run fix`
 - `npm run lint`
 - `npm run format:check`
 - `npm run typecheck` (MUST fail on any TypeScript error)
 - `npm run test`
+
+`npm run standards:check` MUST execute `code-standards verify`.
 
 No remote CI is required for v1.

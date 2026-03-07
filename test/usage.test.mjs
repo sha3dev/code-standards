@@ -15,4 +15,5 @@ test("cli shows help", () => {
   assert.match(result.stdout, /profile/);
   assert.match(result.stdout, /refresh/);
   assert.match(result.stdout, /update/);
+  assert.match(result.stdout, /verify/);
 });
