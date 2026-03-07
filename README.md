@@ -297,12 +297,13 @@ npx @sha3/code-standards refresh
 
 `refresh` default behavior:
 
-- scope `Managed + AI` (`package.json`, config files, `AGENTS.md`, `ai/*`, `ai/examples/*`)
-- non-destructive for project source code (`src/**`, `test/**` are preserved)
+- creates a full reference snapshot in `.code-standards/reference/latest`
+- writes `.code-standards/reference/public-contract.json` with the detected package-level public contract
+- rebuilds the scaffolded surface from the selected template (`src/**`, `test/**`, README, managed scripts/configs, AI contract files)
 - auto-detect template (or force with `--template`)
 - selective merge for `package.json` (managed scripts/devDependencies updated, custom keys preserved)
 - runs `npm run fix` and `npm run check` automatically after refreshing files
-- prints a ready-to-paste LLM prompt to reprocess updated conventions across the repository
+- preserves the previous implementation only inside the reference snapshot, so an LLM can rebuild against it while keeping public contracts intact
 - no dependency install unless `--install` (use `--install` if dependencies are missing before auto-check)
 
 ---
@@ -314,9 +315,10 @@ code-standards <command> [options]
 
 Commands:
   init                  Initialize a project in the current directory
-  refresh               Re-apply managed standards files and AI instructions
+  refresh               Snapshot the repo and rebuild the scaffold from the template
   update                Alias of refresh
   profile               Create or update the AI style profile
+  verify                Validate deterministic standards in a project
 ```
 
 ### `init` options
@@ -353,6 +355,15 @@ An existing `.git/` directory is allowed without `--force`.
 - `--profile <path>`
 - `--non-interactive`
 - `--force-profile`
+
+### `verify`
+
+Runs deterministic checks for the generated contract and scaffold:
+
+- validates `ai/contract.json`
+- checks managed files and metadata sync
+- checks required README sections
+- checks template layout drift
 
 ---
 
