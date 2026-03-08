@@ -18,3 +18,4 @@ This repository is AI-first. Always consume standards in this order:
 - Treat generated project-level `AGENTS.md` as blocking policy.
 - Follow `standards/readme.md` when creating or updating README files.
 - Treat simplicity as a mandatory rule: no speculative abstractions, no gratuitous indirection, no extra files/layers/wrappers unless they solve a real current problem.
+- Simplicity does not justify removing valid boundaries; keep distinct current responsibilities separated when they serve a real purpose.

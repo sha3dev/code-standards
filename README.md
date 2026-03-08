@@ -72,6 +72,8 @@ Simplicity is mandatory.
 - choose the simplest correct implementation for the current requirement
 - avoid speculative abstractions, helper layers, wrappers, and extension points without immediate need
 - if two solutions are both correct, prefer the smaller and more direct one
+- do not remove valid responsibility boundaries in the name of simplicity
+- simplicity means avoiding gratuitous complexity, not reducing structure blindly
 
 ## Public API
 

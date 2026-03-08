@@ -42,6 +42,8 @@ Simplicity is mandatory, not stylistic preference.
 - Use the simplest correct design for the current requirement.
 - Do not add speculative abstractions, wrappers, helper layers, extension points, or extra files without immediate justification.
 - If a solution can be made smaller and more direct without losing correctness, that simpler version MUST be preferred.
+- Simplicity does not justify removing valid boundaries.
+- Keep distinct current responsibilities separated when they serve a real purpose.
 
 ## Managed Files
 

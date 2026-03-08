@@ -19,6 +19,8 @@
 - New files, modules, or layers MUST be introduced only when they solve present complexity, not anticipated future needs.
 - Simplicity is mandatory: if a design can be smaller, flatter, and more direct while staying correct, that simpler design MUST be chosen.
 - Speculative abstractions, placeholder extension points, and gratuitous indirection are forbidden.
+- Simplicity MUST NOT be interpreted as permission to remove valid architectural boundaries.
+- Distinct responsibilities that are already justified SHOULD remain separated.
 
 Good example:
 

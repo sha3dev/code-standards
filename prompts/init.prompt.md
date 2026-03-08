@@ -4,6 +4,7 @@ Follow the project conventions from `@sha3/code-standards` strictly:
 
 - obey blocking deterministic rules from `ai/contract.json`
 - treat simplicity as mandatory: choose the smallest correct solution and avoid speculative abstractions or gratuitous indirection
+- do not use simplicity as a reason to remove valid responsibility boundaries
 - keep managed files read-only unless this task is explicitly a standards update
 - preserve the scaffold structure and naming conventions
 - add or update tests for behavior changes

@@ -167,6 +167,21 @@ async function main() {
     ["install", "run fix", "run check"],
   );
 
+  await mkdir(path.join(libTarget, "node_modules", "@sha3", "code-standards"), { recursive: true });
+  await writeFile(path.join(libTarget, "node_modules", "@sha3", "code-standards", "package.json"), '{ "version": "0.8.0" }\n', "utf8");
+  await writeFile(fakeNpmLogPath, "", "utf8");
+  result = runCliWithFakeNpm(["refactor", "--yes"], libTarget);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /installed @sha3\/code-standards is 0\.8\.0 and expected/);
+  fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
+  assert.deepEqual(
+    fakeNpmLog
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0),
+    ["install", "run fix", "run check"],
+  );
+
   await mkdir(serviceTarget, { recursive: true });
   result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);

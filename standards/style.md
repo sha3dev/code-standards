@@ -20,6 +20,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Prefer fewer lines, fewer files, fewer layers, and fewer moving parts.
 - Do not introduce abstractions, wrappers, helper layers, option objects, factories, interfaces, or indirection unless they are justified by a real current need.
 - Avoid speculative design for possible future scenarios.
+- Simplicity MUST NOT come at the cost of cohesion or clear responsibility boundaries.
+- Do not remove justified modules, role-based files, or separations merely to make the structure smaller.
 - Prefer concise arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`).
 - Avoid block-bodied callbacks with explicit `return` when a concise expression arrow function is sufficient.
 - Avoid `any` unless there is no viable alternative.

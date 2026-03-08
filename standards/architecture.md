@@ -9,6 +9,7 @@ This is not optional guidance. Simplicity is a mandatory constraint:
 - do not add layers, indirection, wrappers, or extra files without present need
 - do not design for hypothetical future extension points
 - when in doubt, remove complexity instead of adding it
+- simplicity does not justify removing valid boundaries
 
 ## Project Templates
 
@@ -60,3 +61,5 @@ Within each feature folder, files SHOULD be role-oriented and explicit (`*.servi
 - Do not introduce extra files, layers, or abstractions unless they reduce real current complexity.
 - Avoid speculative structure for future scenarios that are not implemented yet.
 - If two designs are both correct, the less abstract and less indirect design MUST win.
+- Respect cohesion and responsibility boundaries.
+- If code already has clear, justified boundaries, keep them. Do not remove them only to make the structure look simpler.
