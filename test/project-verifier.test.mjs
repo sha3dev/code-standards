@@ -67,7 +67,28 @@ async function createMinimalNodeLibProject(t, withAiAdaptersInMetadata, withAiAd
 test("verifyProject flags withAiAdapters metadata mismatch", async (t) => {
   const targetDir = await createMinimalNodeLibProject(t, false, true);
 
-  const errors = await verifyProject(targetDir);
+  const result = await verifyProject(targetDir);
 
-  assert(errors.some((error) => error.includes("package.json.codeStandards.withAiAdapters must match ai/contract.json project.withAiAdapters")));
+  assert.equal(result.ok, false);
+  assert(
+    result.issues.some(
+      (issue) =>
+        issue.ruleId === "metadata-sync" &&
+        issue.message.includes("package.json.codeStandards.withAiAdapters must match ai/contract.json project.withAiAdapters"),
+    ),
+  );
+});
+
+test("verifyProject returns a structured passing result for a valid node-lib project", async (t) => {
+  const targetDir = await createMinimalNodeLibProject(t, false, false);
+
+  const result = await verifyProject(targetDir);
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.issues, []);
+  assert.equal(result.summary.issueCount, 0);
+  assert(result.summary.checkedRuleIds.includes("contract-presence"));
+  assert(result.summary.checkedRuleIds.includes("template-layout"));
+  assert(result.summary.checkedFiles.includes("README.md"));
+  assert(result.summary.checkedFiles.includes("src/config.ts"));
 });

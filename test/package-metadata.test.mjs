@@ -10,7 +10,7 @@ test("getRelativeProfilePath returns repo-relative paths only", () => {
   assert.equal(getRelativeProfilePath(null, "/repo"), null);
 });
 
-test("updateCodeStandardsMetadata preserves relevant fields and removes obsolete ones", () => {
+test("updateCodeStandardsMetadata writes canonical metadata fields", () => {
   const projectPackageJson = {
     name: "demo",
     codeStandards: {
@@ -18,7 +18,6 @@ test("updateCodeStandardsMetadata preserves relevant fields and removes obsolete
       template: "node-lib",
       profilePath: "profiles/old.profile.json",
       withAiAdapters: true,
-      lastRefreshWith: "0.7.0",
     },
   };
 

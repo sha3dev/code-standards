@@ -14,7 +14,8 @@ Rules:
 - use the snapshot under `.code-standards/refactor-source/latest/` as reference, not as a structure to copy blindly
 - keep managed files read-only unless this task is explicitly a standards update
 - follow naming, architecture, and class section conventions strictly
-- run `npm run check` before finishing
+- execute `npm run check` yourself before finishing
+- if `npm run check` fails, fix the issues and rerun it until it passes
 
 Finish with:
 

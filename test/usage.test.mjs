@@ -16,8 +16,10 @@ test("cli shows help", () => {
   assert.match(result.stdout, /refactor/);
   assert.match(result.stdout, /profile/);
   assert.match(result.stdout, /verify/);
-  assert.doesNotMatch(result.stdout, /^\s+refresh\s/m);
-  assert.doesNotMatch(result.stdout, /^\s+update\s/m);
+  assert.match(result.stdout, /--report <text\|json>/);
+  assert.match(result.stdout, /--only <rule-id\[,rule-id\.\.\.\]>/);
+  assert.match(result.stdout, /--files <path\[,path\.\.\.\]>/);
+  assert.match(result.stdout, /--explain <rule-id>/);
 });
 
 test("refactor rejects positional arguments", () => {

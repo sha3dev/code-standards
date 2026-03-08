@@ -70,6 +70,9 @@ async function main() {
   result = runCli(["init", "--template", "node-lib", "--yes", "--no-install", "--profile", profilePath], libTarget);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Project created/);
+  assert.match(result.stdout, /Guided next steps:/);
+  assert.match(result.stdout, /prompts\/init\.prompt\.md/);
+  assert.match(result.stdout, /npm run check/);
 
   const libFiles = await listRelativeFiles(libTarget);
   assert(libFiles.includes("src/greeter/greeter.service.ts"));
@@ -89,7 +92,6 @@ async function main() {
   assert.equal(libPackage.codeStandards.contractVersion, "v1");
   assert.equal(libPackage.codeStandards.withAiAdapters, true);
   assert.equal(libPackage.scripts["standards:check"], "code-standards verify");
-  assert.equal("lastRefreshWith" in libPackage.codeStandards, false);
 
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(libAgentsRaw, /machine-readable source of truth/);
@@ -134,6 +136,9 @@ async function main() {
   await writeFile(fakeNpmLogPath, "", "utf8");
   result = runCliWithFakeNpm(["refactor", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /LLM handoff steps:/);
+  assert.match(result.stdout, /prompts\/refactor\.prompt\.md/);
+  assert.match(result.stdout, /\.code-standards\/refactor-source\//);
   const refactoredAgents = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.doesNotMatch(refactoredAgents, /# stale/);
   const libIndexAfterRefactor = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
@@ -164,6 +169,8 @@ async function main() {
   await mkdir(serviceTarget, { recursive: true });
   result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Guided next steps:/);
+  assert.match(result.stdout, /prompts\/init\.prompt\.md/);
 
   const serviceFiles = await listRelativeFiles(serviceTarget);
   assert(serviceFiles.includes("AGENTS.md"));
@@ -182,7 +189,6 @@ async function main() {
   const servicePackage = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
   assert.equal(servicePackage.codeStandards.withAiAdapters, false);
   assert.equal(servicePackage.scripts["standards:check"], "code-standards verify");
-  assert.equal("lastRefreshWith" in servicePackage.codeStandards, false);
 
   const serviceContract = JSON.parse(await readFile(path.join(serviceTarget, "ai", "contract.json"), "utf8"));
   assert.equal(serviceContract.project.template, "node-service");
@@ -190,7 +196,6 @@ async function main() {
   assert(serviceContract.managedFiles.includes("AGENTS.md"));
   assert(serviceContract.managedFiles.includes("ai/contract.json"));
   assert(serviceContract.managedFiles.includes("prompts/init.prompt.md"));
-  assert(serviceContract.managedFiles.includes("prompts/refresh.prompt.md"));
   assert(serviceContract.managedFiles.includes("prompts/refactor.prompt.md"));
 
   result = runCli(["verify"], serviceTarget);

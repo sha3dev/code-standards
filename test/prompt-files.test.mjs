@@ -13,7 +13,7 @@ const packageRoot = path.resolve(testDir, "..");
 test("collectPromptFiles returns the managed prompt set", async () => {
   const promptFiles = await collectPromptFiles(packageRoot);
 
-  assert.deepEqual(promptFiles, ["prompts/init.prompt.md", "prompts/refactor.prompt.md", "prompts/refresh.prompt.md"]);
+  assert.deepEqual(promptFiles, ["prompts/init.prompt.md", "prompts/refactor.prompt.md"]);
 });
 
 test("renderPromptFiles materializes prompts into the target repo", async (t) => {
@@ -26,4 +26,13 @@ test("renderPromptFiles materializes prompts into the target repo", async (t) =>
   const sourceRefactorPrompt = await readFile(path.join(packageRoot, "prompts", "refactor.prompt.md"), "utf8");
 
   assert.equal(generatedRefactorPrompt, sourceRefactorPrompt);
+});
+
+test("managed prompts require the LLM to execute npm run check itself", async () => {
+  for (const promptPath of ["prompts/init.prompt.md", "prompts/refactor.prompt.md"]) {
+    const promptRaw = await readFile(path.join(packageRoot, promptPath), "utf8");
+
+    assert.match(promptRaw, /execute `npm run check` yourself before finishing/);
+    assert.match(promptRaw, /fix the issues and rerun it until it passes/);
+  }
 });

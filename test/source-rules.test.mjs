@@ -49,7 +49,7 @@ export function readValue(input: string): string {
 `,
   );
 
-  assert(errors.some((error) => error.includes("[single-return]")));
+  assert(errors.some((issue) => issue.ruleId === "single-return"));
 });
 
 test("async-await-only flags promise chains in src", async (t) => {
@@ -63,7 +63,7 @@ export async function loadUser(): Promise<void> {
 `,
   );
 
-  assert(errors.some((error) => error.includes("[async-await-only]")));
+  assert(errors.some((issue) => issue.ruleId === "async-await-only"));
 });
 
 test("feature-filename-role flags ambiguous feature file names", async (t) => {
@@ -75,7 +75,7 @@ export const value = 1;
 `,
   );
 
-  assert(errors.some((error) => error.includes("[feature-filename-role]")));
+  assert(errors.some((issue) => issue.ruleId === "feature-filename-role"));
 });
 
 test("one-public-class-per-file flags multiple exported classes", async (t) => {
@@ -88,7 +88,7 @@ export class BillingService {}
 `,
   );
 
-  assert(errors.some((error) => error.includes("[one-public-class-per-file]")));
+  assert(errors.some((issue) => issue.ruleId === "one-public-class-per-file"));
 });
 
 test("class-section-order flags missing ordered sections", async (t) => {
@@ -107,7 +107,7 @@ export class UserService {
 `,
   );
 
-  assert(errors.some((error) => error.includes("[class-section-order]")));
+  assert(errors.some((issue) => issue.ruleId === "class-section-order"));
 });
 
 test("canonical-config-import flags non canonical imports", async (t) => {
@@ -128,7 +128,7 @@ export class UserService {
 `,
   );
 
-  assert(errors.some((error) => error.includes("[canonical-config-import]")));
+  assert(errors.some((issue) => issue.ruleId === "canonical-config-import"));
 });
 
 test("canonical-config-import ignores non-relative imports that end in config", async (t) => {
@@ -160,8 +160,8 @@ export { ready, data };
 `,
   );
 
-  assert(errors.some((error) => error.includes("[boolean-prefix]")));
-  assert(errors.some((error) => error.includes("[domain-specific-identifiers]")));
+  assert(errors.some((issue) => issue.ruleId === "boolean-prefix"));
+  assert(errors.some((issue) => issue.ruleId === "domain-specific-identifiers"));
 });
 
 test("ordered class files with canonical config imports pass source rules", async (t) => {

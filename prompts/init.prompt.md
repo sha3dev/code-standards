@@ -6,7 +6,8 @@ Follow the project conventions from `@sha3/code-standards` strictly:
 - keep managed files read-only unless this task is explicitly a standards update
 - preserve the scaffold structure and naming conventions
 - add or update tests for behavior changes
-- run `npm run check` before finishing
+- execute `npm run check` yourself before finishing
+- if `npm run check` fails, fix the issues and rerun it until it passes
 
 When you respond after implementation, include:
 
