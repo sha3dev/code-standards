@@ -65,6 +65,14 @@ npm install -D @sha3/code-standards
 
 That last part matters: `verify` is not another formatter or typechecker. It is the package-specific policy engine for generated repos.
 
+## Non-Negotiables
+
+Simplicity is mandatory.
+
+- choose the simplest correct implementation for the current requirement
+- avoid speculative abstractions, helper layers, wrappers, and extension points without immediate need
+- if two solutions are both correct, prefer the smaller and more direct one
+
 ## Public API
 
 ### CLI commands

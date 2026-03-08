@@ -12,6 +12,7 @@ Rules:
 
 - preserve only the contracts explicitly marked for preservation
 - use the snapshot under `.code-standards/refactor-source/latest/` as reference, not as a structure to copy blindly
+- treat simplicity as mandatory: rebuild with the smallest correct design and avoid speculative abstractions or gratuitous indirection
 - keep managed files read-only unless this task is explicitly a standards update
 - follow naming, architecture, and class section conventions strictly
 - execute `npm run check` yourself before finishing

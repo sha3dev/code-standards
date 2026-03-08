@@ -3,6 +3,13 @@
 Architecture strictness is **moderate**.
 Simplicity policy is **minimal pragmatic (no speculative abstractions)**.
 
+This is not optional guidance. Simplicity is a mandatory constraint:
+
+- choose the smallest structure that works
+- do not add layers, indirection, wrappers, or extra files without present need
+- do not design for hypothetical future extension points
+- when in doubt, remove complexity instead of adding it
+
 ## Project Templates
 
 Two templates are supported:
@@ -52,3 +59,4 @@ Within each feature folder, files SHOULD be role-oriented and explicit (`*.servi
 - Prefer the smallest design that satisfies current requirements.
 - Do not introduce extra files, layers, or abstractions unless they reduce real current complexity.
 - Avoid speculative structure for future scenarios that are not implemented yet.
+- If two designs are both correct, the less abstract and less indirect design MUST win.

@@ -15,8 +15,11 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Use strict TypeScript mode.
 - Project implementation and tests MUST be TypeScript-only (`.ts`).
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
-- Favor the simplest correct implementation that solves the current requirement.
-- Prefer fewer lines and fewer moving parts when readability and correctness are preserved.
+- Simplicity is MANDATORY.
+- Always choose the simplest correct implementation that solves the current requirement.
+- Prefer fewer lines, fewer files, fewer layers, and fewer moving parts.
+- Do not introduce abstractions, wrappers, helper layers, option objects, factories, interfaces, or indirection unless they are justified by a real current need.
+- Avoid speculative design for possible future scenarios.
 - Prefer concise arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`).
 - Avoid block-bodied callbacks with explicit `return` when a concise expression arrow function is sufficient.
 - Avoid `any` unless there is no viable alternative.

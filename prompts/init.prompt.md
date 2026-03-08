@@ -3,6 +3,7 @@ Read `AGENTS.md`, `ai/contract.json`, and the assistant-specific adapter in `ai/
 Follow the project conventions from `@sha3/code-standards` strictly:
 
 - obey blocking deterministic rules from `ai/contract.json`
+- treat simplicity as mandatory: choose the smallest correct solution and avoid speculative abstractions or gratuitous indirection
 - keep managed files read-only unless this task is explicitly a standards update
 - preserve the scaffold structure and naming conventions
 - add or update tests for behavior changes

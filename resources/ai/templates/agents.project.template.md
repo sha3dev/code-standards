@@ -35,6 +35,14 @@ If rules conflict, the higher item wins. Existing code has no grandfathered exce
 
 {{guidanceRules}}
 
+## Simplicity Rule
+
+Simplicity is mandatory, not stylistic preference.
+
+- Use the simplest correct design for the current requirement.
+- Do not add speculative abstractions, wrappers, helper layers, extension points, or extra files without immediate justification.
+- If a solution can be made smaller and more direct without losing correctness, that simpler version MUST be preferred.
+
 ## Managed Files
 
 {{managedFiles}}

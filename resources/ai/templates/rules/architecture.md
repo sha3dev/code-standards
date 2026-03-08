@@ -17,6 +17,8 @@
 - `src/config.ts` MUST export a single default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
 - Architecture decisions MUST default to the simplest structure that satisfies current requirements.
 - New files, modules, or layers MUST be introduced only when they solve present complexity, not anticipated future needs.
+- Simplicity is mandatory: if a design can be smaller, flatter, and more direct while staying correct, that simpler design MUST be chosen.
+- Speculative abstractions, placeholder extension points, and gratuitous indirection are forbidden.
 
 Good example:
 
