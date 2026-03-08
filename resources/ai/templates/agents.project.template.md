@@ -36,6 +36,14 @@ If rules conflict, the higher item wins. Existing code has no grandfathered exce
 
 {{guidanceRules}}
 
+## README Rule
+
+- Rewrite `README.md` as package-quality integration documentation once real behavior exists.
+- Document every public export from `src/index.ts`.
+- If a public export is a class, document each public method with purpose, return value, and behavior notes.
+- Use a structure inspired by high-quality package READMEs such as `ky`: short value proposition, practical examples first, exhaustive API reference after.
+- Do not leave scaffold-placeholder API descriptions once implementation is real.
+
 ## Simplicity Rule
 
 Simplicity is mandatory, not stylistic preference.

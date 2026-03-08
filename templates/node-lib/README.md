@@ -1,6 +1,6 @@
 # 📚 {{packageName}}
 
-Feature-first TypeScript library scaffolded with an AI contract and deterministic standards checks.
+Feature-first TypeScript library scaffolded with deterministic standards, a generated AI contract, and package-grade documentation expectations.
 
 ## TL;DR
 
@@ -10,22 +10,6 @@ npm run check
 npm run build
 ```
 
-## Installation
-
-```bash
-npm install {{packageName}}
-```
-
-## Compatibility
-
-- Node.js 20+
-- ESM (`"type": "module"`)
-- Strict TypeScript
-
-## Public API
-
-### `PackageInfoService`
-
 ```ts
 import { PackageInfoService } from "{{packageName}}";
 
@@ -33,17 +17,104 @@ const packageInfoService = PackageInfoService.createDefault();
 console.log(packageInfoService.readPackageInfo());
 ```
 
+## Why
+
+- Gives you a TypeScript library scaffold with a public entrypoint, tests, and deterministic project policy.
+- Keeps implementation feature-first and class-oriented without hiding behavior behind unnecessary abstractions.
+- Ships with an AI contract so LLMs can extend the package while respecting local rules.
+
+## Installation
+
+```bash
+npm install {{packageName}}
+```
+
+## Usage
+
+```ts
+import { PackageInfoService } from "{{packageName}}";
+
+const packageInfoService = PackageInfoService.createDefault();
+const packageInfo = packageInfoService.readPackageInfo();
+
+console.log(packageInfo.packageName);
+```
+
+## Examples
+
+Create the default service from the package root:
+
+```ts
+import { PackageInfoService } from "{{packageName}}";
+
+const packageInfoService = PackageInfoService.createDefault();
+```
+
+Read the package metadata shape:
+
+```ts
+import { PackageInfoService, type PackageInfo } from "{{packageName}}";
+
+const packageInfoService = PackageInfoService.createDefault();
+const packageInfo: PackageInfo = packageInfoService.readPackageInfo();
+```
+
 Behavior notes:
 
-- `PackageInfoService.createDefault()` wires the service with `src/config.ts`.
-- `readPackageInfo()` returns the configured package metadata exposed by the scaffold.
+- Import only from the package root.
+- Treat `PackageInfoService` as the stable public entrypoint for the scaffolded behavior.
 
-## Integration Guide
+## Public API
 
-1. Install the package with `npm install {{packageName}}`.
-2. Import only from the public entrypoint.
-3. Do not import private source paths.
-4. If another LLM consumes this library, treat this README and `AGENTS.md` as the local contract.
+### `PackageInfoService`
+
+Default public service for reading the scaffolded package metadata.
+
+```ts
+import { PackageInfoService } from "{{packageName}}";
+
+const packageInfoService = PackageInfoService.createDefault();
+```
+
+#### `createDefault()`
+
+Creates a `PackageInfoService` wired with `src/config.ts`.
+
+Returns:
+
+- a ready-to-use `PackageInfoService`
+
+Behavior notes:
+
+- uses the package metadata configured in `config.PACKAGE_NAME`
+- keeps the default wiring at the public package boundary
+
+#### `readPackageInfo()`
+
+Reads the public package metadata exposed by the scaffold.
+
+Returns:
+
+- a `PackageInfo` object containing the configured package name
+
+Behavior notes:
+
+- returns a plain serializable object
+- does not perform filesystem or network I/O
+
+### `PackageInfo`
+
+Public type that describes the shape returned by `readPackageInfo()`.
+
+```ts
+type PackageInfo = { packageName: string };
+```
+
+## Compatibility
+
+- Node.js 20+
+- ESM (`"type": "module"`)
+- Strict TypeScript
 
 ## Configuration
 
@@ -80,4 +151,5 @@ Run `npm run standards:check` to see deterministic contract violations such as m
 
 - Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` file before coding.
 - Do not edit managed contract/tooling files during normal implementation.
+- Rewrite this README after real behavior is implemented so it documents the final public exports and methods, not just the scaffold defaults.
 - Run `npm run check` before finalizing changes.

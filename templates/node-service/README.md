@@ -1,6 +1,6 @@
 # 🚀 {{packageName}}
 
-Feature-first TypeScript service scaffolded with deterministic standards checks and a generated AI contract.
+Feature-first TypeScript service scaffolded with deterministic standards, a generated AI contract, and package-grade documentation expectations.
 
 ## TL;DR
 
@@ -10,21 +10,45 @@ npm run check
 npm run start
 ```
 
+```ts
+import { ServiceRuntime } from "{{packageName}}";
+
+const serviceRuntime = ServiceRuntime.createDefault();
+const server = serviceRuntime.buildServer();
+```
+
+## Why
+
+- Gives you a TypeScript HTTP service scaffold with runtime wiring, configuration, and tests already in place.
+- Makes the public service entrypoint explicit through `ServiceRuntime`.
+- Keeps service behavior aligned with deterministic standards and AI-readable local policy.
+
 ## Installation
 
 ```bash
 npm install
 ```
 
-## Compatibility
+## Running Locally
 
-- Node.js 20+
-- ESM (`"type": "module"`)
-- Strict TypeScript
+```bash
+npm run start
+```
 
-## Public API
+The default scaffold listens on `http://localhost:3000`.
 
-### `ServiceRuntime`
+## Usage
+
+```ts
+import { ServiceRuntime } from "{{packageName}}";
+
+const serviceRuntime = ServiceRuntime.createDefault();
+const server = serviceRuntime.startServer();
+```
+
+## Examples
+
+Build the HTTP server without listening:
 
 ```ts
 import { ServiceRuntime } from "{{packageName}}";
@@ -33,18 +57,96 @@ const serviceRuntime = ServiceRuntime.createDefault();
 const server = serviceRuntime.buildServer();
 ```
 
+Call the default endpoint:
+
+```bash
+curl http://localhost:3000/
+```
+
+## HTTP API
+
+### `GET /`
+
+Returns the default application info payload.
+
+Response shape:
+
+```json
+{
+  "name": "service-name"
+}
+```
+
 Behavior notes:
 
-- `ServiceRuntime.createDefault()` wires `AppInfoService` and `HttpServerService`.
-- `buildServer()` returns a Node HTTP server without listening.
-- `startServer()` binds the server to `config.DEFAULT_PORT`.
+- responds with status `200`
+- returns JSON
+- uses the `content-type` configured in `src/config.ts`
 
-## Integration Guide
+## Public API
 
-1. Run the service locally with `npm run start`.
-2. Integrate through HTTP `GET /` or import `ServiceRuntime` from the package.
-3. Do not import private source paths.
-4. Treat this README plus the generated AI contract as the local integration boundary.
+### `ServiceRuntime`
+
+Default public runtime facade for the scaffolded service.
+
+```ts
+import { ServiceRuntime } from "{{packageName}}";
+
+const serviceRuntime = ServiceRuntime.createDefault();
+```
+
+#### `createDefault()`
+
+Creates a `ServiceRuntime` wired with the default `HttpServerService`.
+
+Returns:
+
+- a ready-to-use `ServiceRuntime`
+
+Behavior notes:
+
+- wires the default HTTP server stack from the scaffold
+- keeps configuration centralized in `src/config.ts`
+
+#### `buildServer()`
+
+Builds the Node HTTP server without binding a port.
+
+Returns:
+
+- a Node HTTP server instance
+
+Behavior notes:
+
+- useful for integration tests and manual orchestration
+- does not call `listen()`
+
+#### `startServer()`
+
+Builds the HTTP server and starts listening on `config.DEFAULT_PORT`.
+
+Returns:
+
+- the started Node HTTP server instance
+
+Behavior notes:
+
+- logs the listening address through the scaffold logger
+- binds immediately to the configured default port
+
+### `AppInfoPayload`
+
+Public type for the default root payload returned by the scaffold.
+
+```ts
+type AppInfoPayload = { name: string };
+```
+
+## Compatibility
+
+- Node.js 20+
+- ESM (`"type": "module"`)
+- Strict TypeScript
 
 ## Configuration
 
@@ -85,4 +187,5 @@ Run `npm run standards:check` to detect missing managed files, README sections, 
 
 - Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` before coding.
 - Keep managed contract/tooling files read-only during feature work.
+- Rewrite this README after real behavior is implemented so it documents the final public exports, methods, and HTTP surface instead of the scaffold defaults.
 - Run `npm run check` before finalizing changes.

@@ -82,16 +82,22 @@ async function main() {
   assert(libFiles.includes("ai/codex.md"));
   assert(libFiles.includes("ai/examples/rules/returns-good.ts"));
   assert(libFiles.includes("biome.json"));
+  assert(libFiles.includes(".biomeignore"));
   assert(libFiles.includes(".vscode/settings.json"));
   assert(libFiles.includes(".vscode/extensions.json"));
   assert(!libFiles.includes("eslint.config.mjs"));
   assert(!libFiles.includes("prettier.config.cjs"));
 
   const libPackage = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
+  const libBiomeIgnore = await readFile(path.join(libTarget, ".biomeignore"), "utf8");
+  const libBiomeConfig = JSON.parse(await readFile(path.join(libTarget, "biome.json"), "utf8"));
   assert.equal(libPackage.codeStandards.template, "node-lib");
   assert.equal(libPackage.codeStandards.contractVersion, "v1");
   assert.equal(libPackage.codeStandards.withAiAdapters, true);
   assert.equal(libPackage.scripts["standards:check"], "code-standards verify");
+  assert.match(libBiomeIgnore, /^node_modules$/m);
+  assert.match(libBiomeIgnore, /^\.code-standards$/m);
+  assert.deepEqual(libBiomeConfig.files.ignore, [".code-standards"]);
 
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(libAgentsRaw, /machine-readable source of truth/);
@@ -107,7 +113,17 @@ async function main() {
   assert(libContract.rules.some((rule) => rule.id === "single-return"));
 
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
-  for (const heading of ["## TL;DR", "## Installation", "## Public API", "## Integration Guide", "## AI Workflow"]) {
+  for (const heading of [
+    "## TL;DR",
+    "## Why",
+    "## Usage",
+    "## Examples",
+    "## Public API",
+    "### `PackageInfoService`",
+    "#### `createDefault()`",
+    "#### `readPackageInfo()`",
+    "## AI Workflow",
+  ]) {
     assert.match(libReadmeRaw, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
@@ -136,6 +152,9 @@ async function main() {
   result = runCliWithFakeNpm(["refactor", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Installing dependencies because node_modules is missing/);
+  assert.match(result.stdout, /Legacy code was moved into \.code-standards\/refactor-source\/latest\//);
+  assert.match(result.stdout, /No lint, format, or check pass was run against the intermediate refactor state/);
+  assert.match(result.stdout, /Final npm run check is deferred/);
   assert.match(result.stdout, /Copy\/paste this prompt into your LLM:/);
   assert.match(result.stdout, /----- BEGIN REFACTOR PROMPT -----/);
   assert.match(result.stdout, /Read these files before making any implementation changes:/);
@@ -164,7 +183,7 @@ async function main() {
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0),
-    ["install", "run fix", "run check"],
+    ["install"],
   );
 
   await mkdir(path.join(libTarget, "node_modules", "@sha3", "code-standards"), { recursive: true });
@@ -179,7 +198,7 @@ async function main() {
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0),
-    ["install", "run fix", "run check"],
+    ["install"],
   );
 
   await mkdir(serviceTarget, { recursive: true });
@@ -197,14 +216,20 @@ async function main() {
   assert(serviceFiles.includes("src/app/service-runtime.service.ts"));
   assert(serviceFiles.includes("test/service-runtime.test.ts"));
   assert(serviceFiles.includes("biome.json"));
+  assert(serviceFiles.includes(".biomeignore"));
   assert(serviceFiles.includes(".vscode/settings.json"));
   assert(serviceFiles.includes(".vscode/extensions.json"));
   assert(!serviceFiles.includes("eslint.config.mjs"));
   assert(!serviceFiles.includes("prettier.config.cjs"));
 
   const servicePackage = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
+  const serviceBiomeIgnore = await readFile(path.join(serviceTarget, ".biomeignore"), "utf8");
+  const serviceBiomeConfig = JSON.parse(await readFile(path.join(serviceTarget, "biome.json"), "utf8"));
   assert.equal(servicePackage.codeStandards.withAiAdapters, false);
   assert.equal(servicePackage.scripts["standards:check"], "code-standards verify");
+  assert.match(serviceBiomeIgnore, /^node_modules$/m);
+  assert.match(serviceBiomeIgnore, /^\.code-standards$/m);
+  assert.deepEqual(serviceBiomeConfig.files.ignore, [".code-standards"]);
 
   const serviceContract = JSON.parse(await readFile(path.join(serviceTarget, "ai", "contract.json"), "utf8"));
   assert.equal(serviceContract.project.template, "node-service");
@@ -218,8 +243,14 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
 
   const serviceReadmeRaw = await readFile(path.join(serviceTarget, "README.md"), "utf8");
+  assert.match(serviceReadmeRaw, /## Running Locally/);
+  assert.match(serviceReadmeRaw, /## HTTP API/);
   assert.match(serviceReadmeRaw, /## Public API/);
   assert.match(serviceReadmeRaw, /## Configuration/);
+  assert.match(serviceReadmeRaw, /### `ServiceRuntime`/);
+  assert.match(serviceReadmeRaw, /#### `createDefault\(\)`/);
+  assert.match(serviceReadmeRaw, /#### `buildServer\(\)`/);
+  assert.match(serviceReadmeRaw, /#### `startServer\(\)`/);
   assert.match(serviceReadmeRaw, /## AI Workflow/);
 
   await writeFile(fakeNpmLogPath, "", "utf8");
@@ -235,7 +266,7 @@ async function main() {
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0),
-    ["install", "run fix", "run check"],
+    ["install"],
   );
 
   await mkdir(installTarget, { recursive: true });

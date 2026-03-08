@@ -22,6 +22,8 @@ test("README documents verify options and usage", async () => {
     "prompts/init.prompt.md",
     "prompts/refactor.prompt.md",
     ".code-standards/refactor-source/public-contract.json",
+    "package-grade README",
+    "public exports and public class methods",
   ]) {
     assert.match(readmeRaw, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }

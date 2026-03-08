@@ -30,3 +30,23 @@ test("template source files do not contain empty section placeholders", async ()
     assert.doesNotMatch(templateRaw, /\/\/ empty/);
   }
 });
+
+test("template READMEs document public exports and methods with package-grade sections", async () => {
+  const nodeLibReadme = await readFile(path.join(repoRoot, "templates/node-lib/README.md"), "utf8");
+  const nodeServiceReadme = await readFile(path.join(repoRoot, "templates/node-service/README.md"), "utf8");
+
+  for (const snippet of ["## Why", "## Usage", "## Examples", "### `PackageInfoService`", "#### `createDefault()`", "#### `readPackageInfo()`"]) {
+    assert.match(nodeLibReadme, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+
+  for (const snippet of [
+    "## Running Locally",
+    "## HTTP API",
+    "### `ServiceRuntime`",
+    "#### `createDefault()`",
+    "#### `buildServer()`",
+    "#### `startServer()`",
+  ]) {
+    assert.match(nodeServiceReadme, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+});

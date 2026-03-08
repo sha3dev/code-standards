@@ -17,6 +17,11 @@ Rules:
 - keep declarations, expressions, calls, and object literals on one line whenever they fit within the line limit
 - keep managed files read-only unless this task is explicitly a standards update
 - follow naming, architecture, and class section conventions strictly
+- rewrite `README.md` as package-quality integration documentation for the rebuilt project
+- document every public export from `src/index.ts` in `README.md`
+- for every exported class, document each public method with purpose, inputs, return value, and behavior notes
+- use a structure inspired by high-quality package READMEs such as `ky`: short value proposition, practical examples first, exhaustive API reference after
+- do not keep scaffold-placeholder README API text once the rebuilt behavior exists
 - execute `npm run check` yourself before finishing
 - if `npm run check` fails, fix the issues and rerun it until it passes
 

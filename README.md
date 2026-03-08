@@ -64,6 +64,7 @@ npm install -D @sha3/code-standards
 - `verify`: enforces deterministic project policy that generic tooling does not cover well
 
 That last part matters: `verify` is not another formatter or typechecker. It is the package-specific policy engine for generated repos.
+Generated scaffolds are also expected to ship package-grade README files rather than placeholder docs.
 
 ## Non-Negotiables
 
@@ -121,6 +122,8 @@ Behavior notes:
 - metadata sync between `package.json.codeStandards` and `ai/contract.json`
 - required managed files from the active template
 - required README sections
+- README documentation for public exports and public class methods
+- HTTP API documentation for service templates
 - TypeScript-only source policy in `src/` and `test/`
 - deterministic AST rules such as `single-return`, `async-await-only`, `canonical-config-import`, and file naming rules
 
@@ -175,6 +178,7 @@ What `init` generates for you:
 - `ai/<assistant>.md` adapter files when AI adapters are enabled
 - `prompts/init.prompt.md` as the starter prompt for the first implementation pass
 - the managed `src/`, `test/`, config, and package surface for the selected template
+- a README scaffold that is meant to be rewritten into package-grade integration documentation once real behavior exists
 
 The CLI also prints these next steps to the console after `init` completes, so the user does not have to infer the LLM workflow manually.
 
@@ -199,6 +203,7 @@ npm run check
 ```
 
 6. Require the LLM to fix any failing checks and rerun the command until it passes.
+7. Require the LLM to rewrite `README.md` so it documents the final public exports and public methods instead of leaving scaffold-placeholder API text.
 
 ### Regenerate an existing repo
 
@@ -215,7 +220,7 @@ npx @sha3/code-standards refactor --yes
 3. write `.code-standards/refactor-source/latest/`
 4. write `public-contract.json`, `preservation.json`, and `analysis-summary.md`
 5. rebuild the managed scaffold
-6. run `npm run fix` and `npm run check`
+6. print the refactor prompt for the LLM handoff
 
 ### `refactor` step by step
 
@@ -224,7 +229,7 @@ Use `refactor` when you already have a repo and want to rebuild it onto the mana
 1. Go to the root of the existing project.
 2. Run `refactor`.
 3. Answer the preservation questions if you are in interactive mode.
-4. Let the command generate the snapshot and rebuild the managed surface.
+4. Let the command move the legacy code into `.code-standards/refactor-source/latest/` and rebuild the managed surface.
 5. Open the generated refactor artifacts and the generated refactor prompt.
 6. Pass that prompt to the LLM so it can rebuild the domain code into the fresh scaffold.
 7. Require the LLM to execute `npm run check` itself and fix any failures before it finishes.
@@ -253,6 +258,13 @@ After `refactor`, these files matter most:
 
 The CLI also prints a ready-to-paste refactor prompt after `refactor` completes, so the normal flow is: run `refactor`, copy the printed prompt, paste it into the LLM.
 
+Important behavior note:
+
+- `refactor` does not run `npm run fix` or `npm run check` against the intermediate refactor state.
+- `refactor` does not run the final `npm run check` against the pre-refactor codebase.
+- The old implementation is moved to `.code-standards/refactor-source/latest/` as reference material.
+- The final validation belongs to the rewritten `src/` and `test/` produced after the LLM handoff.
+
 Recommended LLM workflow after `refactor`:
 
 1. Run `refactor` and wait for it to complete.
@@ -274,13 +286,14 @@ Task:
    - `.code-standards/refactor-source/preservation.json`
    - `.code-standards/refactor-source/analysis-summary.md`
    - `.code-standards/refactor-source/latest/`
-6. In your prompt, explicitly require the LLM to execute:
+6. Make the LLM rewrite `README.md` as package-grade integration documentation for the rebuilt public API and runtime behavior.
+7. In your prompt, explicitly require the LLM to execute:
 
 ```bash
 npm run check
 ```
 
-7. Require the LLM to fix any failing checks and rerun the command until it passes.
+8. Require the LLM to fix any failing checks and rerun the command until it passes.
 
 Practical rule: `refactor` prepares the repo and the context pack; the LLM then performs the actual domain rewrite using `prompts/refactor.prompt.md`.
 
@@ -477,18 +490,10 @@ Common cases:
 
 ### Required README headings in generated projects
 
-Keep these headings in generated projects:
+Keep these headings in generated projects, at minimum:
 
-- `## TL;DR`
-- `## Installation`
-- `## Compatibility`
-- `## Public API`
-- `## Integration Guide`
-- `## Configuration`
-- `## Scripts`
-- `## Structure`
-- `## Troubleshooting`
-- `## AI Workflow`
+- for both templates: `## TL;DR`, `## Why`, `## Installation`, `## Usage`, `## Examples`, `## Public API`, `## Configuration`, `## Compatibility`, `## Scripts`, `## Structure`, `## Troubleshooting`, `## AI Workflow`
+- for `node-service` also: `## Running Locally` and `## HTTP API`
 
 ### VS Code formatting conflicts
 

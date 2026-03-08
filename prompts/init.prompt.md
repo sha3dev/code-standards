@@ -9,6 +9,11 @@ Follow the project conventions from `@sha3/code-standards` strictly:
 - keep managed files read-only unless this task is explicitly a standards update
 - preserve the scaffold structure and naming conventions
 - add or update tests for behavior changes
+- rewrite `README.md` as package-quality integration documentation once the real implementation exists
+- document every public export from `src/index.ts` in `README.md`
+- for every exported class, document each public method with purpose, inputs, return value, and behavior notes
+- use a structure inspired by high-quality package READMEs such as `ky`: short value proposition, practical examples first, exhaustive API reference after
+- do not leave scaffold-placeholder API descriptions in `README.md` once behavior is implemented
 - execute `npm run check` yourself before finishing
 - if `npm run check` fails, fix the issues and rerun it until it passes
 
