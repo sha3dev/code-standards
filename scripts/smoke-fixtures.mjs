@@ -75,8 +75,8 @@ async function main() {
   assert.match(result.stdout, /npm run check/);
 
   const libFiles = await listRelativeFiles(libTarget);
-  assert(libFiles.includes("src/greeter/greeter.service.ts"));
-  assert(libFiles.includes("test/greeter.test.ts"));
+  assert(libFiles.includes("src/package-info/package-info.service.ts"));
+  assert(libFiles.includes("test/package-info.test.ts"));
   assert(libFiles.includes("AGENTS.md"));
   assert(libFiles.includes("ai/contract.json"));
   assert(libFiles.includes("ai/codex.md"));
@@ -111,9 +111,8 @@ async function main() {
     assert.match(libReadmeRaw, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
-  const libGreeterRaw = await readFile(path.join(libTarget, "src", "greeter", "greeter.service.ts"), "utf8");
-  assert.match(libGreeterRaw, /@section constructor/);
-  assert.match(libGreeterRaw, /GreeterService/);
+  const libPackageInfoRaw = await readFile(path.join(libTarget, "src", "package-info", "package-info.service.ts"), "utf8");
+  assert.match(libPackageInfoRaw, /PackageInfoService/);
 
   result = runCli(["verify"], libTarget);
   assert.equal(result.status, 0, result.stderr);
@@ -125,25 +124,27 @@ async function main() {
   assert.match(result.stderr, /missing ai\/contract\.json/);
 
   await writeFile(path.join(libTarget, "ai", "contract.json"), JSON.stringify(libContract, null, 2), "utf8");
-  await writeFile(path.join(libTarget, "src", "greeter", "utils.ts"), "export const makeValue = () => 1;\n", "utf8");
+  await writeFile(path.join(libTarget, "src", "package-info", "utils.ts"), "export const makeValue = () => 1;\n", "utf8");
   result = runCli(["verify"], libTarget);
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /feature files must include an explicit role suffix/);
-  await rm(path.join(libTarget, "src", "greeter", "utils.ts"));
+  await rm(path.join(libTarget, "src", "package-info", "utils.ts"));
 
   await writeFile(path.join(libTarget, "AGENTS.md"), "# stale\n", "utf8");
   await writeFile(path.join(libTarget, "src", "index.ts"), "// keep me\n", "utf8");
   await writeFile(fakeNpmLogPath, "", "utf8");
   result = runCliWithFakeNpm(["refactor", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /LLM handoff steps:/);
-  assert.match(result.stdout, /prompts\/refactor\.prompt\.md/);
-  assert.match(result.stdout, /\.code-standards\/refactor-source\//);
+  assert.match(result.stdout, /Installing dependencies because node_modules is missing/);
+  assert.match(result.stdout, /Copy\/paste this prompt into your LLM:/);
+  assert.match(result.stdout, /----- BEGIN REFACTOR PROMPT -----/);
+  assert.match(result.stdout, /Read these files before making any implementation changes:/);
+  assert.match(result.stdout, /----- END REFACTOR PROMPT -----/);
   const refactoredAgents = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.doesNotMatch(refactoredAgents, /# stale/);
   const libIndexAfterRefactor = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
   assert.notEqual(libIndexAfterRefactor, "// keep me\n");
-  assert.match(libIndexAfterRefactor, /GreeterService/);
+  assert.match(libIndexAfterRefactor, /PackageInfoService/);
   const refactorSnapshotIndex = await readFile(path.join(libTarget, ".code-standards", "refactor-source", "latest", "src", "index.ts"), "utf8");
   assert.equal(refactorSnapshotIndex, "// keep me\n");
   const publicContract = JSON.parse(await readFile(path.join(libTarget, ".code-standards", "refactor-source", "public-contract.json"), "utf8"));
@@ -163,7 +164,7 @@ async function main() {
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0),
-    ["run fix", "run check"],
+    ["install", "run fix", "run check"],
   );
 
   await mkdir(serviceTarget, { recursive: true });
@@ -176,7 +177,7 @@ async function main() {
   assert(serviceFiles.includes("AGENTS.md"));
   assert(serviceFiles.includes("ai/contract.json"));
   assert(!serviceFiles.includes("ai/codex.md"));
-  assert(serviceFiles.includes("src/status/status.service.ts"));
+  assert(serviceFiles.includes("src/app-info/app-info.service.ts"));
   assert(serviceFiles.includes("src/http/http-server.service.ts"));
   assert(serviceFiles.includes("src/app/service-runtime.service.ts"));
   assert(serviceFiles.includes("test/service-runtime.test.ts"));

@@ -1,5 +1,5 @@
-import assert from "node:assert/strict";
-import test from "node:test";
+import * as assert from "node:assert/strict";
+import { test } from "node:test";
 
 import { ServiceRuntime } from "../src/index.ts";
 
@@ -22,7 +22,7 @@ test("ServiceRuntime serves the status payload", async () => {
   const json = await response.json();
 
   assert.equal(response.status, 200);
-  assert.deepEqual(json, { ok: true, statusSource: "https://status.example.com/health" });
+  assert.deepEqual(json, { ok: true, serviceName: "{{packageName}}" });
 
   await new Promise((resolve, reject) => {
     server.close((error) => {

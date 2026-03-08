@@ -22,7 +22,7 @@ async function createVerifyFixture(t) {
   t.after(async () => rm(targetDir, { recursive: true, force: true }));
 
   await mkdir(path.join(targetDir, "src", "user"), { recursive: true });
-  await mkdir(path.join(targetDir, "src", "greeter"), { recursive: true });
+  await mkdir(path.join(targetDir, "src", "package-info"), { recursive: true });
   await mkdir(path.join(targetDir, "test"), { recursive: true });
   await mkdir(path.join(targetDir, "ai"), { recursive: true });
 
@@ -100,9 +100,13 @@ async function createVerifyFixture(t) {
     'import settings from "../config.ts";\n\nexport function readValue(input: string): string {\n  if (input.length === 0) {\n    return "empty";\n  }\n\n  return settings.STATUS;\n}\n',
     "utf8",
   );
-  await writeFile(path.join(targetDir, "src", "greeter", "greeter.service.ts"), "export class GreeterService {}\n", "utf8");
+  await writeFile(path.join(targetDir, "src", "package-info", "package-info.service.ts"), "export class PackageInfoService {}\n", "utf8");
   await writeFile(path.join(targetDir, "src", "index.ts"), 'export { readValue } from "./user/user.service.ts";\n', "utf8");
-  await writeFile(path.join(targetDir, "test", "greeter.test.ts"), 'import test from "node:test";\n\ntest("greeter placeholder", () => {});\n', "utf8");
+  await writeFile(
+    path.join(targetDir, "test", "package-info.test.ts"),
+    'import test from "node:test";\n\ntest("package info placeholder", () => {});\n',
+    "utf8",
+  );
   await writeFile(path.join(targetDir, "test", "user.test.ts"), 'import test from "node:test";\n\ntest("placeholder", () => {});\n', "utf8");
 
   return targetDir;

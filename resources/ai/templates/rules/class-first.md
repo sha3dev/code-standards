@@ -6,7 +6,7 @@
 - Each class MUST use constructor injection for dependencies.
 - A source file MUST expose one public class.
 - Mutable shared state MUST be avoided; prefer `readonly` fields and deterministic methods.
-- Class-oriented files MUST always include all section comment blocks using this exact 3-line format:
+- Class-oriented files MUST use this exact 3-line format for every section they declare:
   - `/**`
   - ` * @section <block-name>`
   - ` */`
@@ -26,7 +26,7 @@
   - `protected:methods`
   - `public:methods`
   - `static:methods`
-- Section blocks without class members SHOULD be omitted.
+- Section blocks without class members MUST be omitted.
 - `factory` MUST only contain methods that create and return instances of the same class.
 
 Good example:

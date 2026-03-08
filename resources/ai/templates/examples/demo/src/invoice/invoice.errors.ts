@@ -1,22 +1,4 @@
 /**
- * @section imports:externals
- */
-
-// empty
-
-/**
- * @section imports:internals
- */
-
-// empty
-
-/**
- * @section consts
- */
-
-// empty
-
-/**
  * @section types
  */
 
@@ -24,28 +6,10 @@
 
 export class InvalidInvoiceCommandError extends Error {
   /**
-   * @section private:attributes
-   */
-
-  // empty
-
-  /**
-   * @section protected:attributes
-   */
-
-  // empty
-
-  /**
    * @section private:properties
    */
 
   private readonly reason: string;
-
-  /**
-   * @section public:properties
-   */
-
-  // empty
 
   /**
    * @section constructor
@@ -58,12 +22,6 @@ export class InvalidInvoiceCommandError extends Error {
   }
 
   /**
-   * @section static:properties
-   */
-
-  // empty
-
-  /**
    * @section factory
    */
 
@@ -71,18 +29,6 @@ export class InvalidInvoiceCommandError extends Error {
     const error = new InvalidInvoiceCommandError(reason);
     return error;
   }
-
-  /**
-   * @section private:methods
-   */
-
-  // empty
-
-  /**
-   * @section protected:methods
-   */
-
-  // empty
 
   /**
    * @section public:methods

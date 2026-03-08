@@ -35,7 +35,7 @@ const server = serviceRuntime.buildServer();
 
 Behavior notes:
 
-- `ServiceRuntime.createDefault()` wires `StatusService` and `HttpServerService`.
+- `ServiceRuntime.createDefault()` wires `AppInfoService` and `HttpServerService`.
 - `buildServer()` returns a Node HTTP server without listening.
 - `startServer()` binds the server to `config.DEFAULT_PORT`.
 
@@ -52,7 +52,7 @@ Configuration is centralized in `src/config.ts`.
 
 - `config.RESPONSE_CONTENT_TYPE`: response header for the root endpoint
 - `config.DEFAULT_PORT`: port used by `startServer()`
-- `config.EXTERNAL_STATUS_URL`: status source embedded in the response payload
+- `config.SERVICE_NAME`: service name exposed by the default root payload
 
 ## Scripts
 
@@ -65,7 +65,7 @@ Configuration is centralized in `src/config.ts`.
 ## Structure
 
 - `src/config.ts`: canonical runtime configuration
-- `src/status/status.service.ts`: status payload logic
+- `src/app-info/app-info.service.ts`: default root payload logic
 - `src/http/http-server.service.ts`: HTTP server construction
 - `src/app/service-runtime.service.ts`: runtime orchestration
 - `src/main.ts`: bootstrap entrypoint

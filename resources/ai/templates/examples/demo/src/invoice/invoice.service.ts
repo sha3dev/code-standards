@@ -13,12 +13,6 @@ import { InvalidInvoiceCommandError } from "./invoice.errors.ts";
 import type { CreateInvoiceCommand, Invoice, InvoiceSummary } from "./invoice.types.ts";
 
 /**
- * @section consts
- */
-
-// empty
-
-/**
  * @section types
  */
 
@@ -26,28 +20,10 @@ import type { CreateInvoiceCommand, Invoice, InvoiceSummary } from "./invoice.ty
 
 export class InvoiceService {
   /**
-   * @section private:attributes
-   */
-
-  // empty
-
-  /**
-   * @section protected:attributes
-   */
-
-  // empty
-
-  /**
    * @section private:properties
    */
 
   private readonly invoicesById: Map<string, Invoice>;
-
-  /**
-   * @section public:properties
-   */
-
-  // empty
 
   /**
    * @section constructor
@@ -56,12 +32,6 @@ export class InvoiceService {
   public constructor() {
     this.invoicesById = new Map<string, Invoice>();
   }
-
-  /**
-   * @section static:properties
-   */
-
-  // empty
 
   /**
    * @section factory
@@ -90,12 +60,6 @@ export class InvoiceService {
     const invoice: Invoice = { id: randomUUID(), customerId: command.customerId, amount: command.amount, issuedAt: new Date() };
     return invoice;
   }
-
-  /**
-   * @section protected:methods
-   */
-
-  // empty
 
   /**
    * @section public:methods

@@ -1,22 +1,10 @@
 /**
- * @section imports:externals
- */
-
-// empty
-
-/**
  * @section imports:internals
  */
 
 import config from "../config.ts";
 import type { InvoiceService } from "../invoice/invoice.service.ts";
 import type { InvoiceSummary } from "../invoice/invoice.types.ts";
-
-/**
- * @section consts
- */
-
-// empty
 
 /**
  * @section types
@@ -26,28 +14,10 @@ export type BillingSnapshot = { customerId: string; invoiceCount: number; totalA
 
 export class BillingService {
   /**
-   * @section private:attributes
-   */
-
-  // empty
-
-  /**
-   * @section protected:attributes
-   */
-
-  // empty
-
-  /**
    * @section private:properties
    */
 
   private readonly invoiceService: InvoiceService;
-
-  /**
-   * @section public:properties
-   */
-
-  // empty
 
   /**
    * @section constructor
@@ -56,12 +26,6 @@ export class BillingService {
   public constructor(invoiceService: InvoiceService) {
     this.invoiceService = invoiceService;
   }
-
-  /**
-   * @section static:properties
-   */
-
-  // empty
 
   /**
    * @section factory
@@ -80,12 +44,6 @@ export class BillingService {
     const formattedAmount = `${config.BILLING_CURRENCY_SYMBOL}${amount.toFixed(2)}`;
     return formattedAmount;
   }
-
-  /**
-   * @section protected:methods
-   */
-
-  // empty
 
   /**
    * @section public:methods

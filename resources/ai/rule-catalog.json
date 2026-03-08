@@ -40,7 +40,7 @@
     {
       "id": "class-section-order",
       "title": "Class Section Order",
-      "summary": "Files that expose a public class must include valid ordered @section markers.",
+      "summary": "Files that expose a public class must include valid ordered @section markers and omit empty section blocks.",
       "severity": "blocking-deterministic",
       "kind": "style",
       "appliesTo": ["src/**/*.ts"],

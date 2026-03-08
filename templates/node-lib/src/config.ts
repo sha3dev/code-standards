@@ -1,3 +1,3 @@
-const config = { GREETING_PREFIX: "Hello" } as const;
+const config = { PACKAGE_NAME: "{{packageName}}" } as const;
 
 export default config;

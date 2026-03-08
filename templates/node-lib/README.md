@@ -24,19 +24,19 @@ npm install {{packageName}}
 
 ## Public API
 
-### `GreeterService`
+### `PackageInfoService`
 
 ```ts
-import { GreeterService } from "{{packageName}}";
+import { PackageInfoService } from "{{packageName}}";
 
-const greeterService = GreeterService.createDefault();
-console.log(greeterService.greet("world"));
+const packageInfoService = PackageInfoService.createDefault();
+console.log(packageInfoService.readPackageInfo());
 ```
 
 Behavior notes:
 
-- `GreeterService.createDefault()` wires the service with `src/config.ts`.
-- `GreeterService.greet(name)` returns `<config.GREETING_PREFIX>, <name>`.
+- `PackageInfoService.createDefault()` wires the service with `src/config.ts`.
+- `readPackageInfo()` returns the configured package metadata exposed by the scaffold.
 
 ## Integration Guide
 
@@ -49,7 +49,7 @@ Behavior notes:
 
 Configuration is centralized in `src/config.ts`.
 
-- `config.GREETING_PREFIX`: prefix used by the default greeter factory.
+- `config.PACKAGE_NAME`: package name exposed by the default info service.
 
 ## Scripts
 
@@ -62,9 +62,9 @@ Configuration is centralized in `src/config.ts`.
 ## Structure
 
 - `src/config.ts`: canonical hardcoded configuration
-- `src/greeter/greeter.service.ts`: feature service with section markers
+- `src/package-info/package-info.service.ts`: neutral package info service
 - `src/index.ts`: public exports
-- `test/greeter.test.ts`: behavior test
+- `test/package-info.test.ts`: behavior test
 
 ## Troubleshooting
 

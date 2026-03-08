@@ -5,12 +5,6 @@
 import { randomUUID } from "node:crypto";
 
 /**
- * @section imports:internals
- */
-
-// empty
-
-/**
  * @section consts
  */
 
@@ -29,12 +23,6 @@ export class InvoiceService {
    */
 
   private readonly requestId: string;
-
-  /**
-   * @section protected:attributes
-   */
-
-  // empty
 
   /**
    * @section private:properties
@@ -59,12 +47,6 @@ export class InvoiceService {
   }
 
   /**
-   * @section static:properties
-   */
-
-  // empty
-
-  /**
    * @section factory
    */
 
@@ -81,12 +63,6 @@ export class InvoiceService {
     const invoice: Invoice = { id: randomUUID(), customerId: command.customerId, amount: command.amount, createdAt: new Date() };
     return invoice;
   }
-
-  /**
-   * @section protected:methods
-   */
-
-  // empty
 
   /**
    * @section public:methods

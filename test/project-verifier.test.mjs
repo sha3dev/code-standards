@@ -11,7 +11,7 @@ async function createMinimalNodeLibProject(t, withAiAdaptersInMetadata, withAiAd
   const targetDir = await mkdtemp(path.join(os.tmpdir(), "sha3-project-verifier-"));
   t.after(async () => rm(targetDir, { recursive: true, force: true }));
 
-  await mkdir(path.join(targetDir, "src", "greeter"), { recursive: true });
+  await mkdir(path.join(targetDir, "src", "package-info"), { recursive: true });
   await mkdir(path.join(targetDir, "test"), { recursive: true });
   await mkdir(path.join(targetDir, "ai"), { recursive: true });
 
@@ -49,10 +49,10 @@ async function createMinimalNodeLibProject(t, withAiAdaptersInMetadata, withAiAd
   );
   await writeFile(path.join(targetDir, "AGENTS.md"), "# Agents\n", "utf8");
   await writeFile(path.join(targetDir, "ai", "contract.json"), `${JSON.stringify(contract, null, 2)}\n`, "utf8");
-  await writeFile(path.join(targetDir, "src", "config.ts"), 'const config = { GREETING_PREFIX: "Hello" } as const;\n\nexport default config;\n', "utf8");
-  await writeFile(path.join(targetDir, "src", "greeter", "greeter.service.ts"), "export class GreeterService {}\n", "utf8");
-  await writeFile(path.join(targetDir, "src", "index.ts"), 'export { GreeterService } from "./greeter/greeter.service.ts";\n', "utf8");
-  await writeFile(path.join(targetDir, "test", "greeter.test.ts"), 'import test from "node:test";\n\ntest("placeholder", () => {});\n', "utf8");
+  await writeFile(path.join(targetDir, "src", "config.ts"), 'const config = { PACKAGE_NAME: "@scope/demo-lib" } as const;\n\nexport default config;\n', "utf8");
+  await writeFile(path.join(targetDir, "src", "package-info", "package-info.service.ts"), "export class PackageInfoService {}\n", "utf8");
+  await writeFile(path.join(targetDir, "src", "index.ts"), 'export { PackageInfoService } from "./package-info/package-info.service.ts";\n', "utf8");
+  await writeFile(path.join(targetDir, "test", "package-info.test.ts"), 'import test from "node:test";\n\ntest("placeholder", () => {});\n', "utf8");
   await writeFile(path.join(targetDir, "README.md"), `${README_REQUIRED_HEADINGS.join("\n\n")}\n`, "utf8");
 
   if (withAiAdaptersInContract) {

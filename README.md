@@ -240,7 +240,7 @@ After `refactor`, these files matter most:
 - `.code-standards/refactor-source/latest/`
 - `prompts/refactor.prompt.md`
 
-The CLI also prints an explicit LLM handoff checklist after `refactor` completes, including the prompt path and the refactor artifacts that must be given to the model.
+The CLI also prints a ready-to-paste refactor prompt after `refactor` completes, so the normal flow is: run `refactor`, copy the printed prompt, paste it into the LLM.
 
 Recommended LLM workflow after `refactor`:
 

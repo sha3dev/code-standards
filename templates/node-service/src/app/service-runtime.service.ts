@@ -1,18 +1,10 @@
 /**
- * @section imports:externals
- */
-
-/**
  * @section imports:internals
  */
 
 import config from "../config.ts";
 import { HttpServerService } from "../http/http-server.service.ts";
 import LOGGER from "../logger.ts";
-
-/**
- * @section consts
- */
 
 /**
  * @section types

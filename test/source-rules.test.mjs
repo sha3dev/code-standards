@@ -110,6 +110,50 @@ export class UserService {
   assert(errors.some((issue) => issue.ruleId === "class-section-order"));
 });
 
+test("class-section-order flags declared empty sections", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/user/user.service.ts",
+    `
+/**
+ * @section imports:externals
+ */
+
+/**
+ * @section imports:internals
+ */
+
+import config from "../config.ts";
+
+/**
+ * @section public:properties
+ */
+
+export class UserService {
+  private readonly isEnabled: boolean;
+
+  /**
+   * @section constructor
+   */
+
+  public constructor() {
+    this.isEnabled = true;
+  }
+
+  /**
+   * @section public:methods
+   */
+
+  public readStatus(): string {
+    return this.isEnabled ? config.STATUS : "disabled";
+  }
+}
+`,
+  );
+
+  assert(errors.some((issue) => issue.message.includes("empty @section block must be omitted")));
+});
+
 test("canonical-config-import flags non canonical imports", async (t) => {
   const errors = await verifySingleFile(
     t,
@@ -170,18 +214,10 @@ test("ordered class files with canonical config imports pass source rules", asyn
     "src/user/user.service.ts",
     `
 /**
- * @section imports:externals
- */
-
-/**
  * @section imports:internals
  */
 
 import config from "../config.ts";
-
-/**
- * @section consts
- */
 
 /**
  * @section types

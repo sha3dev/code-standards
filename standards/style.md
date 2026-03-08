@@ -81,4 +81,4 @@ Required block names:
 14. `public:methods`
 15. `static:methods`
 
-Section blocks without content SHOULD be omitted.
+Section blocks without content MUST be omitted.
