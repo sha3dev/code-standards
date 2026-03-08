@@ -9,7 +9,7 @@
       "kind": "style",
       "appliesTo": ["src/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": { "good": ["ai/examples/rules/returns-good.ts"], "bad": ["ai/examples/rules/returns-bad.ts"] },
       "profileOverrides": [{ "key": "return_policy", "equals": "single_return_strict_no_exceptions" }]
     },
@@ -21,7 +21,7 @@
       "kind": "style",
       "appliesTo": ["src/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": { "good": ["ai/examples/rules/async-good.ts"], "bad": ["ai/examples/rules/async-bad.ts"] },
       "profileOverrides": [{ "key": "async_style", "equals": "async_await_only" }]
     },
@@ -33,7 +33,7 @@
       "kind": "architecture",
       "appliesTo": ["src/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": { "good": ["ai/examples/rules/class-first-good.ts"], "bad": ["ai/examples/rules/class-first-bad.ts"] },
       "profileOverrides": [{ "key": "class_file_policy", "equals": "one_public_class_per_file" }]
     },
@@ -45,7 +45,7 @@
       "kind": "style",
       "appliesTo": ["src/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": {
         "good": ["ai/examples/rules/class-first-good.ts", "ai/examples/rules/constructor-good.ts"],
         "bad": ["ai/examples/rules/class-first-bad.ts", "ai/examples/rules/constructor-bad.ts"]
@@ -60,7 +60,7 @@
       "kind": "architecture",
       "appliesTo": ["src/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": { "good": ["ai/examples/demo/src/billing/billing.service.ts", "ai/examples/demo/src/invoice/invoice.service.ts"], "bad": [] },
       "profileOverrides": []
     },
@@ -72,7 +72,7 @@
       "kind": "style",
       "appliesTo": ["src/**/*.ts", "test/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": { "good": ["ai/examples/rules/functions-good.ts"], "bad": ["ai/examples/rules/functions-bad.ts"] },
       "profileOverrides": []
     },
@@ -84,7 +84,7 @@
       "kind": "style",
       "appliesTo": ["src/**/*.ts", "test/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint"],
+      "enforcedBy": ["verify"],
       "examples": { "good": ["ai/examples/rules/functions-good.ts"], "bad": ["ai/examples/rules/functions-bad.ts"] },
       "profileOverrides": []
     },
@@ -96,7 +96,7 @@
       "kind": "architecture",
       "appliesTo": ["src/**/*.ts"],
       "deterministic": true,
-      "enforcedBy": ["eslint", "verify"],
+      "enforcedBy": ["verify"],
       "examples": {
         "good": ["ai/examples/demo/src/invoice/invoice.service.ts", "ai/examples/demo/src/invoice/invoice.types.ts"],
         "bad": ["ai/examples/rules/class-first-bad.ts"]
@@ -111,7 +111,7 @@
       "kind": "style",
       "appliesTo": ["src/**/*", "test/**/*"],
       "deterministic": true,
-      "enforcedBy": ["verify", "eslint"],
+      "enforcedBy": ["verify", "biome"],
       "examples": { "good": ["ai/examples/rules/functions-good.ts"], "bad": [] },
       "profileOverrides": []
     },

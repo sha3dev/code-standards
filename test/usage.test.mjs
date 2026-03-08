@@ -12,8 +12,17 @@ test("cli shows help", () => {
 
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Usage:/);
+  assert.match(result.stdout, /init/);
+  assert.match(result.stdout, /refactor/);
   assert.match(result.stdout, /profile/);
-  assert.match(result.stdout, /refresh/);
-  assert.match(result.stdout, /update/);
   assert.match(result.stdout, /verify/);
+  assert.doesNotMatch(result.stdout, /^\s+refresh\s/m);
+  assert.doesNotMatch(result.stdout, /^\s+update\s/m);
+});
+
+test("refactor rejects positional arguments", () => {
+  const result = spawnSync(process.execPath, [cliPath, "refactor", "https://github.com/example/repo"], { encoding: "utf8" });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Positional arguments are not supported for refactor/);
 });

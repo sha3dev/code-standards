@@ -1,7 +1,7 @@
 {
   "meta": { "version": "v1", "scope": "@sha3", "packageManager": "npm", "moduleSystem": "esm" },
   "language": { "runtime": "node", "typescript": true, "target": "ES2022" },
-  "formatting": { "prettier": true, "lineLength": 160, "semi": true, "singleQuote": false, "simpleCallbackStyle": "arrow_concise_for_simple_callbacks" },
+  "formatting": { "formatter": "biome", "lineLength": 160, "semi": true, "singleQuote": false, "simpleCallbackStyle": "arrow_concise_for_simple_callbacks" },
   "naming": {
     "files": "kebab-case",
     "directories": "kebab-case",
@@ -22,10 +22,9 @@
   "architecture": { "strictness": "moderate", "simplicity": "minimal_pragmatic_no_speculative_abstractions", "templates": ["node-lib", "node-service"] },
   "testing": { "runner": "node-test-runner", "coverage": false, "testLocation": "test/" },
   "tooling": {
-    "eslintConfig": "@sha3/code-standards/eslint/node",
-    "prettierConfig": "@sha3/code-standards/prettier",
+    "biomeConfig": "@sha3/code-standards/biome",
     "tsconfigPackage": "@sha3/code-standards/tsconfig/node-lib.json",
-    "enforcement": "local-strict"
+    "enforcement": "biome-plus-verify"
   },
   "ai": { "enabledByDefault": true, "assistants": ["codex", "cursor", "copilot", "windsurf"] }
 }

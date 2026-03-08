@@ -20,7 +20,7 @@ Both templates SHOULD keep this baseline structure:
 - `docs/` for technical documentation.
 - `ai/` for generated assistant contract files.
 - `config/` for non-TypeScript configuration files (JSON/YAML/TOML) when needed.
-- Root tooling config files (`eslint`, `prettier`, `tsconfig`) at project root.
+- Root tooling config files (`biome`, `tsconfig`) at project root.
 - `src/config.ts` for non-parameterized hardcoded configuration values.
 
 ## Source Layout Standard

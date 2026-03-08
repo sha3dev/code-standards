@@ -26,9 +26,9 @@
     "formatting": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["prettier", "lineLength", "semi", "singleQuote", "simpleCallbackStyle"],
+      "required": ["formatter", "lineLength", "semi", "singleQuote", "simpleCallbackStyle"],
       "properties": {
-        "prettier": { "type": "boolean" },
+        "formatter": { "type": "string", "const": "biome" },
         "lineLength": { "type": "integer", "minimum": 80, "maximum": 200 },
         "semi": { "type": "boolean" },
         "singleQuote": { "type": "boolean" },
@@ -104,12 +104,11 @@
     "tooling": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["eslintConfig", "prettierConfig", "tsconfigPackage", "enforcement"],
+      "required": ["biomeConfig", "tsconfigPackage", "enforcement"],
       "properties": {
-        "eslintConfig": { "type": "string", "const": "@sha3/code-standards/eslint/node" },
-        "prettierConfig": { "type": "string", "const": "@sha3/code-standards/prettier" },
+        "biomeConfig": { "type": "string", "const": "@sha3/code-standards/biome" },
         "tsconfigPackage": { "type": "string", "const": "@sha3/code-standards/tsconfig/node-lib.json" },
-        "enforcement": { "type": "string", "enum": ["local-strict"] }
+        "enforcement": { "type": "string", "enum": ["biome-plus-verify"] }
       }
     },
     "ai": {

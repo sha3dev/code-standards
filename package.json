@@ -8,29 +8,12 @@
   },
   "exports": {
     ".": "./index.mjs",
-    "./eslint/base": "./eslint/base.mjs",
-    "./eslint/node": "./eslint/node.mjs",
-    "./eslint/test": "./eslint/test.mjs",
-    "./prettier": "./prettier/index.cjs",
+    "./biome": "./biome.json",
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/node-lib.json": "./tsconfig/node-lib.json",
     "./tsconfig/node-service.json": "./tsconfig/node-service.json"
   },
-  "files": [
-    "AGENTS.md",
-    "README.md",
-    "ai",
-    "bin",
-    "eslint",
-    "index.mjs",
-    "lib",
-    "prettier",
-    "resources",
-    "standards",
-    "templates",
-    "tsconfig",
-    "profiles"
-  ],
+  "files": ["AGENTS.md", "README.md", "ai", "biome.json", "bin", "index.mjs", "lib", "prompts", "resources", "standards", "templates", "tsconfig", "profiles"],
   "publishConfig": {
     "access": "public"
   },
@@ -42,10 +25,10 @@
     "fix": "npm run lint:fix && npm run format:write",
     "standards:validate": "node scripts/validate-standards.mjs",
     "ai:validate": "node scripts/validate-ai-resources.mjs",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "format:check": "biome format .",
+    "format:write": "biome format . --write",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node scripts/smoke-fixtures.mjs && node --test ./test/*.test.mjs",
     "release:check": "npm run check",
@@ -57,13 +40,10 @@
     "ajv": "^8.17.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@sha3/logger": "^2.0.0",
-    "@eslint/js": "^9.20.0",
     "@types/node": "^22.13.10",
-    "eslint": "^9.20.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.24.1"
+    "tsx": "^4.19.3"
   }
 }

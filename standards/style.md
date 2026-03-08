@@ -4,7 +4,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 
 ## Formatting
 
-- Use Prettier for formatting.
+- Use Biome for formatting.
 - Use a max line length of 160.
 - Keep lines as compact as possible: if a declaration/expression fits in one line within 160 chars, keep it on one line.
 - Use semicolons.

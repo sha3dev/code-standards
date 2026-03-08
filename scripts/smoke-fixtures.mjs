@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { chmod, mkdtemp, mkdir, readFile, readdir, rm, unlink, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, readdir, rm, unlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,8 +9,13 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const cliPath = path.join(repoRoot, "bin", "code-standards.mjs");
 
-function runCli(args, cwd = repoRoot, input, envPatch) {
-  return spawnSync(process.execPath, [cliPath, ...args], { cwd, input, encoding: "utf8", env: envPatch ? { ...process.env, ...envPatch } : process.env });
+function runCli(args, cwd, input, envPatch) {
+  return spawnSync(process.execPath, [cliPath, ...args], {
+    cwd: cwd ?? repoRoot,
+    input,
+    encoding: "utf8",
+    env: envPatch ? { ...process.env, ...envPatch } : process.env,
+  });
 }
 
 async function listRelativeFiles(baseDir, currentDir = baseDir) {
@@ -52,7 +57,7 @@ async function main() {
   await writeFile(path.join(fakeBinDir, "npm"), '#!/bin/sh\nif [ -z "$FAKE_NPM_LOG" ]; then\n  exit 1\nfi\necho "$@" >> "$FAKE_NPM_LOG"\n', "utf8");
   await chmod(path.join(fakeBinDir, "npm"), 0o755);
   const fakeNpmEnv = { PATH: `${fakeBinDir}:${process.env.PATH}`, FAKE_NPM_LOG: fakeNpmLogPath };
-  const runCliWithFakeNpm = (args, cwd = repoRoot, input) => runCli(args, cwd, input, fakeNpmEnv);
+  const runCliWithFakeNpm = (args, cwd, input) => runCli(args, cwd ?? repoRoot, input, fakeNpmEnv);
 
   let result = runCli(["profile", "--non-interactive", "--profile", profilePath]);
   assert.equal(result.status, 0, result.stderr);
@@ -73,12 +78,18 @@ async function main() {
   assert(libFiles.includes("ai/contract.json"));
   assert(libFiles.includes("ai/codex.md"));
   assert(libFiles.includes("ai/examples/rules/returns-good.ts"));
+  assert(libFiles.includes("biome.json"));
+  assert(libFiles.includes(".vscode/settings.json"));
+  assert(libFiles.includes(".vscode/extensions.json"));
+  assert(!libFiles.includes("eslint.config.mjs"));
+  assert(!libFiles.includes("prettier.config.cjs"));
 
   const libPackage = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
   assert.equal(libPackage.codeStandards.template, "node-lib");
   assert.equal(libPackage.codeStandards.contractVersion, "v1");
   assert.equal(libPackage.codeStandards.withAiAdapters, true);
   assert.equal(libPackage.scripts["standards:check"], "code-standards verify");
+  assert.equal("lastRefreshWith" in libPackage.codeStandards, false);
 
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.match(libAgentsRaw, /machine-readable source of truth/);
@@ -115,18 +126,31 @@ async function main() {
   await writeFile(path.join(libTarget, "src", "greeter", "utils.ts"), "export const makeValue = () => 1;\n", "utf8");
   result = runCli(["verify"], libTarget);
   assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /ambiguous feature filename is forbidden/);
+  assert.match(result.stderr, /feature files must include an explicit role suffix/);
   await rm(path.join(libTarget, "src", "greeter", "utils.ts"));
 
   await writeFile(path.join(libTarget, "AGENTS.md"), "# stale\n", "utf8");
   await writeFile(path.join(libTarget, "src", "index.ts"), "// keep me\n", "utf8");
   await writeFile(fakeNpmLogPath, "", "utf8");
-  result = runCliWithFakeNpm(["refresh", "--yes"], libTarget);
+  result = runCliWithFakeNpm(["refactor", "--yes"], libTarget);
   assert.equal(result.status, 0, result.stderr);
-  const refreshedAgents = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
-  assert.doesNotMatch(refreshedAgents, /# stale/);
-  const libIndexAfterRefresh = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
-  assert.equal(libIndexAfterRefresh, "// keep me\n");
+  const refactoredAgents = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
+  assert.doesNotMatch(refactoredAgents, /# stale/);
+  const libIndexAfterRefactor = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
+  assert.notEqual(libIndexAfterRefactor, "// keep me\n");
+  assert.match(libIndexAfterRefactor, /GreeterService/);
+  const refactorSnapshotIndex = await readFile(path.join(libTarget, ".code-standards", "refactor-source", "latest", "src", "index.ts"), "utf8");
+  assert.equal(refactorSnapshotIndex, "// keep me\n");
+  const publicContract = JSON.parse(await readFile(path.join(libTarget, ".code-standards", "refactor-source", "public-contract.json"), "utf8"));
+  assert.equal(publicContract.template, "node-lib");
+  const preservation = JSON.parse(await readFile(path.join(libTarget, ".code-standards", "refactor-source", "preservation.json"), "utf8"));
+  assert.equal(preservation.publicApi, true);
+  const analysisSummary = await readFile(path.join(libTarget, ".code-standards", "refactor-source", "analysis-summary.md"), "utf8");
+  assert.match(analysisSummary, /Refactor Analysis Summary/);
+  assert.equal(
+    await readFile(path.join(libTarget, "prompts", "refactor.prompt.md"), "utf8"),
+    await readFile(path.join(repoRoot, "prompts", "refactor.prompt.md"), "utf8"),
+  );
 
   let fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
   assert.deepEqual(
@@ -134,7 +158,7 @@ async function main() {
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0),
-    ["run fix", "run check"]
+    ["run fix", "run check"],
   );
 
   await mkdir(serviceTarget, { recursive: true });
@@ -149,15 +173,25 @@ async function main() {
   assert(serviceFiles.includes("src/http/http-server.service.ts"));
   assert(serviceFiles.includes("src/app/service-runtime.service.ts"));
   assert(serviceFiles.includes("test/service-runtime.test.ts"));
+  assert(serviceFiles.includes("biome.json"));
+  assert(serviceFiles.includes(".vscode/settings.json"));
+  assert(serviceFiles.includes(".vscode/extensions.json"));
+  assert(!serviceFiles.includes("eslint.config.mjs"));
+  assert(!serviceFiles.includes("prettier.config.cjs"));
 
   const servicePackage = JSON.parse(await readFile(path.join(serviceTarget, "package.json"), "utf8"));
   assert.equal(servicePackage.codeStandards.withAiAdapters, false);
   assert.equal(servicePackage.scripts["standards:check"], "code-standards verify");
+  assert.equal("lastRefreshWith" in servicePackage.codeStandards, false);
 
   const serviceContract = JSON.parse(await readFile(path.join(serviceTarget, "ai", "contract.json"), "utf8"));
   assert.equal(serviceContract.project.template, "node-service");
   assert.equal(serviceContract.project.withAiAdapters, false);
-  assert.deepEqual(serviceContract.managedFiles, ["AGENTS.md", "ai/contract.json"]);
+  assert(serviceContract.managedFiles.includes("AGENTS.md"));
+  assert(serviceContract.managedFiles.includes("ai/contract.json"));
+  assert(serviceContract.managedFiles.includes("prompts/init.prompt.md"));
+  assert(serviceContract.managedFiles.includes("prompts/refresh.prompt.md"));
+  assert(serviceContract.managedFiles.includes("prompts/refactor.prompt.md"));
 
   result = runCli(["verify"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);
@@ -168,15 +202,19 @@ async function main() {
   assert.match(serviceReadmeRaw, /## AI Workflow/);
 
   await writeFile(fakeNpmLogPath, "", "utf8");
-  result = runCliWithFakeNpm(["refresh", "--install", "--no-ai-adapters", "--yes"], serviceTarget);
+  result = runCliWithFakeNpm(["refactor", "--install", "--no-ai-adapters", "--yes"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    await readFile(path.join(serviceTarget, ".code-standards", "refactor-source", "latest", "src", "main.ts"), "utf8"),
+    await readFile(path.join(serviceTarget, "src", "main.ts"), "utf8"),
+  );
   fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
   assert.deepEqual(
     fakeNpmLog
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0),
-    ["install", "run fix", "run check"]
+    ["install", "run fix", "run check"],
   );
 
   await mkdir(installTarget, { recursive: true });

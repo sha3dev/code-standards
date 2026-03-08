@@ -1,7 +1,7 @@
-import { access, readFile } from "node:fs/promises";
-import { constants } from "node:fs";
-import path from "node:path";
 import { spawn } from "node:child_process";
+import { constants } from "node:fs";
+import { access, readFile } from "node:fs/promises";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 function parseArgs(argv) {
@@ -185,7 +185,7 @@ async function main() {
   if (publishedVersionExists) {
     const predictedNextVersion = predictMinorBump(packageJson.version);
     console.log(
-      `Version ${packageJson.version} already exists on npm. ` + `Minor bump will be applied${predictedNextVersion ? ` (${predictedNextVersion})` : ""}.`
+      `Version ${packageJson.version} already exists on npm. ` + `Minor bump will be applied${predictedNextVersion ? ` (${predictedNextVersion})` : ""}.`,
     );
 
     if (options.dryRun) {

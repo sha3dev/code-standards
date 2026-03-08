@@ -2,9 +2,7 @@
 
 All new projects MUST use this package and its subpath exports:
 
-- `@sha3/code-standards/eslint/node`
-- `@sha3/code-standards/eslint/test`
-- `@sha3/code-standards/prettier`
+- `@sha3/code-standards/biome`
 - `@sha3/code-standards/tsconfig/node-lib.json` or `node-service.json`
 
 ## Behavioral Policy
@@ -33,5 +31,6 @@ Required scripts:
 - `npm run test`
 
 `npm run standards:check` MUST execute `code-standards verify`.
+`npm run lint` and `npm run format:*` MUST be backed by Biome.
 
 No remote CI is required for v1.

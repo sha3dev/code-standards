@@ -55,7 +55,7 @@ Configuration is centralized in `src/config.ts`.
 
 - `npm run standards:check`: verify deterministic project contract rules
 - `npm run check`: standards + lint + format + typecheck + tests
-- `npm run fix`: lint/prettier autofix
+- `npm run fix`: Biome autofix + format write
 - `npm run build`: compile to `dist/`
 - `npm run test`: run Node test runner with `tsx`
 

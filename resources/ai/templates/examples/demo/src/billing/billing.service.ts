@@ -98,7 +98,7 @@ export class BillingService {
       invoiceCount: summary.count,
       totalAmount: summary.totalAmount,
       formattedTotal: this.formatCurrency(summary.totalAmount),
-      statusServiceUrl: config.STATUS_SERVICE_URL
+      statusServiceUrl: config.STATUS_SERVICE_URL,
     };
     return snapshot;
   }

@@ -15,7 +15,7 @@ const [catalogRaw, catalogSchemaRaw, contractSchemaRaw, agentsTemplateRaw] = awa
   readFile(catalogPath, "utf8"),
   readFile(catalogSchemaPath, "utf8"),
   readFile(contractSchemaPath, "utf8"),
-  readFile(agentsTemplatePath, "utf8")
+  readFile(agentsTemplatePath, "utf8"),
 ]);
 
 const catalog = JSON.parse(catalogRaw);

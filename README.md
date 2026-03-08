@@ -1,495 +1,225 @@
-<div align="center">
+# @sha3/code-standards
 
-# 📏 @sha3/code-standards
-
-**Scaffold TypeScript projects + enforce how AI writes code.**
-
-[![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](./.nvmrc)
-[![ESM](https://img.shields.io/badge/module-ESM-1f6feb)](./package.json)
-[![Local Strict Checks](https://img.shields.io/badge/enforcement-local%20strict-111111)](./standards/tooling.md)
-[![AI Profiles](https://img.shields.io/badge/AI-profile--driven-7c3aed)](./profiles/schema.json)
-
-</div>
-
----
+Scaffold TypeScript projects, regenerate them with `refactor`, and enforce deterministic AI-first standards locally.
 
 ## TL;DR
 
-If you just want to start now:
+Create a new project:
 
 ```bash
 npx @sha3/code-standards init --template node-service --yes
 ```
 
-If your project was already scaffolded and you updated this package:
+Realign an existing repo in place:
 
 ```bash
-npx @sha3/code-standards refresh
+npx @sha3/code-standards refactor --yes
 ```
 
-Then in your AI chat, paste this:
+Verify deterministic rules:
+
+```bash
+npx @sha3/code-standards verify
+```
+
+## What It Does
+
+This package combines:
+
+1. project scaffolding for `node-lib` and `node-service`
+2. shared tooling exports for Biome and TypeScript
+3. generated AI contract files (`AGENTS.md`, `ai/contract.json`, optional `ai/*.md`)
+4. deterministic local verification through `code-standards verify`
+
+The current model is intentionally simple:
+
+- `init` creates a new standard project
+- `refactor` snapshots the current repo and rebuilds the managed scaffold in place
+- `profile` creates or updates the AI style profile
+- `verify` enforces deterministic project rules
+
+There is no public `refresh` or `update` command anymore.
+
+## Installation
+
+Use it directly with `npx`:
+
+```bash
+npx @sha3/code-standards --help
+```
+
+Or install it as a dev dependency:
+
+```bash
+npm install -D @sha3/code-standards
+```
+
+## Compatibility
+
+- Node.js 20.11+
+- ESM package runtime
+- TypeScript-first projects
+- Biome as the base formatter and linter
+
+## Public API
+
+### CLI commands
 
 ```txt
-Before writing code:
-1) Read AGENTS.md, ai/contract.json, and ai/<assistant>.md in this repo.
-2) List the blocking rules you will follow.
-3) Implement the task following those rules.
-4) Run npm run check and fix all issues (including TypeScript errors).
-5) Return changed files and which AGENTS rules were applied.
+code-standards init
+code-standards refactor
+code-standards profile
+code-standards verify
 ```
 
-`profile` is optional. Use it only when you want to customize AI behavior.
+### Package exports
 
----
+```txt
+@sha3/code-standards/biome
+@sha3/code-standards/tsconfig/base.json
+@sha3/code-standards/tsconfig/node-lib.json
+@sha3/code-standards/tsconfig/node-service.json
+```
 
-## What This Tool Actually Does
+Behavior notes:
 
-This package combines 3 things in one:
+- `init` always works in the current directory and creates a fresh scaffold.
+- `refactor` always works in the current directory and never accepts a remote or local source argument.
+- `refactor` stores the previous repo state under `.code-standards/refactor-source/` before rebuilding managed files.
+- `verify` checks contract presence, metadata sync, README sections, template layout, TypeScript-only constraints, and AST-level source rules.
 
-1. Project scaffolding (`init`) for `node-lib` and `node-service`.
-2. Shared tooling exports (`eslint`, `prettier`, `tsconfig`).
-3. AI behavior contract generation (`AGENTS.md` + `ai/contract.json` + optional `ai/*.md`) based on a style profile.
+## Integration Guide
 
-So it is not only formatting/linting. It also defines **how AI should think and generate code**.
-
-Default generated contract includes structural class/file blocks such as:
-
-- `imports:externals`
-- `imports:internals`
-- `consts`
-- `types`
-- `private:attributes`
-- `protected:attributes`
-- `private:properties`
-- `public:properties`
-- `constructor`
-- `static:properties`
-- `factory`
-- `private:methods`
-- `protected:methods`
-- `public:methods`
-- `static:methods`
-
-Section marker format is fixed to:
-
-- `/**`
-- ` * @section <block-name>`
-- ` */`
-
-Blocks without members should be omitted.
-
-Additional blocking defaults:
-
-- Max line length is 160 chars, and lines should stay on one line when they fit.
-- `if`/`else`/loop statements MUST always use braces.
-- README updates MUST follow a top-tier quality standard (see `standards/readme.md`).
-
----
-
-## Do I Need `profile` First?
-
-No.
-
-- If you run `init` without profile flags, it uses the bundled default profile.
-- If you want your custom coding preferences, create a profile and pass it to `init`.
-
-Default flow (no profile setup):
+### Create a new project
 
 ```bash
+mkdir my-service
+cd my-service
 npx @sha3/code-standards init --template node-service --yes
 ```
 
-Custom profile flow:
+### Regenerate an existing repo
+
+Run this from the project root:
+
+```bash
+npx @sha3/code-standards refactor --yes
+```
+
+`refactor` will:
+
+1. analyze the current repository
+2. capture preservation decisions
+3. write `.code-standards/refactor-source/latest/`
+4. write `public-contract.json`, `preservation.json`, and `analysis-summary.md`
+5. rebuild the managed scaffold
+6. run `npm run fix` and `npm run check`
+
+### Verify a project
+
+```bash
+npx @sha3/code-standards verify
+```
+
+This is the command generated projects use behind `npm run standards:check`.
+
+## Configuration
+
+Generated projects centralize runtime constants in `src/config.ts`.
+
+This package centralizes standards through:
+
+- [`standards/manifest.json`](/Users/jc/Documents/GitHub/code-standards/standards/manifest.json) as the canonical standards manifest
+- [`profiles/default.profile.json`](/Users/jc/Documents/GitHub/code-standards/profiles/default.profile.json) as the default AI profile
+- [`biome.json`](/Users/jc/Documents/GitHub/code-standards/biome.json) as the shared Biome config export
+
+Profile-driven behavior can be customized with:
 
 ```bash
 npx @sha3/code-standards profile --profile ./profiles/team.profile.json
-npx @sha3/code-standards init --template node-service --yes --profile ./profiles/team.profile.json
 ```
 
----
+Then applied during `init` or `refactor` with `--profile`.
 
-## What Happens After `init`
+## Scripts
 
-After `init`, your new repo contains:
+Repository-level scripts:
 
-- `AGENTS.md` (human-readable contract entrypoint)
-- `ai/contract.json` (machine-readable contract)
-- `ai/codex.md`, `ai/cursor.md`, `ai/copilot.md`, `ai/windsurf.md` when adapters are enabled
-- `ai/examples/rules/*.ts` (good/bad examples per rule)
-- `ai/examples/demo/src/*` (feature-folder demo with classes and section blocks)
-- `src/config.ts` for centralized hardcoded configuration values
-- `README.md` generated with an icon emoji and complete integration docs (API + config + integration contract for other LLMs)
-- `.gitignore` preconfigured for Node/TypeScript output
-- `.vscode/settings.json` + `.vscode/extensions.json` for autoformat-on-save and eslint autofix-on-save in VS Code
-- lint/format/typecheck/test-ready project template
-- `package.json.codeStandards` metadata used by `refresh` and `verify` (`contractVersion`, `template`, `profilePath`, `withAiAdapters`, `lastRefreshWith`)
+- `npm run check`: standards validation, profile validation, AI resource validation, Biome lint, Biome format check, typecheck, tests
+- `npm run fix`: Biome write + format write
+- `npm run lint`: `biome check .`
+- `npm run format:check`: `biome format .`
+- `npm run typecheck`: TypeScript validation
+- `npm run test`: smoke fixtures plus Node test runner
 
-`config.ts` convention: export a single default object named `config` and import it as `import config from "./config.ts"`.
+Generated project scripts:
 
-That means the next step is **not** configuring tools. The next step is telling your assistant to obey `AGENTS.md` before coding.
+- `npm run standards:check`: `code-standards verify`
+- `npm run check`: standards + lint + format + typecheck + tests
+- `npm run fix`: Biome autofix + format write
 
-Generated project code is TypeScript-only: implementation and tests live in `.ts` files.
+## Structure
 
-## TypeScript Example Files
+Key repository paths:
 
-`init` now stores code examples in `.ts` files instead of embedding them inside `AGENTS.md`.
+- `bin/code-standards.mjs`: CLI entrypoint
+- `lib/cli/run-init.mjs`: project initialization flow
+- `lib/cli/run-refactor.mjs`: in-place refactor flow
+- `lib/cli/run-verify.mjs`: deterministic verification flow
+- `lib/verify/`: AST-level deterministic rule enforcement
+- `templates/`: `node-lib` and `node-service` managed scaffolds
+- `prompts/`: starter prompts for `init`, `refresh`, and `refactor`
+- `resources/ai/`: AI contract templates, adapters, examples, and rule catalog
 
-Demo structure generated by default:
+## Troubleshooting
 
-- `ai/examples/demo/src/config.ts`
-- `ai/examples/demo/src/invoice/invoice.service.ts`
-- `ai/examples/demo/src/invoice/invoice.errors.ts`
-- `ai/examples/demo/src/invoice/invoice.types.ts`
-- `ai/examples/demo/src/billing/billing.service.ts`
+### `biome: command not found`
 
-Rule-specific examples:
+Install dependencies in the current workspace:
 
-- `ai/examples/rules/class-first-good.ts`
-- `ai/examples/rules/class-first-bad.ts`
-- `ai/examples/rules/constructor-good.ts`
-- `ai/examples/rules/constructor-bad.ts`
-- `ai/examples/rules/functions-good.ts`
-- `ai/examples/rules/functions-bad.ts`
-- `ai/examples/rules/returns-good.ts`
-- `ai/examples/rules/returns-bad.ts`
-- `ai/examples/rules/async-good.ts`
-- `ai/examples/rules/async-bad.ts`
-- `ai/examples/rules/control-flow-good.ts`
-- `ai/examples/rules/control-flow-bad.ts`
-- `ai/examples/rules/errors-good.ts`
-- `ai/examples/rules/errors-bad.ts`
-- `ai/examples/rules/testing-good.ts`
-- `ai/examples/rules/testing-bad.ts`
+```bash
+npm install
+```
 
----
+### `refactor` says `package.json` was not found
 
-## How To Use With AI (Copy/Paste)
+Run `code-standards refactor` from the root of the target project.
 
-## Universal bootstrap prompt
+### `verify` fails on README sections
 
-Use this as your first message in any coding session:
+Keep these headings in generated projects:
+
+- `## TL;DR`
+- `## Installation`
+- `## Compatibility`
+- `## Public API`
+- `## Integration Guide`
+- `## Configuration`
+- `## Scripts`
+- `## Structure`
+- `## Troubleshooting`
+- `## AI Workflow`
+
+### VS Code formatting conflicts
+
+Use the `biomejs.biome` extension as the default formatter for generated projects.
+
+## AI Workflow
+
+Generated projects treat these files as the local AI contract:
+
+1. `ai/contract.json`
+2. `AGENTS.md`
+3. `ai/<assistant>.md`
+
+Recommended bootstrap prompt:
 
 ```txt
 Before generating code:
 - Read AGENTS.md, ai/contract.json, and ai/<assistant>.md.
-- Summarize the blocking rules you must follow.
-- Implement the task with those rules.
-- Run npm run check and fix issues (including TypeScript errors) until it passes.
-- Return changed files + a short compliance checklist.
+- Summarize the blocking deterministic rules.
+- Implement the task without editing managed files unless this is a standards update.
+- Run npm run check and fix all failures before finishing.
 ```
 
-## Task prompt template
-
-```txt
-Task: <describe task>
-Constraints:
-- Follow AGENTS.md and ai/<assistant>.md strictly.
-- Keep architecture and naming conventions intact.
-- Add/update tests for behavior changes.
-- Run npm run check at the end.
-Output:
-- What changed
-- Why
-- Proof checks passed
-```
-
-Replace `<assistant>` with:
-
-- `codex`
-- `cursor`
-- `copilot`
-- `windsurf`
-
----
-
-## Assistant-Specific Start Commands
-
-Use these prompts depending on tool:
-
-### Codex
-
-```txt
-Read AGENTS.md and ai/codex.md first. Do not start implementation until you summarize blocking rules.
-```
-
-### Cursor
-
-```txt
-Read AGENTS.md and ai/cursor.md. Enforce rules while implementing and keep edits compliant.
-```
-
-### GitHub Copilot Chat
-
-```txt
-Use AGENTS.md and ai/copilot.md as mandatory coding rules for this task.
-```
-
-### Windsurf
-
-```txt
-Read AGENTS.md and ai/windsurf.md and treat them as non-negotiable constraints.
-```
-
----
-
-## Quick Start (Step by Step)
-
-### 1) Create profile (optional)
-
-```bash
-npx @sha3/code-standards profile
-```
-
-Non-interactive:
-
-```bash
-npx @sha3/code-standards profile \
-  --non-interactive \
-  --profile ./profiles/team.profile.json \
-  --force-profile
-```
-
-### 2) Scaffold project
-
-Run this inside the directory you want to initialize.
-
-```bash
-npx @sha3/code-standards init --template node-service --yes
-```
-
-Without `--yes`, `init` prompts for:
-
-- npm package name
-- GitHub repository URL
-
-With explicit profile:
-
-```bash
-npx @sha3/code-standards init \
-  --template node-lib \
-  --yes \
-  --no-install \
-  --profile ./profiles/team.profile.json
-```
-
-Skip AI files when needed:
-
-```bash
-npx @sha3/code-standards init --template node-lib --yes --no-ai-adapters
-```
-
-### 3) Work loop inside generated project
-
-```bash
-npm install
-npm run check
-```
-
-Then use the prompts above in your AI tool.
-
-### 4) Sync updates from `@sha3/code-standards`
-
-Run this inside an already scaffolded project:
-
-```bash
-npx @sha3/code-standards refresh
-```
-
-`refresh` default behavior:
-
-- creates a full reference snapshot in `.code-standards/reference/latest`
-- writes `.code-standards/reference/public-contract.json` with the detected package-level public contract
-- rebuilds the scaffolded surface from the selected template (`src/**`, `test/**`, README, managed scripts/configs, AI contract files)
-- auto-detect template (or force with `--template`)
-- selective merge for `package.json` (managed scripts/devDependencies updated, custom keys preserved)
-- runs `npm run fix` and `npm run check` automatically after refreshing files
-- preserves the previous implementation only inside the reference snapshot, so an LLM can rebuild against it while keeping public contracts intact
-- no dependency install unless `--install` (use `--install` if dependencies are missing before auto-check)
-
----
-
-## CLI Reference
-
-```bash
-code-standards <command> [options]
-
-Commands:
-  init                  Initialize a project in the current directory
-  refresh               Snapshot the repo and rebuild the scaffold from the template
-  update                Alias of refresh
-  profile               Create or update the AI style profile
-  verify                Validate deterministic standards in a project
-```
-
-### `init` options
-
-`init` always uses the current working directory as target.
-An existing `.git/` directory is allowed without `--force`.
-
-- `--template <node-lib|node-service>`
-- `--package-name <name>`
-- `--repository-url <url>`
-- `--yes`
-- `--no-install`
-- `--force`
-- `--with-ai-adapters`
-- `--no-ai-adapters`
-- `--profile <path>`
-
-### `refresh` options
-
-`refresh` always uses the current working directory as target.
-
-- `--template <node-lib|node-service>`
-- `--package-name <name>`
-- `--repository-url <url>`
-- `--profile <path>`
-- `--with-ai-adapters`
-- `--no-ai-adapters`
-- `--dry-run`
-- `--install`
-- `--yes`
-
-### `profile` options
-
-- `--profile <path>`
-- `--non-interactive`
-- `--force-profile`
-
-### `verify`
-
-Runs deterministic checks for the generated contract and scaffold:
-
-- validates `ai/contract.json`
-- checks managed files and metadata sync
-- checks required README sections
-- checks template layout drift
-
----
-
-## Package Exports
-
-### ESLint
-
-```js
-// eslint.config.mjs
-import nodeConfig from "@sha3/code-standards/eslint/node";
-import testConfig from "@sha3/code-standards/eslint/test";
-
-export default [...nodeConfig, ...testConfig];
-```
-
-### Prettier
-
-```js
-// prettier.config.cjs
-module.exports = require("@sha3/code-standards/prettier");
-```
-
-### TSConfig
-
-```json
-{ "extends": "@sha3/code-standards/tsconfig/node-lib.json" }
-```
-
----
-
-## Local Quality Gates
-
-Main gate:
-
-```bash
-npm run check
-```
-
-Includes:
-
-- standards schema validation
-- profile schema validation
-- lint
-- format check
-- typecheck
-- smoke tests + CLI tests
-
-Other scripts:
-
-- `npm run fix`
-- `npm run standards:validate`
-- `npm run profile:validate`
-- `npm run release:check`
-- `npm run release:publish -- --dry-run`
-- `npm run release:publish`
-- `npm run hooks:install`
-
----
-
-## FAQ
-
-### “I ran `init`. How do I force AI to follow rules?”
-
-Always start with a bootstrap prompt that says:
-
-1. read `AGENTS.md` and `ai/<assistant>.md`
-2. summarize blocking rules
-3. implement
-4. run `npm run check`
-
-### “AI ignored my standards.”
-
-Use stricter prompt wording:
-
-```txt
-Treat AGENTS.md as hard constraints. If any rule conflicts with your default behavior, AGENTS.md wins.
-If existing repository code conflicts with AGENTS.md, AGENTS.md and `@sha3/code-standards` conventions still win.
-Do not modify `@sha3/code-standards` managed files (`AGENTS.md`, `ai/*`, `ai/examples/*`, tooling configs) unless explicitly requested.
-```
-
-### “Windsurf shows `rvest.vs-code-prettier-eslint` errors.”
-
-Disable or uninstall `rvest.vs-code-prettier-eslint` in that workspace.  
-Use only:
-
-- `esbenp.prettier-vscode`
-- `dbaeumer.vscode-eslint`
-
-The `rvest` extension is not compatible with ESLint 9 flat config.
-
-### “Do I need to repeat the rules every task?”
-
-Yes, practically you should restate that AGENTS is mandatory at each task boundary. Keep the prompt short and consistent.
-
-### “Can I use this without AI files?”
-
-Yes, with `--no-ai-adapters`. You still get scaffold + tooling exports.
-
----
-
-## Repository Layout
-
-```text
-.
-├── bin/                # CLI entrypoint
-├── profiles/           # AI style profile schema + defaults
-├── resources/ai/       # templates for generated AGENTS/adapters
-├── standards/          # canonical standards docs + manifest/schema
-├── templates/          # project scaffolds (node-lib, node-service)
-├── eslint/             # exported eslint configs
-├── prettier/           # exported prettier config
-└── tsconfig/           # exported tsconfig presets
-```
-
----
-
-## Publishing
-
-```bash
-npm run release:check
-npm run release:publish
-```
-
-`release:publish` behavior:
-
-- validates quality gates (unless `--skip-checks`)
-- checks npm registry for `package.json` current version
-- if current version already exists on npm: runs `npm version minor --no-git-tag-version` automatically
-- if current version does not exist on npm: keeps your manual version as-is
+For a standards migration on an existing repo, run `refactor` first and then use the generated files under `.code-standards/refactor-source/` as reference context for the rewrite.

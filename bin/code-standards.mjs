@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { parseInitArgs, parseProfileArgs, parseRefreshArgs, parseVerifyArgs, printUsage } from "../lib/cli/parse-args.mjs";
+import { parseInitArgs, parseProfileArgs, parseRefactorArgs, parseVerifyArgs, printUsage } from "../lib/cli/parse-args.mjs";
 import { runInit } from "../lib/cli/run-init.mjs";
 import { runProfile } from "../lib/cli/run-profile.mjs";
-import { runRefresh } from "../lib/cli/run-refresh.mjs";
+import { runRefactor } from "../lib/cli/run-refactor.mjs";
 import { runVerify } from "../lib/cli/run-verify.mjs";
 
 async function main() {
@@ -22,8 +22,8 @@ async function main() {
       return;
     }
 
-    if (command === "refresh" || command === "update") {
-      await runRefresh(parseRefreshArgs(rest));
+    if (command === "refactor") {
+      await runRefactor(parseRefactorArgs(rest));
       return;
     }
 
