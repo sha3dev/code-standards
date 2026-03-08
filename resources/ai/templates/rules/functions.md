@@ -14,7 +14,7 @@
 - Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
 - Exported schema-like values MUST use `camelCase` or `PascalCase` names.
-- If a declaration/expression fits in one line within 160 chars, it MUST stay on one line.
+- If a declaration, expression, call, or object literal fits in one line within 160 chars, it MUST stay on one line.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass one `options` parameter.
 
 Good example:

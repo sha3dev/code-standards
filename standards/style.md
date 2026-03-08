@@ -6,7 +6,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 
 - Use Biome for formatting.
 - Use a max line length of 160.
-- Keep lines as compact as possible: if a declaration/expression fits in one line within 160 chars, keep it on one line.
+- Keep lines as compact as possible: if a declaration, expression, call, or object literal fits on one line within 160 chars, it MUST stay on one line.
 - Use semicolons.
 - Use double quotes for strings.
 

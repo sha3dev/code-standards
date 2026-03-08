@@ -19,3 +19,4 @@ This repository is AI-first. Always consume standards in this order:
 - Follow `standards/readme.md` when creating or updating README files.
 - Treat simplicity as a mandatory rule: no speculative abstractions, no gratuitous indirection, no extra files/layers/wrappers unless they solve a real current problem.
 - Simplicity does not justify removing valid boundaries; keep distinct current responsibilities separated when they serve a real purpose.
+- Keep code compact: if a declaration, expression, call, or object literal fits on one line within the line limit, it must stay on one line.

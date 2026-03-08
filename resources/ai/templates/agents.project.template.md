@@ -30,6 +30,7 @@ If rules conflict, the higher item wins. Existing code has no grandfathered exce
 - `npm run lint` uses Biome for baseline linting and formatting rules.
 - `npm run standards:check` also enforces AST-level project rules such as single return, async/await-only, section ordering, identifier quality, and naming rules.
 - `npm run check` is the final blocking gate.
+- Keep declarations, expressions, calls, and object literals on one line whenever they fit within the line limit.
 
 ## Guidance Rules
 
@@ -44,6 +45,7 @@ Simplicity is mandatory, not stylistic preference.
 - If a solution can be made smaller and more direct without losing correctness, that simpler version MUST be preferred.
 - Simplicity does not justify removing valid boundaries.
 - Keep distinct current responsibilities separated when they serve a real purpose.
+- Keep code compact: do not split lines that fit comfortably within the configured line limit.
 
 ## Managed Files
 

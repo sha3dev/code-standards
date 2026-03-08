@@ -14,6 +14,7 @@ Rules:
 - use the snapshot under `.code-standards/refactor-source/latest/` as reference, not as a structure to copy blindly
 - treat simplicity as mandatory: rebuild with the smallest correct design and avoid speculative abstractions or gratuitous indirection
 - do not use simplicity as a reason to remove valid responsibility boundaries
+- keep declarations, expressions, calls, and object literals on one line whenever they fit within the line limit
 - keep managed files read-only unless this task is explicitly a standards update
 - follow naming, architecture, and class section conventions strictly
 - execute `npm run check` yourself before finishing

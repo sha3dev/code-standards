@@ -74,6 +74,7 @@ Simplicity is mandatory.
 - if two solutions are both correct, prefer the smaller and more direct one
 - do not remove valid responsibility boundaries in the name of simplicity
 - simplicity means avoiding gratuitous complexity, not reducing structure blindly
+- keep declarations, expressions, calls, and object literals on one line whenever they fit within the configured line limit
 
 ## Public API
 
