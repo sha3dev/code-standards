@@ -38,3 +38,13 @@ test("managed prompts require the LLM to execute npm run check itself", async ()
     assert.doesNotMatch(promptRaw, /^Rules:$/m);
   }
 });
+
+test("refactor prompt forbids restoring managed files from the snapshot", async () => {
+  const promptRaw = await readFile(path.join(packageRoot, "prompts", "refactor.prompt.md"), "utf8");
+
+  assert.match(
+    promptRaw,
+    /never restore `AGENTS\.md`, `ai\/\*`, `prompts\/\*`, `\.vscode\/\*`, `biome\.json`, `tsconfig\*\.json`, `package\.json`, or lockfiles from that snapshot/,
+  );
+  assert.match(promptRaw, /never use `git checkout`, `git restore`, or snapshot copies to roll managed files back/);
+});

@@ -13,6 +13,9 @@ Requirements:
 
 - preserve only the contracts explicitly marked for preservation
 - use the snapshot under `.code-standards/refactor-source/latest/` as reference, not as a structure to copy blindly
+- treat `.code-standards/refactor-source/latest/` as legacy reference only; never restore `AGENTS.md`, `ai/*`, `prompts/*`, `.vscode/*`, `biome.json`, `tsconfig*.json`, `package.json`, or lockfiles from that snapshot
+- treat the freshly regenerated managed files in the project root as authoritative; if checks fail, fix `src/` and `test/` to satisfy them instead of replacing managed files
+- never use `git checkout`, `git restore`, or snapshot copies to roll managed files back to an older contract/toolchain state during refactor work
 - execute `npm run check` yourself before finishing
 - if `npm run check` fails, fix the issues and rerun it until it passes
 
