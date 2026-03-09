@@ -79,6 +79,7 @@ async function main() {
   assert(libFiles.includes("test/package-info.test.ts"));
   assert(libFiles.includes("AGENTS.md"));
   assert(libFiles.includes("ai/contract.json"));
+  assert(libFiles.includes("ai/rules.md"));
   assert(libFiles.includes("ai/codex.md"));
   assert(libFiles.includes("ai/examples/rules/returns-good.ts"));
   assert(libFiles.includes("biome.json"));
@@ -100,9 +101,17 @@ async function main() {
   assert.deepEqual(libBiomeConfig.files.ignore, [".code-standards"]);
 
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
+  const libRulesRaw = await readFile(path.join(libTarget, "ai", "rules.md"), "utf8");
   assert.match(libAgentsRaw, /machine-readable source of truth/);
   assert.match(libAgentsRaw, /Blocking Deterministic Rules/);
   assert.match(libAgentsRaw, /single-return/);
+  assert.match(libRulesRaw, /Project Rules/);
+  assert.match(libRulesRaw, /Simple Callbacks/);
+  assert.match(libRulesRaw, /object literal, array literal, import, or constructor call/);
+  assert.match(libRulesRaw, /## Errors/);
+  assert.match(libRulesRaw, /Throw plain `Error` by default/);
+  assert.match(libRulesRaw, /## Type Files/);
+  assert.match(libRulesRaw, /Create `\*\.types\.ts` only when shared feature types are substantial enough to justify a dedicated file/);
 
   const libContract = JSON.parse(await readFile(path.join(libTarget, "ai", "contract.json"), "utf8"));
   assert.equal(libContract.project.template, "node-lib");
@@ -110,6 +119,7 @@ async function main() {
   assert.equal(libContract.project.withAiAdapters, true);
   assert(libContract.managedFiles.includes("AGENTS.md"));
   assert(libContract.managedFiles.includes("ai/contract.json"));
+  assert(libContract.managedFiles.includes("ai/rules.md"));
   assert(libContract.rules.some((rule) => rule.id === "single-return"));
 
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
@@ -158,6 +168,8 @@ async function main() {
   assert.match(result.stdout, /Copy\/paste this prompt into your LLM:/);
   assert.match(result.stdout, /----- BEGIN REFACTOR PROMPT -----/);
   assert.match(result.stdout, /Read these files before making any implementation changes:/);
+  assert.match(result.stdout, /ai\/rules\.md/);
+  assert.doesNotMatch(result.stdout, /^Rules:$/m);
   assert.match(result.stdout, /----- END REFACTOR PROMPT -----/);
   const refactoredAgents = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.doesNotMatch(refactoredAgents, /# stale/);
@@ -210,6 +222,7 @@ async function main() {
   const serviceFiles = await listRelativeFiles(serviceTarget);
   assert(serviceFiles.includes("AGENTS.md"));
   assert(serviceFiles.includes("ai/contract.json"));
+  assert(serviceFiles.includes("ai/rules.md"));
   assert(!serviceFiles.includes("ai/codex.md"));
   assert(serviceFiles.includes("src/app-info/app-info.service.ts"));
   assert(serviceFiles.includes("src/http/http-server.service.ts"));
@@ -236,6 +249,7 @@ async function main() {
   assert.equal(serviceContract.project.withAiAdapters, false);
   assert(serviceContract.managedFiles.includes("AGENTS.md"));
   assert(serviceContract.managedFiles.includes("ai/contract.json"));
+  assert(serviceContract.managedFiles.includes("ai/rules.md"));
   assert(serviceContract.managedFiles.includes("prompts/init.prompt.md"));
   assert(serviceContract.managedFiles.includes("prompts/refactor.prompt.md"));
 

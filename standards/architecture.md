@@ -49,7 +49,7 @@ Template-specific additions:
 - `node-lib`: MAY add `src/public/` and `src/internal/` to separate stable API from private implementation.
 - `node-service`: SHOULD keep transport concerns under `src/http/` (`routes`, `controllers`, `middleware`).
 
-Within each feature folder, files SHOULD be role-oriented and explicit (`*.service.ts`, `*.repository.ts`, `*.types.ts`, `*.schema.ts`, `*.mapper.ts`), and the domain base name SHOULD be singular (`invoice.service.ts`).
+Within each feature folder, files SHOULD be role-oriented and explicit (`*.service.ts`, `*.repository.ts`, `*.schema.ts`, `*.mapper.ts`). Use `*.types.ts` only when shared feature types are substantial enough to deserve their own file. The domain base name SHOULD be singular (`invoice.service.ts`).
 
 ## Boundary Rules
 

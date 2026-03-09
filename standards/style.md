@@ -6,7 +6,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 
 - Use Biome for formatting.
 - Use a max line length of 160.
-- Keep lines as compact as possible: if a declaration, expression, call, or object literal fits on one line within 160 chars, it MUST stay on one line.
+- Keep lines as compact as possible: if a declaration, expression, call, constructor call, import, object literal, or array literal fits on one line within 160 chars, it MUST stay on one line.
 - Use semicolons.
 - Use double quotes for strings.
 
@@ -22,11 +22,12 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Avoid speculative design for possible future scenarios.
 - Simplicity MUST NOT come at the cost of cohesion or clear responsibility boundaries.
 - Do not remove justified modules, role-based files, or separations merely to make the structure smaller.
-- Prefer concise arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`).
+- Prefer concise one-line arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) whenever they fit within the line limit.
 - Avoid block-bodied callbacks with explicit `return` when a concise expression arrow function is sufficient.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.
+- Throw plain `Error` by default; use custom error types only when control flow depends on distinguishing them.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass a single `options` parameter.
 - Always use braces in control flow (`if`, `else`, `for`, `while`, `do`).
 - In `src/`, business/domain logic MUST be implemented with classes by default.
@@ -51,11 +52,12 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
   - `<feature>.service.ts` for business services
   - `<feature>.controller.ts` for transport controllers
   - `<feature>.repository.ts` for persistence adapters
-  - `<feature>.types.ts` for feature-level types and DTOs
+  - `<feature>.types.ts` for shared feature-level types and DTOs when keeping them inline would add noise
   - `<feature>.schema.ts` for validation schemas
   - `<feature>.mapper.ts` for data transformation logic
   - `<feature>.constants.ts` for constants
 - `<feature>` SHOULD be singular.
+- Do not create `*.types.ts` files for small or local types that are clearer in place.
 - Avoid ambiguous names such as `data`, `obj`, `tmp`, `val`, `thing`, `helper`, `utils`, `common`; use domain-specific names instead.
 
 ## Class File Comment Blocks

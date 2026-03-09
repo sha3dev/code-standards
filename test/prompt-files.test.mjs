@@ -32,7 +32,9 @@ test("managed prompts require the LLM to execute npm run check itself", async ()
   for (const promptPath of ["prompts/init.prompt.md", "prompts/refactor.prompt.md"]) {
     const promptRaw = await readFile(path.join(packageRoot, promptPath), "utf8");
 
+    assert.match(promptRaw, /ai\/rules\.md/);
     assert.match(promptRaw, /execute `npm run check` yourself before finishing/);
     assert.match(promptRaw, /fix the issues and rerun it until it passes/);
+    assert.doesNotMatch(promptRaw, /^Rules:$/m);
   }
 });

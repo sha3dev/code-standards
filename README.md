@@ -175,6 +175,7 @@ What `init` generates for you:
 
 - `AGENTS.md` as the blocking repo policy
 - `ai/contract.json` as the deterministic standards contract
+- `ai/rules.md` as the concise human-readable implementation rules file for the LLM
 - `ai/<assistant>.md` adapter files when AI adapters are enabled
 - `prompts/init.prompt.md` as the starter prompt for the first implementation pass
 - the managed `src/`, `test/`, config, and package surface for the selected template
@@ -184,7 +185,7 @@ The CLI also prints these next steps to the console after `init` completes, so t
 
 Recommended LLM workflow after `init`:
 
-1. Open `AGENTS.md`, `ai/contract.json`, and your assistant file such as `ai/codex.md`.
+1. Open `AGENTS.md`, `ai/contract.json`, `ai/rules.md`, and your assistant file such as `ai/codex.md`.
 2. Open `prompts/init.prompt.md`.
 3. Paste the contents of `prompts/init.prompt.md` into the LLM.
 4. Append your task-specific brief, for example:
@@ -250,6 +251,7 @@ After `refactor`, these files matter most:
 
 - `AGENTS.md`
 - `ai/contract.json`
+- `ai/rules.md`
 - `.code-standards/refactor-source/public-contract.json`
 - `.code-standards/refactor-source/preservation.json`
 - `.code-standards/refactor-source/analysis-summary.md`
@@ -282,6 +284,7 @@ Task:
 5. Let the LLM implement the rewrite using:
    - `AGENTS.md`
    - `ai/contract.json`
+   - `ai/rules.md`
    - `.code-standards/refactor-source/public-contract.json`
    - `.code-standards/refactor-source/preservation.json`
    - `.code-standards/refactor-source/analysis-summary.md`
@@ -505,13 +508,14 @@ Generated projects treat these files as the local AI contract:
 
 1. `ai/contract.json`
 2. `AGENTS.md`
-3. `ai/<assistant>.md`
+3. `ai/rules.md`
+4. `ai/<assistant>.md`
 
 Recommended bootstrap prompt:
 
 ```txt
 Before generating code:
-- Read AGENTS.md, ai/contract.json, and ai/<assistant>.md.
+- Read AGENTS.md, ai/contract.json, ai/rules.md, and ai/<assistant>.md.
 - Summarize the blocking deterministic rules.
 - Implement the task without editing managed files unless this is a standards update.
 - Run npm run check and fix all failures before finishing.

@@ -5,8 +5,8 @@
 - Long functions MUST be split into private helper methods.
 - Implementations MUST prefer the least complex control flow and the fewest necessary steps.
 - Avoid ceremony and indirection when a direct implementation remains clear and correct.
-- Simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) SHOULD use concise arrow functions.
-- For simple callback expressions, block bodies and explicit `return` SHOULD be avoided.
+- Simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) MUST use concise one-line arrow functions when the body is a single expression and fits within the line limit.
+- For simple callback expressions, block bodies and explicit `return` MUST be avoided.
 - Types MUST be preferred over interfaces for local modeling unless a public contract requires an interface.
 - New implementation and test files MUST be `.ts`.
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
@@ -14,7 +14,7 @@
 - Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
 - Exported schema-like values MUST use `camelCase` or `PascalCase` names.
-- If a declaration, expression, call, or object literal fits in one line within 160 chars, it MUST stay on one line.
+- If a declaration, expression, call, constructor call, import, object literal, or array literal fits in one line within 160 chars, it MUST stay on one line.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass one `options` parameter.
 
 Good example:

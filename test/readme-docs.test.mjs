@@ -21,6 +21,7 @@ test("README documents verify options and usage", async () => {
     "`refactor` step by step",
     "prompts/init.prompt.md",
     "prompts/refactor.prompt.md",
+    "ai/rules.md",
     ".code-standards/refactor-source/public-contract.json",
     "package-grade README",
     "public exports and public class methods",
