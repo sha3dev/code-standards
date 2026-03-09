@@ -1,20 +1,12 @@
-Read `AGENTS.md`, `ai/contract.json`, `ai/rules.md`, and the assistant-specific adapter in `ai/` before making any code changes.
+Read these files before making any implementation changes:
 
-Your job is to implement the requested behavior in the scaffold under `src/` and `test/` following the rules in `ai/rules.md`.
+- `AGENTS.md`
+- `ai/contract.json`
+- `ai/rules.md`
+- `prompts/init-contract.md`
+- the assistant-specific adapter in `ai/`
 
-Requirements:
-
-- preserve the scaffold structure and naming conventions
-- add or update tests for behavior changes
-- execute `npm run standards:check` yourself, read the report, fix every deterministic, heuristic, and audit issue, and rerun until it passes
-- execute `npm run check` yourself before finishing
-- if `npm run check` fails, fix the issues and rerun it until it passes
-
-When you respond after implementation, include:
-
-- changed files
-- a short compliance checklist
-- proof that `npm run check` passed
+Your job is to implement the requested behavior in the scaffold under `src/` and `test/` following the rules in `ai/rules.md` and `prompts/init-contract.md`.
 
 ## Package Specification
 

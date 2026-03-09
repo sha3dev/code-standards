@@ -65,6 +65,12 @@ Simplicity is mandatory, not stylistic preference.
 
 Do not edit managed files during normal feature work unless the user explicitly requests a standards update. Use `npx @sha3/code-standards refactor --yes` when the package contract changes.
 
+## Refactor Mandate
+
+- In refactor work, you MUST analyze the legacy implementation and then build a fresh standards-compliant implementation on top of the regenerated scaffold.
+- Legacy code and snapshots are reference inputs only. They MUST NOT be copied into the new structure as-is.
+- If the old project shape conflicts with current standards, you MUST keep the standards-compliant shape and only preserve required behavior and contracts.
+
 ## Bootstrap Prompt
 
 Before writing code:

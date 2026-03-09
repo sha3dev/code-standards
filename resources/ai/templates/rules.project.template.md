@@ -9,6 +9,13 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 - Keep managed files read-only unless the user explicitly requests a standards update.
 - Run `npm run check` yourself before finishing and fix any failures before you stop.
 
+## Refactor Rule
+
+- When working from a legacy codebase or refactor snapshot, you MUST analyze the old code and rebuild a fresh implementation that matches the active standards.
+- Legacy code MUST be treated as behavior/reference input, not as a structure to copy into the scaffold.
+- You MUST NOT preserve legacy folders, file splits, plural feature names, helper layers, wrappers, or typed errors unless they are both standards-compliant and required by preserved contracts.
+- If legacy code conflicts with the scaffold, the scaffold MUST win.
+
 ## Simplicity
 
 - Choose the simplest correct design for the current requirement.

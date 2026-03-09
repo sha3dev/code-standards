@@ -13,7 +13,7 @@ const packageRoot = path.resolve(testDir, "..");
 test("collectPromptFiles returns the managed prompt set", async () => {
   const promptFiles = await collectPromptFiles(packageRoot);
 
-  assert.deepEqual(promptFiles, ["prompts/init.prompt.md", "prompts/refactor.prompt.md"]);
+  assert.deepEqual(promptFiles, ["prompts/init-contract.md", "prompts/init.prompt.md", "prompts/refactor-contract.md", "prompts/refactor.prompt.md"]);
 });
 
 test("renderPromptFiles materializes prompts into the target repo", async (t) => {
@@ -28,23 +28,34 @@ test("renderPromptFiles materializes prompts into the target repo", async (t) =>
   assert.equal(generatedRefactorPrompt, sourceRefactorPrompt);
 });
 
-test("managed prompts require the LLM to execute npm run check itself", async () => {
-  for (const promptPath of ["prompts/init.prompt.md", "prompts/refactor.prompt.md"]) {
+test("contract prompts require the LLM to execute npm run check itself", async () => {
+  for (const promptPath of ["prompts/init-contract.md", "prompts/refactor-contract.md"]) {
     const promptRaw = await readFile(path.join(packageRoot, promptPath), "utf8");
 
-    assert.match(promptRaw, /ai\/rules\.md/);
     assert.match(promptRaw, /execute `npm run check` yourself before finishing/);
     assert.match(promptRaw, /fix the issues and rerun it until it passes/);
-    assert.doesNotMatch(promptRaw, /^Rules:$/m);
   }
 });
 
-test("refactor prompt forbids restoring managed files from the snapshot", async () => {
-  const promptRaw = await readFile(path.join(packageRoot, "prompts", "refactor.prompt.md"), "utf8");
+test("refactor contract forbids restoring managed files from the snapshot", async () => {
+  const promptRaw = await readFile(path.join(packageRoot, "prompts", "refactor-contract.md"), "utf8");
 
   assert.match(
     promptRaw,
-    /never restore `AGENTS\.md`, `ai\/\*`, `prompts\/\*`, `\.vscode\/\*`, `biome\.json`, `tsconfig\*\.json`, `package\.json`, or lockfiles from that snapshot/,
+    /you MUST NEVER restore `AGENTS\.md`, `ai\/\*`, `prompts\/\*`, `\.vscode\/\*`, `biome\.json`, `tsconfig\*\.json`, `package\.json`, or lockfiles from that snapshot/i,
   );
-  assert.match(promptRaw, /never use `git checkout`, `git restore`, or snapshot copies to roll managed files back/);
+  assert.match(promptRaw, /you MUST NEVER use `git checkout`, `git restore`, or snapshot copies to roll managed files back/i);
+  assert.match(promptRaw, /You MUST analyze the legacy code first/);
+  assert.match(promptRaw, /You MUST then build a fresh implementation on top of the regenerated scaffold/);
+  assert.match(promptRaw, /copying legacy files into the new scaffold and making only superficial edits/);
+  assert.match(promptRaw, /preserving plural feature folders, unnecessary typed errors, helper files, wrapper services/);
+  assert.match(promptRaw, /before writing final code, you MUST explicitly compare the planned target structure against the active standards/i);
+});
+
+test("short prompts delegate to the contract files", async () => {
+  const initPromptRaw = await readFile(path.join(packageRoot, "prompts", "init.prompt.md"), "utf8");
+  const refactorPromptRaw = await readFile(path.join(packageRoot, "prompts", "refactor.prompt.md"), "utf8");
+
+  assert.match(initPromptRaw, /prompts\/init-contract\.md/);
+  assert.match(refactorPromptRaw, /prompts\/refactor-contract\.md/);
 });
