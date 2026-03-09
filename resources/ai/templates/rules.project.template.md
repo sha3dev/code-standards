@@ -53,8 +53,12 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 
 ## Active Deterministic Rules
 
-{{blockingRules}}
+{{deterministicRules}}
 
-## Active Guidance Rules
+## Active Heuristic Rules
 
-{{guidanceRules}}
+{{heuristicRules}}
+
+## Active Audit Rules
+
+{{auditRules}}

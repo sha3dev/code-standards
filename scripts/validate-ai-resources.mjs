@@ -46,7 +46,7 @@ for (const rule of catalog.rules) {
   }
 }
 
-for (const token of ["{{contractVersion}}", "{{generatedByVersion}}", "{{blockingRules}}", "{{guidanceRules}}", "{{managedFiles}}"]) {
+for (const token of ["{{contractVersion}}", "{{generatedByVersion}}", "{{deterministicRules}}", "{{heuristicRules}}", "{{auditRules}}", "{{managedFiles}}"]) {
   if (!agentsTemplateRaw.includes(token)) {
     console.error(`resources/ai/templates/agents.project.template.md is missing token ${token}`);
     process.exit(1);

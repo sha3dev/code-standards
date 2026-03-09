@@ -1,5 +1,5 @@
 import { ServiceRuntime } from "./index.ts";
 
-const serviceRuntime = ServiceRuntime.createDefault();
+const SERVICE_RUNTIME = ServiceRuntime.createDefault();
 
-serviceRuntime.startServer();
+SERVICE_RUNTIME.startServer();

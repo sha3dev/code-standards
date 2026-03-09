@@ -44,7 +44,7 @@ export class HttpServerService {
    * @section public:methods
    */
 
-  public buildServer() {
+  public buildServer(): import("node:http").Server {
     const server = createServer((_, response) => {
       const payload = this.appInfoService.buildPayload();
       response.statusCode = 200;

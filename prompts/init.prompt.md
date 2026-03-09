@@ -6,6 +6,7 @@ Requirements:
 
 - preserve the scaffold structure and naming conventions
 - add or update tests for behavior changes
+- execute `npm run standards:check` yourself, read the report, fix every deterministic, heuristic, and audit issue, and rerun until it passes
 - execute `npm run check` yourself before finishing
 - if `npm run check` fails, fix the issues and rerun it until it passes
 

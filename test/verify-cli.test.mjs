@@ -46,6 +46,12 @@ async function createVerifyFixture(t) {
         severity: "blocking-deterministic",
         kind: "style",
         deterministic: true,
+        verificationMode: "deterministic",
+        verificationSource: "ast",
+        blocking: true,
+        implementedBy: ["source-rule-verifier"],
+        requiresContext: "full-project",
+        confidence: "high",
         appliesTo: ["src/**/*.ts"],
         enforcedBy: ["verify"],
         examples: {
@@ -60,6 +66,12 @@ async function createVerifyFixture(t) {
         severity: "blocking-deterministic",
         kind: "architecture",
         deterministic: true,
+        verificationMode: "deterministic",
+        verificationSource: "ast",
+        blocking: true,
+        implementedBy: ["source-rule-verifier"],
+        requiresContext: "full-project",
+        confidence: "high",
         appliesTo: ["src/**/*.ts"],
         enforcedBy: ["verify"],
         examples: {
@@ -165,9 +177,10 @@ test("verify --report json returns structured output", async (t) => {
   assert.equal(result.status, 1);
   const report = JSON.parse(result.stdout);
   assert.equal(report.ok, false);
-  assert.equal(report.summary.issueCount, 2);
+  assert.equal(report.summary.issueCount, 3);
   assert(report.issues.some((issue) => issue.ruleId === "single-return"));
   assert(report.issues.some((issue) => issue.ruleId === "canonical-config-import"));
+  assert(report.issues.some((issue) => issue.ruleId === "readme-config-coverage"));
 });
 
 test("verify --only limits the executed rules", async (t) => {

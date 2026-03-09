@@ -54,7 +54,11 @@ async function main() {
   const targetFlagTarget = path.join(tempRoot, "target-flag");
 
   await mkdir(fakeBinDir, { recursive: true });
-  await writeFile(path.join(fakeBinDir, "npm"), '#!/bin/sh\nif [ -z "$FAKE_NPM_LOG" ]; then\n  exit 1\nfi\necho "$@" >> "$FAKE_NPM_LOG"\n', "utf8");
+  await writeFile(
+    path.join(fakeBinDir, "npm"),
+    '#!/bin/sh\nif [ -z "$FAKE_NPM_LOG" ]; then\n  exit 1\nfi\necho "$@" >> "$FAKE_NPM_LOG"\nif [ "$1" = "view" ] && [ "$3" = "version" ] && [ "$4" = "--json" ]; then\n  echo "\\"9.9.9\\""\nfi\n',
+    "utf8",
+  );
   await chmod(path.join(fakeBinDir, "npm"), 0o755);
   const fakeNpmEnv = { PATH: `${fakeBinDir}:${process.env.PATH}`, FAKE_NPM_LOG: fakeNpmLogPath };
   const runCliWithFakeNpm = (args, cwd, input) => runCli(args, cwd ?? repoRoot, input, fakeNpmEnv);
@@ -103,7 +107,9 @@ async function main() {
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   const libRulesRaw = await readFile(path.join(libTarget, "ai", "rules.md"), "utf8");
   assert.match(libAgentsRaw, /machine-readable source of truth/);
-  assert.match(libAgentsRaw, /Blocking Deterministic Rules/);
+  assert.match(libAgentsRaw, /Deterministic Rules/);
+  assert.match(libAgentsRaw, /Heuristic Rules/);
+  assert.match(libAgentsRaw, /Audit Rules/);
   assert.match(libAgentsRaw, /single-return/);
   assert.match(libRulesRaw, /Project Rules/);
   assert.match(libRulesRaw, /Simple Callbacks/);
@@ -193,13 +199,8 @@ async function main() {
   );
 
   let fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
-  assert.deepEqual(
-    fakeNpmLog
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0),
-    ["install"],
-  );
+  assert.match(fakeNpmLog, /^view @sha3\/logger version --json$/m);
+  assert.match(fakeNpmLog, /^install$/m);
 
   await mkdir(path.join(libTarget, "node_modules", "@sha3", "code-standards"), { recursive: true });
   await writeFile(path.join(libTarget, "node_modules", "@sha3", "code-standards", "package.json"), '{ "version": "0.8.0" }\n', "utf8");
@@ -208,13 +209,10 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /installed @sha3\/code-standards is 0\.8\.0 and expected/);
   fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
-  assert.deepEqual(
-    fakeNpmLog
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0),
-    ["install"],
-  );
+  assert.match(fakeNpmLog, /^view @sha3\/logger version --json$/m);
+  assert.match(fakeNpmLog, /^install$/m);
+  const libPackageAfterRefactor = JSON.parse(await readFile(path.join(libTarget, "package.json"), "utf8"));
+  assert.equal(libPackageAfterRefactor.dependencies["@sha3/logger"], "^9.9.9");
 
   await mkdir(serviceTarget, { recursive: true });
   result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], serviceTarget);
@@ -278,13 +276,8 @@ async function main() {
     await readFile(path.join(serviceTarget, "src", "main.ts"), "utf8"),
   );
   fakeNpmLog = await readFile(fakeNpmLogPath, "utf8");
-  assert.deepEqual(
-    fakeNpmLog
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0),
-    ["install"],
-  );
+  assert.match(fakeNpmLog, /^view @sha3\/logger version --json$/m);
+  assert.match(fakeNpmLog, /^install$/m);
 
   await mkdir(installTarget, { recursive: true });
   result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], installTarget);

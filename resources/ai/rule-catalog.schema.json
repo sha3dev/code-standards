@@ -13,7 +13,24 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "title", "summary", "severity", "kind", "appliesTo", "deterministic", "enforcedBy", "examples", "profileOverrides"],
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "severity",
+          "kind",
+          "appliesTo",
+          "deterministic",
+          "verificationMode",
+          "verificationSource",
+          "blocking",
+          "implementedBy",
+          "requiresContext",
+          "confidence",
+          "enforcedBy",
+          "examples",
+          "profileOverrides"
+        ],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
           "title": { "type": "string", "minLength": 3 },
@@ -22,6 +39,12 @@
           "kind": { "type": "string", "enum": ["style", "architecture", "testing", "documentation", "workflow"] },
           "appliesTo": { "type": "array", "minItems": 1, "items": { "type": "string" } },
           "deterministic": { "type": "boolean" },
+          "verificationMode": { "type": "string", "enum": ["deterministic", "heuristic", "audit"] },
+          "verificationSource": { "type": "string", "enum": ["ast", "text", "filesystem", "package-json", "readme", "git-diff", "combined"] },
+          "blocking": { "type": "boolean" },
+          "implementedBy": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "requiresContext": { "type": "string", "enum": ["none", "changed-files", "full-project"] },
+          "confidence": { "type": "string", "enum": ["high", "medium"] },
           "enforcedBy": { "type": "array", "minItems": 1, "items": { "type": "string" } },
           "examples": {
             "type": "object",

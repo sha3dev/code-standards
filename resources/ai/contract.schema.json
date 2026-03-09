@@ -25,7 +25,23 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "title", "summary", "severity", "kind", "deterministic", "appliesTo", "enforcedBy", "examples"],
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "severity",
+          "kind",
+          "deterministic",
+          "verificationMode",
+          "verificationSource",
+          "blocking",
+          "implementedBy",
+          "requiresContext",
+          "confidence",
+          "appliesTo",
+          "enforcedBy",
+          "examples"
+        ],
         "properties": {
           "id": { "type": "string" },
           "title": { "type": "string" },
@@ -33,6 +49,12 @@
           "severity": { "type": "string" },
           "kind": { "type": "string" },
           "deterministic": { "type": "boolean" },
+          "verificationMode": { "type": "string", "enum": ["deterministic", "heuristic", "audit"] },
+          "verificationSource": { "type": "string", "enum": ["ast", "text", "filesystem", "package-json", "readme", "git-diff", "combined"] },
+          "blocking": { "type": "boolean" },
+          "implementedBy": { "type": "array", "items": { "type": "string" } },
+          "requiresContext": { "type": "string", "enum": ["none", "changed-files", "full-project"] },
+          "confidence": { "type": "string", "enum": ["high", "medium"] },
           "appliesTo": { "type": "array", "items": { "type": "string" } },
           "enforcedBy": { "type": "array", "items": { "type": "string" } },
           "examples": {
