@@ -30,6 +30,7 @@ If unsure whether to preserve a legacy structure, default to the simpler standar
 - You MUST use the snapshot to understand old behavior, public API, edge cases, and data flow; you MUST NOT mirror its files, layers, or module graph unless preservation requirements force it.
 - You MUST treat `.code-standards/refactor-source/latest/` as legacy reference only; you MUST NEVER restore `AGENTS.md`, `ai/*`, `prompts/*`, `.vscode/*`, `biome.json`, `tsconfig*.json`, `package.json`, or lockfiles from that snapshot.
 - You MUST treat the freshly regenerated managed files in the project root as authoritative; if checks fail, you MUST fix `src/` and `test/` to satisfy them instead of replacing managed files.
+- During refactor work, pre-existing managed-file drift created by the scaffold regeneration is expected and is NOT a blocker by itself.
 - You MUST NEVER use `git checkout`, `git restore`, or snapshot copies to roll managed files back to an older contract or toolchain state during refactor work.
 - You MUST actively remove unjustified legacy complexity during the refactor instead of preserving it by inertia.
 - Before writing final code, you MUST explicitly compare the planned target structure against the active standards and remove any copied legacy shape that is not required.

@@ -44,6 +44,7 @@ test("refactor contract forbids restoring managed files from the snapshot", asyn
     promptRaw,
     /you MUST NEVER restore `AGENTS\.md`, `ai\/\*`, `prompts\/\*`, `\.vscode\/\*`, `biome\.json`, `tsconfig\*\.json`, `package\.json`, or lockfiles from that snapshot/i,
   );
+  assert.match(promptRaw, /pre-existing managed-file drift created by the scaffold regeneration is expected and is NOT a blocker/i);
   assert.match(promptRaw, /you MUST NEVER use `git checkout`, `git restore`, or snapshot copies to roll managed files back/i);
   assert.match(promptRaw, /You MUST analyze the legacy code first/);
   assert.match(promptRaw, /You MUST then build a fresh implementation on top of the regenerated scaffold/);
