@@ -38,6 +38,18 @@
       "profileOverrides": [{ "key": "class_file_policy", "equals": "one_public_class_per_file" }]
     },
     {
+      "id": "feature-class-only",
+      "title": "Feature Files Are Class Files",
+      "summary": "Files inside src/<feature>/ must expose exactly one public class, except .types.ts files.",
+      "severity": "blocking-deterministic",
+      "kind": "architecture",
+      "appliesTo": ["src/*/**/*.ts"],
+      "deterministic": true,
+      "enforcedBy": ["verify"],
+      "examples": { "good": ["ai/examples/demo/src/invoice/invoice.service.ts"], "bad": ["ai/examples/rules/class-first-bad.ts"] },
+      "profileOverrides": [{ "key": "paradigm", "equals": "class-first" }]
+    },
+    {
       "id": "class-section-order",
       "title": "Class Section Order",
       "summary": "Files that expose a public class must include valid ordered @section markers and omit empty section blocks.",

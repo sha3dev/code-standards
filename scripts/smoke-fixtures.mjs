@@ -112,6 +112,8 @@ async function main() {
   assert.match(libRulesRaw, /Throw plain `Error` by default/);
   assert.match(libRulesRaw, /## Type Files/);
   assert.match(libRulesRaw, /Create `\*\.types\.ts` only when shared feature types are substantial enough to justify a dedicated file/);
+  assert.match(libRulesRaw, /## Feature Classes/);
+  assert.match(libRulesRaw, /files MUST expose exactly one public class unless the file is `\*\.types\.ts`/);
 
   const libContract = JSON.parse(await readFile(path.join(libTarget, "ai", "contract.json"), "utf8"));
   assert.equal(libContract.project.template, "node-lib");
@@ -121,6 +123,7 @@ async function main() {
   assert(libContract.managedFiles.includes("ai/contract.json"));
   assert(libContract.managedFiles.includes("ai/rules.md"));
   assert(libContract.rules.some((rule) => rule.id === "single-return"));
+  assert(libContract.rules.some((rule) => rule.id === "feature-class-only"));
 
   const libReadmeRaw = await readFile(path.join(libTarget, "README.md"), "utf8");
   for (const heading of [

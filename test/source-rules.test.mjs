@@ -11,6 +11,7 @@ const RULE_IDS = [
   "single-return",
   "async-await-only",
   "one-public-class-per-file",
+  "feature-class-only",
   "class-section-order",
   "canonical-config-import",
   "domain-specific-identifiers",
@@ -39,12 +40,14 @@ test("single-return flags multiple returns in src", async (t) => {
     t,
     "src/user/user.service.ts",
     `
-export function readValue(input: string): string {
-  if (input.length === 0) {
-    return "empty";
-  }
+export class UserService {
+  public readValue(input: string): string {
+    if (input.length === 0) {
+      return "empty";
+    }
 
-  return input;
+    return input;
+  }
 }
 `,
   );
@@ -57,8 +60,10 @@ test("async-await-only flags promise chains in src", async (t) => {
     t,
     "src/user/user.service.ts",
     `
-export async function loadUser(): Promise<void> {
-  await Promise.resolve("x").then(() => undefined);
+export class UserService {
+  public async loadUser(): Promise<void> {
+    await Promise.resolve("x").then(() => undefined);
+  }
 }
 `,
   );
@@ -89,6 +94,37 @@ export class BillingService {}
   );
 
   assert(errors.some((issue) => issue.ruleId === "one-public-class-per-file"));
+});
+
+test("feature-class-only flags feature files that export functions instead of one class", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/user/user.service.ts",
+    `
+export function readUser(): string {
+  return "ok";
+}
+`,
+  );
+
+  assert(errors.some((issue) => issue.ruleId === "feature-class-only"));
+});
+
+test("feature-class-only ignores .types.ts files", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/user/user.types.ts",
+    `
+export type UserStatus = "active" | "disabled";
+
+export interface UserView {
+  status: UserStatus;
+}
+`,
+    ["feature-class-only"],
+  );
+
+  assert.equal(errors.length, 0);
 });
 
 test("class-section-order flags missing ordered sections", async (t) => {

@@ -12,6 +12,7 @@
 - For `node-lib`, API boundary separation MAY use `src/public/` and `src/internal/`.
 - Feature files SHOULD use explicit role suffixes (`*.service.ts`, `*.repository.ts`, `*.schema.ts`, `*.mapper.ts`).
 - Use `*.types.ts` only when shared feature types are substantial enough to justify a dedicated file.
+- Inside `src/<feature>/`, files MUST expose exactly one public class unless the file is `*.types.ts`.
 - Feature file domain base names SHOULD be singular (for example: `invoice.service.ts`).
 - Ambiguous filenames (`utils.ts`, `helpers.ts`, `common.ts`) are forbidden for new feature code.
 - Hardcoded, non-parameterized configuration MUST be centralized in `src/config.ts` (for example, external service URLs).

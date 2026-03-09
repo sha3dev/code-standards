@@ -50,6 +50,7 @@ Template-specific additions:
 - `node-service`: SHOULD keep transport concerns under `src/http/` (`routes`, `controllers`, `middleware`).
 
 Within each feature folder, files SHOULD be role-oriented and explicit (`*.service.ts`, `*.repository.ts`, `*.schema.ts`, `*.mapper.ts`). Use `*.types.ts` only when shared feature types are substantial enough to deserve their own file. The domain base name SHOULD be singular (`invoice.service.ts`).
+Files inside `src/<feature>/` MUST expose exactly one public class unless the file is `*.types.ts`.
 
 ## Boundary Rules
 

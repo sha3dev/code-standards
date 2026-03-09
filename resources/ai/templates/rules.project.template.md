@@ -38,6 +38,11 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 - Keep small or local types close to the code that uses them.
 - Create `*.types.ts` only when shared feature types are substantial enough to justify a dedicated file.
 
+## Feature Classes
+
+- Inside `src/<feature>/`, files MUST expose exactly one public class unless the file is `*.types.ts`.
+- Do not implement feature modules as exported function collections.
+
 ## README
 
 - Rewrite `README.md` as package-quality integration documentation once real behavior exists.

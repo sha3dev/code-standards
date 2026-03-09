@@ -32,6 +32,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Always use braces in control flow (`if`, `else`, `for`, `while`, `do`).
 - In `src/`, business/domain logic MUST be implemented with classes by default.
 - Module-level exported functions in `src/` SHOULD be limited to minimal entrypoint/bootstrap wrappers.
+- Inside `src/<feature>/`, files MUST expose exactly one public class unless the file is `*.types.ts`.
 - `src/config.ts` MUST export a default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
 
 ## Naming

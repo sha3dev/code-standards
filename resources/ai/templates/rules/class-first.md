@@ -1,7 +1,8 @@
 ### Class-First Design (MUST)
 
 - New business/domain logic MUST be modeled with classes by default.
-- In `src/`, module-level exported functions SHOULD be avoided for business/domain logic.
+- Inside feature folders, only `*.types.ts` files may expose non-class exports.
+- Feature files in `src/<feature>/` MUST expose exactly one public class.
 - Exceptions for exported functions are limited to minimal entrypoint/bootstrap wrappers.
 - Each class MUST use constructor injection for dependencies.
 - A source file MUST expose one public class.
