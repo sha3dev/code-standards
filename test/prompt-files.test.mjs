@@ -38,6 +38,9 @@ test("renderPromptFiles materializes prompts into the target repo", async (t) =>
   assert.match(rootPrompt, /prompts\/init-contract\.md/);
   assert.match(rootPrompt, /## Implementation Request/);
   assert.match(rootPrompt, /Complete this section before sending the prompt to your LLM/);
+  assert.match(rootPrompt, /execute `npm run check` yourself before finishing/);
+  assert.match(rootPrompt, /fix the issues and rerun it until it passes/);
+  assert.match(rootPrompt, /without editing managed files unless this is a standards update/);
 });
 
 test("contract prompts require the LLM to execute npm run check itself", async () => {

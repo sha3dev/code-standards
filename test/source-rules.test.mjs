@@ -12,6 +12,7 @@ const RULE_IDS = [
   "async-await-only",
   "one-public-class-per-file",
   "feature-class-only",
+  "no-module-functions-in-class-files",
   "class-section-order",
   "canonical-config-import",
   "domain-specific-identifiers",
@@ -83,6 +84,22 @@ export const value = 1;
   assert(errors.some((issue) => issue.ruleId === "feature-filename-role"));
 });
 
+test("feature-filename-role allows .helpers.ts as an explicit feature role", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/order/order.helpers.ts",
+    `
+export class OrderHelpers {
+  public readOrderId(): string {
+    return "order-1";
+  }
+}
+`,
+  );
+
+  assert(!errors.some((issue) => issue.ruleId === "feature-filename-role"));
+});
+
 test("one-public-class-per-file flags multiple exported classes", async (t) => {
   const errors = await verifySingleFile(
     t,
@@ -125,6 +142,26 @@ export interface UserView {
   );
 
   assert.equal(errors.length, 0);
+});
+
+test("no-module-functions-in-class-files flags module-scope helpers in class files", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/order/order.service.ts",
+    `
+function buildOrderId(): string {
+  return "order-1";
+}
+
+export class OrderService {
+  public readOrderId(): string {
+    return buildOrderId();
+  }
+}
+`,
+  );
+
+  assert(errors.some((issue) => issue.ruleId === "no-module-functions-in-class-files"));
 });
 
 test("class-section-order flags missing ordered sections", async (t) => {

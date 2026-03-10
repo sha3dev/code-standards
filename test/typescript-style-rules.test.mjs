@@ -8,7 +8,7 @@ import { DEFAULT_PROFILE } from "../lib/constants.mjs";
 import { loadProjectAnalysisContext } from "../lib/verify/source-analysis.mjs";
 import { verifyTypeScriptStyle } from "../lib/verify/typescript-style-verifier.mjs";
 
-const RULE_IDS = ["no-any", "explicit-export-return-types", "control-flow-braces", "type-only-imports"];
+const RULE_IDS = ["no-any", "explicit-export-return-types", "control-flow-braces", "type-only-imports", "large-class-heuristic"];
 
 async function verifyFile(t, relativePath, source) {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sha3-ts-style-"));
@@ -59,4 +59,19 @@ export function readUser(): UserView {
   );
 
   assert(issues.some((issue) => issue.ruleId === "type-only-imports"));
+});
+
+test("verifyTypeScriptStyle flags very large exported classes", async (t) => {
+  const repeatedMethods = Array.from({ length: 220 }, (_, index) => `  public readValue${index}(): string {\n    return "value-${index}";\n  }`).join("\n\n");
+  const issues = await verifyFile(
+    t,
+    "src/order/order.service.ts",
+    `
+export class OrderService {
+${repeatedMethods}
+}
+`,
+  );
+
+  assert(issues.some((issue) => issue.ruleId === "large-class-heuristic"));
 });

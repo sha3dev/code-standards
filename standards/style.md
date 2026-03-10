@@ -33,6 +33,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - In `src/`, business/domain logic MUST be implemented with classes by default.
 - Module-level exported functions in `src/` SHOULD be limited to minimal entrypoint/bootstrap wrappers.
 - Inside `src/<feature>/`, files MUST expose exactly one public class unless the file is `*.types.ts`.
+- If a file exposes a public class, helper logic MUST stay inside that class as private or static methods rather than module-scope functions.
+- Oversized classes MUST be split into smaller cohesive units with clear roles instead of accumulating into one monolithic file.
 - `src/config.ts` MUST export a default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
 
 ## Naming
@@ -54,6 +56,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
   - `<feature>.controller.ts` for transport controllers
   - `<feature>.repository.ts` for persistence adapters
   - `<feature>.types.ts` for shared feature-level types and DTOs when keeping them inline would add noise
+  - `<feature>.helpers.ts` for extracted feature-local helper logic when it is justified as its own cohesive unit
   - `<feature>.schema.ts` for validation schemas
   - `<feature>.mapper.ts` for data transformation logic
   - `<feature>.constants.ts` for constants

@@ -76,7 +76,7 @@ async function main() {
   assert.match(result.stdout, /Project created/);
   assert.match(result.stdout, /Guided next steps:/);
   assert.match(result.stdout, /PROMPT\.md/);
-  assert.match(result.stdout, /npm run check/);
+  assert.doesNotMatch(result.stdout, /npm run check/);
 
   const libFiles = await listRelativeFiles(libTarget);
   assert(libFiles.includes("src/package-info/package-info.service.ts"));
@@ -220,6 +220,7 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Guided next steps:/);
   assert.match(result.stdout, /PROMPT\.md/);
+  assert.doesNotMatch(result.stdout, /npm run check/);
 
   const serviceFiles = await listRelativeFiles(serviceTarget);
   assert(serviceFiles.includes("AGENTS.md"));

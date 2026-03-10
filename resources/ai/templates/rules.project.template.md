@@ -49,6 +49,8 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 
 - Inside `src/<feature>/`, files MUST expose exactly one public class unless the file is `*.types.ts`.
 - Do not implement feature modules as exported function collections.
+- If a file exposes a public class, helper logic MUST stay inside that class as private or static methods instead of module-scope functions.
+- Large classes MUST be decomposed into smaller cohesive units before they become monolithic files.
 
 ## README
 

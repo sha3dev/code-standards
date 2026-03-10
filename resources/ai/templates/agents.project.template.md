@@ -58,6 +58,8 @@ Simplicity is mandatory, not stylistic preference.
 - Simplicity does not justify removing valid boundaries.
 - Keep distinct current responsibilities separated when they serve a real purpose.
 - Keep code compact: do not split lines that fit comfortably within the configured line limit.
+- Do not keep helper functions at module scope inside class-oriented feature files; move that logic into the class as private or static methods.
+- If a class starts accumulating unrelated responsibilities or growing into a very large file, you MUST split it into smaller cohesive units with explicit roles.
 
 ## Managed Files
 

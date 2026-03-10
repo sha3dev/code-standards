@@ -170,6 +170,24 @@
       "profileOverrides": [{ "key": "architecture", "equals": "feature_folders" }]
     },
     {
+      "id": "no-module-functions-in-class-files",
+      "title": "No Module Functions In Class Files",
+      "summary": "Files that expose a public class must not keep helper functions at module scope; that logic must live inside the class as private or static methods.",
+      "severity": "blocking-deterministic",
+      "kind": "architecture",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": true,
+      "verificationMode": "deterministic",
+      "verificationSource": "ast",
+      "blocking": true,
+      "implementedBy": ["source-rule-verifier"],
+      "requiresContext": "full-project",
+      "confidence": "high",
+      "enforcedBy": ["verify"],
+      "examples": { "good": [], "bad": [] },
+      "profileOverrides": [{ "key": "paradigm", "equals": "class-first" }]
+    },
+    {
       "id": "typescript-only",
       "title": "TypeScript Only",
       "summary": "Implementation and test code must stay in TypeScript files only.",
@@ -870,6 +888,24 @@
       "enforcedBy": ["verify"],
       "examples": { "good": [], "bad": [] },
       "profileOverrides": [{ "key": "function_size_policy", "equals": "max_30_lines_soft" }]
+    },
+    {
+      "id": "large-class-heuristic",
+      "title": "Large Class Heuristic",
+      "summary": "Very large classes should be decomposed into smaller cohesive units instead of accumulating unrelated responsibilities in one file.",
+      "severity": "guidance",
+      "kind": "architecture",
+      "appliesTo": ["src/**/*.ts"],
+      "deterministic": false,
+      "verificationMode": "heuristic",
+      "verificationSource": "ast",
+      "blocking": true,
+      "implementedBy": ["typescript-style-verifier"],
+      "requiresContext": "full-project",
+      "confidence": "medium",
+      "enforcedBy": ["verify"],
+      "examples": { "good": [], "bad": [] },
+      "profileOverrides": []
     },
     {
       "id": "comments-policy-audit",
