@@ -1,6 +1,6 @@
 # 📚 {{packageName}}
 
-Feature-first TypeScript library scaffolded with deterministic standards, a generated AI contract, and package-grade documentation expectations.
+Small TypeScript package for exposing package metadata through a stable public API.
 
 ## TL;DR
 
@@ -19,9 +19,14 @@ console.log(packageInfoService.readPackageInfo());
 
 ## Why
 
-- Gives you a TypeScript library scaffold with a public entrypoint, tests, and deterministic project policy.
-- Keeps implementation feature-first and class-oriented without hiding behavior behind unnecessary abstractions.
-- Ships with an AI contract so LLMs can extend the package while respecting local rules.
+Use this package when you want one obvious place to read the package metadata your application exposes to other modules.
+It keeps that behavior behind a narrow public surface instead of making consumers know about internal files or configuration layout.
+
+## Main Capabilities
+
+- Exposes package metadata through a stable package-root import.
+- Provides a default service wiring that reads from `src/config.ts`.
+- Returns plain serializable data that is easy to log, test, or pass across boundaries.
 
 ## Installation
 
@@ -40,35 +45,36 @@ const packageInfo = packageInfoService.readPackageInfo();
 console.log(packageInfo.packageName);
 ```
 
+This is the intended integration path for consumers: import from the package root, create the default service, and read the metadata you want to expose.
+
 ## Examples
 
-Create the default service from the package root:
-
-```ts
-import { PackageInfoService } from "{{packageName}}";
-
-const packageInfoService = PackageInfoService.createDefault();
-```
-
-Read the package metadata shape:
+Read package metadata for logging or diagnostics:
 
 ```ts
 import { PackageInfoService, type PackageInfo } from "{{packageName}}";
 
 const packageInfoService = PackageInfoService.createDefault();
 const packageInfo: PackageInfo = packageInfoService.readPackageInfo();
+
+console.log(`[package] ${packageInfo.packageName}`);
 ```
 
-Behavior notes:
+Create the default service once and reuse it:
 
-- Import only from the package root.
-- Treat `PackageInfoService` as the stable public entrypoint for the scaffolded behavior.
+```ts
+import { PackageInfoService } from "{{packageName}}";
+
+const packageInfoService = PackageInfoService.createDefault();
+const firstRead = packageInfoService.readPackageInfo();
+const secondRead = packageInfoService.readPackageInfo();
+```
 
 ## Public API
 
 ### `PackageInfoService`
 
-Default public service for reading the scaffolded package metadata.
+Primary entrypoint for reading the package metadata exposed by this package.
 
 ```ts
 import { PackageInfoService } from "{{packageName}}";
@@ -78,7 +84,11 @@ const packageInfoService = PackageInfoService.createDefault();
 
 #### `createDefault()`
 
-Creates a `PackageInfoService` wired with `src/config.ts`.
+Creates a `PackageInfoService` using the package configuration.
+
+Parameters:
+
+- none
 
 Returns:
 
@@ -86,12 +96,16 @@ Returns:
 
 Behavior notes:
 
-- uses the package metadata configured in `config.PACKAGE_NAME`
-- keeps the default wiring at the public package boundary
+- reads the default package name from `config.PACKAGE_NAME`
+- gives consumers a stable way to construct the service without knowing internal wiring
 
 #### `readPackageInfo()`
 
-Reads the public package metadata exposed by the scaffold.
+Reads the package metadata exposed by the public API.
+
+Parameters:
+
+- none
 
 Returns:
 
@@ -101,6 +115,7 @@ Behavior notes:
 
 - returns a plain serializable object
 - does not perform filesystem or network I/O
+- is safe to call from application code, tests, and adapters
 
 ### `PackageInfo`
 
@@ -120,7 +135,7 @@ type PackageInfo = { packageName: string };
 
 Configuration is centralized in `src/config.ts`.
 
-- `config.PACKAGE_NAME`: package name exposed by the default info service.
+- `config.PACKAGE_NAME`: package name returned by `readPackageInfo()` and exposed to consumers of this package.
 
 ## Scripts
 
@@ -133,7 +148,7 @@ Configuration is centralized in `src/config.ts`.
 ## Structure
 
 - `src/config.ts`: canonical hardcoded configuration
-- `src/package-info/package-info.service.ts`: neutral package info service
+- `src/package-info/package-info.service.ts`: implementation of the public metadata service
 - `src/index.ts`: public exports
 - `test/package-info.test.ts`: behavior test
 
@@ -151,5 +166,5 @@ Run `npm run standards:check` to see deterministic contract violations such as m
 
 - Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` file before coding.
 - Do not edit managed contract/tooling files during normal implementation.
-- Rewrite this README after real behavior is implemented so it documents the final public exports and methods, not just the scaffold defaults.
+- Keep this README focused on consumer-facing behavior, configuration, and public API.
 - Run `npm run check` before finalizing changes.

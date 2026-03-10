@@ -15,7 +15,7 @@ function buildNodeLibReadme(packageName, options = {}) {
 
   return `# ${packageName}
 
-Library for exposing scaffolded package metadata through a stable public service.
+Library for exposing package metadata through a stable public service.
 
 ## TL;DR
 
@@ -26,6 +26,11 @@ npm install ${packageName}
 ## Why
 
 - gives consumers a stable public entrypoint
+
+## Main Capabilities
+
+- reads package metadata through one public service
+- exposes a package-root import for consumers
 
 ## Installation
 
@@ -89,7 +94,7 @@ function buildNodeServiceReadme(packageName, options = {}) {
 
   return `# ${packageName}
 
-Service scaffold with a public runtime facade.
+Service package with a public runtime facade.
 
 ## TL;DR
 
@@ -100,6 +105,11 @@ npm install
 ## Why
 
 - gives a stable service runtime entrypoint
+
+## Main Capabilities
+
+- builds the server without listening
+- starts the runtime through one public entrypoint
 
 ## Installation
 
@@ -396,6 +406,46 @@ test("verifyProject flags missing public method documentation in README", async 
   assert.equal(result.ok, false);
   assert(result.issues.some((issue) => issue.ruleId === "readme-public-methods" && issue.message.includes("PackageInfoService.createDefault()")));
   assert(result.issues.some((issue) => issue.ruleId === "readme-public-methods" && issue.message.includes("PackageInfoService.readPackageInfo()")));
+});
+
+test("verifyProject ignores private class methods for README documentation", async (t) => {
+  const targetDir = await createMinimalNodeLibProject(t, false, false);
+
+  await writeFile(
+    path.join(targetDir, "src", "package-info", "package-info.service.ts"),
+    [
+      "export type PackageInfo = { packageName: string };",
+      "",
+      "type PackageInfoServiceOptions = { packageName: string };",
+      "",
+      "export class PackageInfoService {",
+      "  private readonly packageName: string;",
+      "",
+      "  public constructor(options: PackageInfoServiceOptions) {",
+      "    this.packageName = options.packageName;",
+      "  }",
+      "",
+      "  public static createDefault(): PackageInfoService {",
+      '    return new PackageInfoService({ packageName: "demo-lib" });',
+      "  }",
+      "",
+      "  public readPackageInfo(): PackageInfo {",
+      "    return this.buildPackageInfo();",
+      "  }",
+      "",
+      "  private buildPackageInfo(): PackageInfo {",
+      "    return { packageName: this.packageName };",
+      "  }",
+      "}",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  const result = await verifyProject(targetDir);
+
+  assert.equal(result.ok, true);
+  assert(!result.issues.some((issue) => issue.ruleId === "readme-public-methods" && issue.message.includes("buildPackageInfo()")));
 });
 
 test("verifyProject flags README usage examples without package-root import", async (t) => {

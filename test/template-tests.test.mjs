@@ -35,18 +35,31 @@ test("template READMEs document public exports and methods with package-grade se
   const nodeLibReadme = await readFile(path.join(repoRoot, "templates/node-lib/README.md"), "utf8");
   const nodeServiceReadme = await readFile(path.join(repoRoot, "templates/node-service/README.md"), "utf8");
 
-  for (const snippet of ["## Why", "## Usage", "## Examples", "### `PackageInfoService`", "#### `createDefault()`", "#### `readPackageInfo()`"]) {
+  for (const snippet of [
+    "## Why",
+    "## Main Capabilities",
+    "## Usage",
+    "### `PackageInfoService`",
+    "Parameters:",
+    "#### `createDefault()`",
+    "#### `readPackageInfo()`",
+  ]) {
     assert.match(nodeLibReadme, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
   for (const snippet of [
+    "## Main Capabilities",
     "## Running Locally",
     "## HTTP API",
     "### `ServiceRuntime`",
+    "Parameters:",
     "#### `createDefault()`",
     "#### `buildServer()`",
     "#### `startServer()`",
   ]) {
     assert.match(nodeServiceReadme, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+
+  assert.doesNotMatch(nodeLibReadme, /\bscaffold(?:ed|ing)?\b/i);
+  assert.doesNotMatch(nodeServiceReadme, /\bscaffold(?:ed|ing)?\b/i);
 });

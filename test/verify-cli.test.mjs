@@ -112,6 +112,8 @@ async function createVerifyFixture(t) {
       "",
       "## Why",
       "",
+      "## Main Capabilities",
+      "",
       "## Installation",
       "",
       "## Usage",

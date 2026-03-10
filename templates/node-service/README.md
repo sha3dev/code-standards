@@ -1,6 +1,6 @@
 # 🚀 {{packageName}}
 
-Feature-first TypeScript service scaffolded with deterministic standards, a generated AI contract, and package-grade documentation expectations.
+HTTP service package that exposes one runtime entrypoint for starting or composing the server.
 
 ## TL;DR
 
@@ -19,9 +19,14 @@ const server = serviceRuntime.buildServer();
 
 ## Why
 
-- Gives you a TypeScript HTTP service scaffold with runtime wiring, configuration, and tests already in place.
-- Makes the public service entrypoint explicit through `ServiceRuntime`.
-- Keeps service behavior aligned with deterministic standards and AI-readable local policy.
+Use this package when you want one obvious runtime surface for booting the service and a small HTTP boundary that is easy to test.
+It keeps startup and server construction behind a single public class so application code and tooling do not need to know the internal wiring.
+
+## Main Capabilities
+
+- Builds the HTTP server without binding a port when you need test or orchestration control.
+- Starts the default runtime with one public method when you want the service to listen immediately.
+- Exposes the root endpoint payload as a public type so consumers can reason about the response contract.
 
 ## Installation
 
@@ -35,7 +40,7 @@ npm install
 npm run start
 ```
 
-The default scaffold listens on `http://localhost:3000`.
+The default runtime listens on `http://localhost:3000`.
 
 ## Usage
 
@@ -45,6 +50,8 @@ import { ServiceRuntime } from "{{packageName}}";
 const serviceRuntime = ServiceRuntime.createDefault();
 const server = serviceRuntime.startServer();
 ```
+
+This is the intended runtime integration path: construct the default runtime once, then either build or start the server depending on who owns process startup.
 
 ## Examples
 
@@ -67,13 +74,14 @@ curl http://localhost:3000/
 
 ### `GET /`
 
-Returns the default application info payload.
+Returns the default service info payload.
 
 Response shape:
 
 ```json
 {
-  "name": "service-name"
+  "ok": true,
+  "serviceName": "service-name"
 }
 ```
 
@@ -87,7 +95,7 @@ Behavior notes:
 
 ### `ServiceRuntime`
 
-Default public runtime facade for the scaffolded service.
+Primary runtime entrypoint for composing or starting the service.
 
 ```ts
 import { ServiceRuntime } from "{{packageName}}";
@@ -97,7 +105,11 @@ const serviceRuntime = ServiceRuntime.createDefault();
 
 #### `createDefault()`
 
-Creates a `ServiceRuntime` wired with the default `HttpServerService`.
+Creates a `ServiceRuntime` with the default HTTP server wiring.
+
+Parameters:
+
+- none
 
 Returns:
 
@@ -105,12 +117,16 @@ Returns:
 
 Behavior notes:
 
-- wires the default HTTP server stack from the scaffold
+- wires the default HTTP server stack
 - keeps configuration centralized in `src/config.ts`
 
 #### `buildServer()`
 
 Builds the Node HTTP server without binding a port.
+
+Parameters:
+
+- none
 
 Returns:
 
@@ -125,21 +141,25 @@ Behavior notes:
 
 Builds the HTTP server and starts listening on `config.DEFAULT_PORT`.
 
+Parameters:
+
+- none
+
 Returns:
 
 - the started Node HTTP server instance
 
 Behavior notes:
 
-- logs the listening address through the scaffold logger
+- logs the listening address through the package logger
 - binds immediately to the configured default port
 
 ### `AppInfoPayload`
 
-Public type for the default root payload returned by the scaffold.
+Public type for the default root payload returned by the root endpoint.
 
 ```ts
-type AppInfoPayload = { name: string };
+type AppInfoPayload = { ok: true; serviceName: string };
 ```
 
 ## Compatibility
@@ -152,9 +172,9 @@ type AppInfoPayload = { name: string };
 
 Configuration is centralized in `src/config.ts`.
 
-- `config.RESPONSE_CONTENT_TYPE`: response header for the root endpoint
-- `config.DEFAULT_PORT`: port used by `startServer()`
-- `config.SERVICE_NAME`: service name exposed by the default root payload
+- `config.RESPONSE_CONTENT_TYPE`: response `content-type` header sent by the root endpoint.
+- `config.DEFAULT_PORT`: port used by `startServer()` when the service binds locally.
+- `config.SERVICE_NAME`: service name included in the root endpoint payload.
 
 ## Scripts
 
@@ -167,9 +187,9 @@ Configuration is centralized in `src/config.ts`.
 ## Structure
 
 - `src/config.ts`: canonical runtime configuration
-- `src/app-info/app-info.service.ts`: default root payload logic
-- `src/http/http-server.service.ts`: HTTP server construction
-- `src/app/service-runtime.service.ts`: runtime orchestration
+- `src/app-info/app-info.service.ts`: builds the root endpoint payload
+- `src/http/http-server.service.ts`: constructs the HTTP server
+- `src/app/service-runtime.service.ts`: public runtime orchestration
 - `src/main.ts`: bootstrap entrypoint
 - `test/service-runtime.test.ts`: behavior test
 
@@ -181,11 +201,11 @@ Override `PORT` in `.env` or your shell before running `npm run start`.
 
 ### Contract failures
 
-Run `npm run standards:check` to detect missing managed files, README sections, or structural drift from the scaffold contract.
+Run `npm run standards:check` to detect missing managed files, README sections, or structural drift from the project contract.
 
 ## AI Workflow
 
 - Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` before coding.
 - Keep managed contract/tooling files read-only during feature work.
-- Rewrite this README after real behavior is implemented so it documents the final public exports, methods, and HTTP surface instead of the scaffold defaults.
+- Keep this README focused on the runtime surface, HTTP contract, configuration, and public API.
 - Run `npm run check` before finalizing changes.

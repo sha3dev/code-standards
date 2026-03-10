@@ -495,7 +495,7 @@ Common cases:
 
 Keep these headings in generated projects, at minimum:
 
-- for both templates: `## TL;DR`, `## Why`, `## Installation`, `## Usage`, `## Examples`, `## Public API`, `## Configuration`, `## Compatibility`, `## Scripts`, `## Structure`, `## Troubleshooting`, `## AI Workflow`
+- for both templates: `## TL;DR`, `## Why`, `## Main Capabilities`, `## Installation`, `## Usage`, `## Examples`, `## Public API`, `## Configuration`, `## Compatibility`, `## Scripts`, `## Structure`, `## Troubleshooting`, `## AI Workflow`
 - for `node-service` also: `## Running Locally` and `## HTTP API`
 
 ### VS Code formatting conflicts
