@@ -75,13 +75,14 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Project created/);
   assert.match(result.stdout, /Guided next steps:/);
-  assert.match(result.stdout, /prompts\/init\.prompt\.md/);
+  assert.match(result.stdout, /PROMPT\.md/);
   assert.match(result.stdout, /npm run check/);
 
   const libFiles = await listRelativeFiles(libTarget);
   assert(libFiles.includes("src/package-info/package-info.service.ts"));
   assert(libFiles.includes("test/package-info.test.ts"));
   assert(libFiles.includes("AGENTS.md"));
+  assert(libFiles.includes("PROMPT.md"));
   assert(libFiles.includes("ai/contract.json"));
   assert(libFiles.includes("ai/rules.md"));
   assert(libFiles.includes("ai/codex.md"));
@@ -218,7 +219,7 @@ async function main() {
   result = runCli(["init", "--template", "node-service", "--yes", "--no-install", "--no-ai-adapters"], serviceTarget);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Guided next steps:/);
-  assert.match(result.stdout, /prompts\/init\.prompt\.md/);
+  assert.match(result.stdout, /PROMPT\.md/);
 
   const serviceFiles = await listRelativeFiles(serviceTarget);
   assert(serviceFiles.includes("AGENTS.md"));
@@ -249,6 +250,7 @@ async function main() {
   assert.equal(serviceContract.project.template, "node-service");
   assert.equal(serviceContract.project.withAiAdapters, false);
   assert(serviceContract.managedFiles.includes("AGENTS.md"));
+  assert(serviceContract.managedFiles.includes("PROMPT.md"));
   assert(serviceContract.managedFiles.includes("ai/contract.json"));
   assert(serviceContract.managedFiles.includes("ai/rules.md"));
   assert(serviceContract.managedFiles.includes("prompts/init.prompt.md"));

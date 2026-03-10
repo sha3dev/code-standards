@@ -448,6 +448,23 @@ test("verifyProject ignores private class methods for README documentation", asy
   assert(!result.issues.some((issue) => issue.ruleId === "readme-public-methods" && issue.message.includes("buildPackageInfo()")));
 });
 
+test("verifyProject ignores public methods from classes that are not exported at the package boundary", async (t) => {
+  const targetDir = await createMinimalNodeLibProject(t, false, false);
+
+  await mkdir(path.join(targetDir, "src", "internal"), { recursive: true });
+  await writeFile(
+    path.join(targetDir, "src", "internal", "internal-order.service.ts"),
+    ["export class InternalOrderService {", "  public buildPostedOrder(): { id: string } {", '    return { id: "order-1" };', "  }", "}", ""].join("\n"),
+    "utf8",
+  );
+
+  const result = await verifyProject(targetDir);
+
+  assert.equal(result.ok, true);
+  assert(!result.issues.some((issue) => issue.ruleId === "readme-public-api" && issue.message.includes("InternalOrderService")));
+  assert(!result.issues.some((issue) => issue.ruleId === "readme-public-methods" && issue.message.includes("InternalOrderService.buildPostedOrder()")));
+});
+
 test("verifyProject flags README usage examples without package-root import", async (t) => {
   const targetDir = await createMinimalNodeLibProject(t, false, false, { includePackageRootImport: false });
 

@@ -13,7 +13,13 @@ const packageRoot = path.resolve(testDir, "..");
 test("collectPromptFiles returns the managed prompt set", async () => {
   const promptFiles = await collectPromptFiles(packageRoot);
 
-  assert.deepEqual(promptFiles, ["prompts/init-contract.md", "prompts/init.prompt.md", "prompts/refactor-contract.md", "prompts/refactor.prompt.md"]);
+  assert.deepEqual(promptFiles, [
+    "PROMPT.md",
+    "prompts/init-contract.md",
+    "prompts/init.prompt.md",
+    "prompts/refactor-contract.md",
+    "prompts/refactor.prompt.md",
+  ]);
 });
 
 test("renderPromptFiles materializes prompts into the target repo", async (t) => {
@@ -24,8 +30,14 @@ test("renderPromptFiles materializes prompts into the target repo", async (t) =>
 
   const generatedRefactorPrompt = await readFile(path.join(targetDir, "prompts", "refactor.prompt.md"), "utf8");
   const sourceRefactorPrompt = await readFile(path.join(packageRoot, "prompts", "refactor.prompt.md"), "utf8");
+  const rootPrompt = await readFile(path.join(targetDir, "PROMPT.md"), "utf8");
 
   assert.equal(generatedRefactorPrompt, sourceRefactorPrompt);
+  assert.match(rootPrompt, /AGENTS\.md/);
+  assert.match(rootPrompt, /ai\/contract\.json/);
+  assert.match(rootPrompt, /prompts\/init-contract\.md/);
+  assert.match(rootPrompt, /## Implementation Request/);
+  assert.match(rootPrompt, /Complete this section before sending the prompt to your LLM/);
 });
 
 test("contract prompts require the LLM to execute npm run check itself", async () => {

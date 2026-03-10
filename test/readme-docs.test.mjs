@@ -19,7 +19,7 @@ test("README documents verify options and usage", async () => {
     "Verify Output",
     "`init` step by step",
     "`refactor` step by step",
-    "prompts/init.prompt.md",
+    "PROMPT.md",
     "prompts/refactor.prompt.md",
     "ai/rules.md",
     ".code-standards/refactor-source/public-contract.json",

@@ -177,7 +177,7 @@ What `init` generates for you:
 - `ai/contract.json` as the deterministic standards contract
 - `ai/rules.md` as the concise human-readable implementation rules file for the LLM
 - `ai/<assistant>.md` adapter files when AI adapters are enabled
-- `prompts/init.prompt.md` as the starter prompt for the first implementation pass
+- `PROMPT.md` in the project root as the starter prompt you complete before the first implementation pass
 - the managed `src/`, `test/`, config, and package surface for the selected template
 - a README scaffold that is meant to be rewritten into package-grade integration documentation once real behavior exists
 
@@ -186,9 +186,9 @@ The CLI also prints these next steps to the console after `init` completes, so t
 Recommended LLM workflow after `init`:
 
 1. Open `AGENTS.md`, `ai/contract.json`, `ai/rules.md`, and your assistant file such as `ai/codex.md`.
-2. Open `prompts/init.prompt.md`.
-3. Paste the contents of `prompts/init.prompt.md` into the LLM.
-4. Append your task-specific brief, for example:
+2. Open `PROMPT.md`.
+3. Complete the final `Implementation Request` section.
+4. Paste the full contents of `PROMPT.md` into the LLM. For example:
 
 ```txt
 Task:
