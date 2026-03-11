@@ -18,6 +18,9 @@
 - Ambiguous filenames (`utils.ts`, `helpers.ts`, `common.ts`) are forbidden for new feature code.
 - Hardcoded, non-parameterized configuration MUST be centralized in `src/config.ts` (for example, external service URLs).
 - `src/config.ts` MUST export a single default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
+- Non-trivial structured output (for example pages, documents, markdown, HTML, prompts, emails, or report bodies) MUST be stored in dedicated template files instead of being composed inline in source code.
+- Inline string building is allowed only for very small fragments where a template file would be disproportionate.
+- Template rendering strategy MAY be as simple or as capable as needed; choose the smallest approach that keeps the content outside application code.
 - Architecture decisions MUST default to the simplest structure that satisfies current requirements.
 - New files, modules, or layers MUST be introduced only when they solve present complexity, not anticipated future needs.
 - Simplicity is mandatory: if a design can be smaller, flatter, and more direct while staying correct, that simpler design MUST be chosen.

@@ -59,6 +59,9 @@ Files inside `src/<feature>/` MUST expose exactly one public class unless the fi
 - Avoid cyclic dependencies.
 - Keep hardcoded application configuration centralized in `src/config.ts`.
 - `src/config.ts` MUST export a default object named `config` and consumers MUST import it as `import config from "./config.ts"`.
+- Structured output with meaningful size (for example documents, emails, pages, prompts, markdown, HTML, text reports, or similar artifacts) MUST live in dedicated template files rather than being assembled inline in application code.
+- Inline string construction is allowed only for very small fragments where a separate template file would add more noise than value.
+- Template rendering technology is an implementation choice: use the lightest approach that fits the case, from simple placeholder replacement to a dedicated templating library.
 - Prefer the smallest design that satisfies current requirements.
 - Do not introduce extra files, layers, or abstractions unless they reduce real current complexity.
 - Avoid speculative structure for future scenarios that are not implemented yet.
