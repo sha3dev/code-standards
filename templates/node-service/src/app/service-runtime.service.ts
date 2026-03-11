@@ -1,3 +1,5 @@
+import type { ServerType } from "@hono/node-server";
+
 /**
  * @section imports:internals
  */
@@ -39,12 +41,12 @@ export class ServiceRuntime {
    * @section public:methods
    */
 
-  public buildServer(): import("node:http").Server {
+  public buildServer(): ServerType {
     const server = this.httpServerService.buildServer();
     return server;
   }
 
-  public startServer(): import("node:http").Server {
+  public startServer(): ServerType {
     const server = this.buildServer();
     server.listen(config.DEFAULT_PORT, () => {
       LOGGER.info(`service listening on http://localhost:${config.DEFAULT_PORT}`);

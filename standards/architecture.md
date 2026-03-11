@@ -48,6 +48,7 @@ Template-specific additions:
 
 - `node-lib`: MAY add `src/public/` and `src/internal/` to separate stable API from private implementation.
 - `node-service`: SHOULD keep transport concerns under `src/http/` (`routes`, `controllers`, `middleware`).
+- If a service needs to expose an HTTP API, it MUST use the latest published major/minor version of `hono` as the HTTP framework.
 
 Within each feature folder, files SHOULD be role-oriented and explicit (`*.service.ts`, `*.repository.ts`, `*.schema.ts`, `*.mapper.ts`, `*.helpers.ts`). Use `*.types.ts` only when shared feature types are substantial enough to deserve their own file. The domain base name SHOULD be singular (`invoice.service.ts`).
 Files inside `src/<feature>/` MUST expose exactly one public class unless the file is `*.types.ts`.

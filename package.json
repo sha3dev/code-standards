@@ -1,6 +1,6 @@
 {
   "name": "@sha3/code-standards",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "description": "AI-first code standards, tooling exports, and project initializer",
   "type": "module",
   "bin": {
@@ -41,8 +41,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@hono/node-server": "^1.19.11",
     "@sha3/logger": "^2.0.0",
     "@types/node": "^22.13.10",
+    "hono": "^4.12.7",
     "typescript": "^5.8.2",
     "tsx": "^4.19.3"
   }

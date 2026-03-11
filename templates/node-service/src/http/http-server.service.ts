@@ -2,7 +2,9 @@
  * @section imports:externals
  */
 
-import { createServer } from "node:http";
+import { createAdaptorServer } from "@hono/node-server";
+import type { ServerType } from "@hono/node-server";
+import { Hono } from "hono";
 
 /**
  * @section imports:internals
@@ -44,14 +46,14 @@ export class HttpServerService {
    * @section public:methods
    */
 
-  public buildServer(): import("node:http").Server {
-    const server = createServer((_, response) => {
+  public buildServer(): ServerType {
+    const app = new Hono();
+    app.get("/", (context) => {
       const payload = this.appInfoService.buildPayload();
-      response.statusCode = 200;
-      response.setHeader("content-type", config.RESPONSE_CONTENT_TYPE);
-      response.end(JSON.stringify(payload));
+      context.header("content-type", config.RESPONSE_CONTENT_TYPE);
+      return context.json(payload, 200);
     });
-
+    const server = createAdaptorServer({ fetch: app.fetch });
     return server;
   }
 }

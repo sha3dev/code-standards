@@ -9,6 +9,7 @@
 - `src/shared/` MUST exist only when cross-feature modules actually exist.
 - Project layout MUST include `src/`, `test/`, `scripts/`, `docs/`, and `ai/` at minimum.
 - For `node-service`, HTTP transport concerns SHOULD live in `src/http/` (`routes`, `controllers`, `middleware`).
+- If a service needs to expose an HTTP API, it MUST use the latest published `hono` release line as the HTTP framework.
 - For `node-lib`, API boundary separation MAY use `src/public/` and `src/internal/`.
 - Feature files SHOULD use explicit role suffixes (`*.service.ts`, `*.repository.ts`, `*.schema.ts`, `*.mapper.ts`).
 - Use `*.types.ts` only when shared feature types are substantial enough to justify a dedicated file.

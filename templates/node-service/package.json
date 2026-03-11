@@ -27,8 +27,10 @@
     "publish": "node scripts/release-publish.mjs"
   },
   "dependencies": {
+    "@hono/node-server": "^1.19.11",
     "@sha3/logger": "^2.0.0",
-    "dotenv": "^16.6.1"
+    "dotenv": "^16.6.1",
+    "hono": "^4.12.7"
   },
   "devDependencies": {
     "@sha3/code-standards": "^{{packageVersion}}",

@@ -1,6 +1,6 @@
 # 🚀 {{packageName}}
 
-HTTP service package that exposes one runtime entrypoint for starting or composing the server.
+HTTP service package that exposes one runtime entrypoint for starting or composing a Hono-based server.
 
 ## TL;DR
 
@@ -19,7 +19,7 @@ const server = serviceRuntime.buildServer();
 
 ## Why
 
-Use this package when you want one obvious runtime surface for booting the service and a small HTTP boundary that is easy to test.
+Use this package when you want one obvious runtime surface for booting the service and a small Hono HTTP boundary that is easy to test.
 It keeps startup and server construction behind a single public class so application code and tooling do not need to know the internal wiring.
 
 ## Main Capabilities
@@ -27,6 +27,7 @@ It keeps startup and server construction behind a single public class so applica
 - Builds the HTTP server without binding a port when you need test or orchestration control.
 - Starts the default runtime with one public method when you want the service to listen immediately.
 - Exposes the root endpoint payload as a public type so consumers can reason about the response contract.
+- Keeps the HTTP API aligned with the standards default of using Hono for service transport.
 
 ## Installation
 
@@ -51,7 +52,7 @@ const serviceRuntime = ServiceRuntime.createDefault();
 const server = serviceRuntime.startServer();
 ```
 
-This is the intended runtime integration path: construct the default runtime once, then either build or start the server depending on who owns process startup.
+This is the intended runtime integration path: construct the default runtime once, then either build or start the Hono-backed server depending on who owns process startup.
 
 ## Examples
 
@@ -74,7 +75,7 @@ curl http://localhost:3000/
 
 ### `GET /`
 
-Returns the default service info payload.
+Returns the default service info payload from the default Hono route.
 
 Response shape:
 
@@ -89,6 +90,7 @@ Behavior notes:
 
 - responds with status `200`
 - returns JSON
+- is implemented with `hono`
 - uses the `content-type` configured in `src/config.ts`
 
 ## Public API
@@ -105,7 +107,7 @@ const serviceRuntime = ServiceRuntime.createDefault();
 
 #### `createDefault()`
 
-Creates a `ServiceRuntime` with the default HTTP server wiring.
+Creates a `ServiceRuntime` with the default Hono HTTP server wiring.
 
 Parameters:
 
@@ -117,12 +119,12 @@ Returns:
 
 Behavior notes:
 
-- wires the default HTTP server stack
+- wires the default Hono HTTP server stack
 - keeps configuration centralized in `src/config.ts`
 
 #### `buildServer()`
 
-Builds the Node HTTP server without binding a port.
+Builds the Hono Node server without binding a port.
 
 Parameters:
 
@@ -130,7 +132,7 @@ Parameters:
 
 Returns:
 
-- a Node HTTP server instance
+- a Hono Node `ServerType` instance
 
 Behavior notes:
 
@@ -147,7 +149,7 @@ Parameters:
 
 Returns:
 
-- the started Node HTTP server instance
+- the started Hono Node `ServerType` instance
 
 Behavior notes:
 
@@ -188,7 +190,7 @@ Configuration is centralized in `src/config.ts`.
 
 - `src/config.ts`: canonical runtime configuration
 - `src/app-info/app-info.service.ts`: builds the root endpoint payload
-- `src/http/http-server.service.ts`: constructs the HTTP server
+- `src/http/http-server.service.ts`: constructs the Hono HTTP server
 - `src/app/service-runtime.service.ts`: public runtime orchestration
 - `src/main.ts`: bootstrap entrypoint
 - `test/service-runtime.test.ts`: behavior test
