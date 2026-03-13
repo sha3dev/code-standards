@@ -1,7 +1,7 @@
 {
   "files": {
     "ignoreUnknown": true,
-    "ignore": [".code-standards"]
+    "ignore": [".code-standards", "dist"]
   },
   "formatter": {
     "enabled": true,
@@ -12,7 +12,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "correctness": {
+        "noUnusedFunctionParameters": "error",
+        "noUnusedImports": "error",
+        "noUnusedPrivateClassMembers": "error",
+        "noUnusedVariables": "error"
+      }
     }
   },
   "javascript": {

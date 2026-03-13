@@ -1,6 +1,6 @@
 {
   "name": "@sha3/code-standards",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "description": "AI-first code standards, tooling exports, and project initializer",
   "type": "module",
   "bin": {
@@ -13,7 +13,21 @@
     "./tsconfig/node-lib.json": "./tsconfig/node-lib.json",
     "./tsconfig/node-service.json": "./tsconfig/node-service.json"
   },
-  "files": ["AGENTS.md", "README.md", "ai", "biome.json", "bin", "index.mjs", "lib", "prompts", "resources", "standards", "templates", "tsconfig", "profiles"],
+  "files": [
+    "AGENTS.md",
+    "README.md",
+    "ai",
+    "biome.json",
+    "bin",
+    "index.mjs",
+    "lib",
+    "prompts",
+    "resources",
+    "standards",
+    "templates",
+    "tsconfig",
+    "profiles"
+  ],
   "publishConfig": {
     "access": "public"
   },

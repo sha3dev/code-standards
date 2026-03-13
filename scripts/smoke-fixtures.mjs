@@ -103,7 +103,11 @@ async function main() {
   assert.equal(libPackage.scripts["standards:check"], "code-standards verify");
   assert.match(libBiomeIgnore, /^node_modules$/m);
   assert.match(libBiomeIgnore, /^\.code-standards$/m);
-  assert.deepEqual(libBiomeConfig.files.ignore, [".code-standards"]);
+  assert.deepEqual(libBiomeConfig.files.ignore, [".code-standards", "dist"]);
+  assert.equal(libBiomeConfig.linter.rules.correctness.noUnusedVariables, "error");
+  assert.equal(libBiomeConfig.linter.rules.correctness.noUnusedFunctionParameters, "error");
+  assert.equal(libBiomeConfig.linter.rules.correctness.noUnusedPrivateClassMembers, "error");
+  assert.equal(libBiomeConfig.linter.rules.correctness.noUnusedImports, "error");
 
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   const libRulesRaw = await readFile(path.join(libTarget, "ai", "rules.md"), "utf8");
@@ -245,7 +249,11 @@ async function main() {
   assert.equal(servicePackage.scripts["standards:check"], "code-standards verify");
   assert.match(serviceBiomeIgnore, /^node_modules$/m);
   assert.match(serviceBiomeIgnore, /^\.code-standards$/m);
-  assert.deepEqual(serviceBiomeConfig.files.ignore, [".code-standards"]);
+  assert.deepEqual(serviceBiomeConfig.files.ignore, [".code-standards", "dist"]);
+  assert.equal(serviceBiomeConfig.linter.rules.correctness.noUnusedVariables, "error");
+  assert.equal(serviceBiomeConfig.linter.rules.correctness.noUnusedFunctionParameters, "error");
+  assert.equal(serviceBiomeConfig.linter.rules.correctness.noUnusedPrivateClassMembers, "error");
+  assert.equal(serviceBiomeConfig.linter.rules.correctness.noUnusedImports, "error");
 
   const serviceContract = JSON.parse(await readFile(path.join(serviceTarget, "ai", "contract.json"), "utf8"));
   assert.equal(serviceContract.project.template, "node-service");
