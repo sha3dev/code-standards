@@ -1,6 +1,7 @@
 ### Testing and Comments (MUST)
 
-- Any behavior change MUST include or update tests.
+- Add or update tests when a change introduces meaningful logic, regression risk, or critical behavior that warrants automated coverage.
+- Do not create ad hoc tests for trivial, mechanical, or low-risk changes with no meaningful behavior to protect.
 - Tests MUST validate behavior, not implementation details.
 - Test files MUST be TypeScript (`*.test.ts`).
 - TypeScript validation MUST pass with zero type errors.

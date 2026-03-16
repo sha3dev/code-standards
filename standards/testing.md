@@ -16,3 +16,5 @@ Projects MUST use the Node test runner.
 
 - Prefer `node:assert/strict`.
 - Keep tests deterministic and isolated.
+- Add or update tests when a change introduces meaningful logic, regression risk, or critical behavior that warrants automated coverage.
+- Do not create ad hoc tests for trivial, mechanical, or low-risk changes with no meaningful behavior to protect.
