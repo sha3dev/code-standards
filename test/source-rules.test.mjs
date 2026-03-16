@@ -199,10 +199,14 @@ test("class-section-order flags declared empty sections", async (t) => {
 import config from "../config.ts";
 
 /**
- * @section public:properties
+ * @section class
  */
 
 export class UserService {
+  /**
+   * @section private:attributes
+   */
+
   private readonly isEnabled: boolean;
 
   /**
@@ -225,6 +229,53 @@ export class UserService {
   );
 
   assert(errors.some((issue) => issue.message.includes("empty @section block must be omitted")));
+});
+
+test("class-section-order flags files without @section class before the exported class", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/user/user.service.ts",
+    `
+/**
+ * @section imports:internals
+ */
+
+import config from "../config.ts";
+
+/**
+ * @section types
+ */
+
+type UserServiceOptions = { isEnabled: boolean };
+
+export class UserService {
+  /**
+   * @section private:attributes
+   */
+
+  private readonly isEnabled: boolean;
+
+  /**
+   * @section constructor
+   */
+
+  public constructor(options: UserServiceOptions) {
+    this.isEnabled = options.isEnabled;
+  }
+
+  /**
+   * @section public:methods
+   */
+
+  public readStatus(): string {
+    const result = this.isEnabled ? config.STATUS : "disabled";
+    return result;
+  }
+}
+`,
+  );
+
+  assert(errors.some((issue) => issue.message.includes("must declare @section class immediately before the exported class")));
 });
 
 test("canonical-config-import flags non canonical imports", async (t) => {
@@ -301,10 +352,14 @@ type UserServiceOptions = {
 };
 
 /**
- * @section public:properties
+ * @section class
  */
 
 export class UserService {
+  /**
+   * @section private:attributes
+   */
+
   private readonly isEnabled: boolean;
 
   /**

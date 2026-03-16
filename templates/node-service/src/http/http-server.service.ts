@@ -20,10 +20,14 @@ import config from "../config.ts";
 type HttpServerServiceOptions = { appInfoService: AppInfoService };
 
 /**
- * @section public:properties
+ * @section class
  */
 
 export class HttpServerService {
+  /**
+   * @section private:attributes
+   */
+
   private readonly appInfoService: AppInfoService;
 
   /**

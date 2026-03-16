@@ -262,7 +262,7 @@
     {
       "id": "module-constant-case",
       "title": "Module Constant Case",
-      "summary": "Module-level constants must use SCREAMING_SNAKE_CASE except for the canonical config export.",
+      "summary": "Module-level constants must use SCREAMING_SNAKE_CASE except for the canonical config and logger exports.",
       "severity": "blocking-deterministic",
       "kind": "style",
       "appliesTo": ["src/**/*.ts", "test/**/*.ts"],

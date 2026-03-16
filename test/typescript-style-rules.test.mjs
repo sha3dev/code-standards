@@ -8,7 +8,7 @@ import { DEFAULT_PROFILE } from "../lib/constants.mjs";
 import { loadProjectAnalysisContext } from "../lib/verify/source-analysis.mjs";
 import { verifyTypeScriptStyle } from "../lib/verify/typescript-style-verifier.mjs";
 
-const RULE_IDS = ["no-any", "explicit-export-return-types", "control-flow-braces", "type-only-imports", "large-class-heuristic"];
+const RULE_IDS = ["no-any", "explicit-export-return-types", "control-flow-braces", "type-only-imports", "large-class-heuristic", "module-constant-case"];
 
 async function verifyFile(t, relativePath, source) {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sha3-ts-style-"));
@@ -74,4 +74,20 @@ ${repeatedMethods}
   );
 
   assert(issues.some((issue) => issue.ruleId === "large-class-heuristic"));
+});
+
+test("verifyTypeScriptStyle allows canonical lowercase logger export in src/logger.ts", async (t) => {
+  const issues = await verifyFile(
+    t,
+    "src/logger.ts",
+    `
+import Logger from "@sha3/logger";
+
+const logger = new Logger({ loggerName: "service" });
+
+export default logger;
+`,
+  );
+
+  assert(!issues.some((issue) => issue.ruleId === "module-constant-case"));
 });

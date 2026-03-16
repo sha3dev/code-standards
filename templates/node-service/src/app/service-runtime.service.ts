@@ -6,7 +6,7 @@ import type { ServerType } from "@hono/node-server";
 
 import config from "../config.ts";
 import { HttpServerService } from "../http/http-server.service.ts";
-import LOGGER from "../logger.ts";
+import logger from "../logger.ts";
 
 /**
  * @section types
@@ -15,10 +15,14 @@ import LOGGER from "../logger.ts";
 type ServiceRuntimeOptions = { httpServerService: HttpServerService };
 
 /**
- * @section public:properties
+ * @section class
  */
 
 export class ServiceRuntime {
+  /**
+   * @section private:attributes
+   */
+
   private readonly httpServerService: HttpServerService;
 
   /**
@@ -49,7 +53,7 @@ export class ServiceRuntime {
   public startServer(): ServerType {
     const server = this.buildServer();
     server.listen(config.DEFAULT_PORT, () => {
-      LOGGER.info(`service listening on http://localhost:${config.DEFAULT_PORT}`);
+      logger.info(`service listening on http://localhost:${config.DEFAULT_PORT}`);
     });
     return server;
   }

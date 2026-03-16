@@ -49,7 +49,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Boolean identifiers MUST use `is*`, `has*`, `can*`, or `should*` prefixes.
 - Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
-- `src/config.ts` default export `config` is a canonical naming exception to module-level constant naming.
+- `src/config.ts` default export `config` and `src/logger.ts` default export `logger` are canonical naming exceptions to module-level constant naming.
 - Use lowercase acronyms in identifiers (`userId`, `statusUrl`, `httpServer`) except well-known compact tokens (`id`, `url`, `http`, `json`).
 - Prefer explicit role-based file names:
   - `<feature>.service.ts` for business services
@@ -80,9 +80,9 @@ Required block names:
 2. `imports:internals`
 3. `consts`
 4. `types`
-5. `private:attributes`
-6. `protected:attributes`
-7. `private:properties`
+5. `class`
+6. `private:attributes`
+7. `protected:attributes`
 8. `public:properties`
 9. `constructor`
 10. `static:properties`
@@ -93,3 +93,4 @@ Required block names:
 15. `static:methods`
 
 Section blocks without content MUST be omitted.
+`class` MUST appear immediately before the exported class declaration and marks the start of the class body.

@@ -8,5 +8,6 @@
 - Boolean identifiers MUST use `is*`, `has*`, `can*`, or `should*`.
 - Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
+- `src/config.ts` default export `config` and `src/logger.ts` default export `logger` are canonical naming exceptions.
 - Exported schema-like values MUST use `camelCase` or `PascalCase`.
 - Generic names are forbidden for new code (`data`, `obj`, `tmp`, `val`, `thing`, `helper`, `utils`, `common`).

@@ -16,9 +16,9 @@
   - `imports:internals`
   - `consts`
   - `types`
+  - `class`
   - `private:attributes`
   - `protected:attributes`
-  - `private:properties`
   - `public:properties`
   - `constructor`
   - `static:properties`
@@ -28,6 +28,7 @@
   - `public:methods`
   - `static:methods`
 - Section blocks without class members MUST be omitted.
+- `class` MUST appear immediately before the exported class declaration and marks the start of that class.
 - `factory` MUST only contain methods that create and return instances of the same class.
 
 Good example:

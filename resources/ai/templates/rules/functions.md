@@ -15,6 +15,7 @@
 - Feature filenames MUST be domain-specific and role-specific (for example: `invoice.service.ts`, `invoice.repository.ts`, `invoice.helpers.ts`).
 - Module-level constants MUST use `SCREAMING_SNAKE_CASE`.
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
+- `src/config.ts` default export `config` and `src/logger.ts` default export `logger` are canonical naming exceptions.
 - Exported schema-like values MUST use `camelCase` or `PascalCase` names.
 - If a declaration, expression, call, constructor call, import, object literal, or array literal fits in one line within 160 chars, it MUST stay on one line.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass one `options` parameter.
