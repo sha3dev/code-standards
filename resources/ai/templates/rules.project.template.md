@@ -24,15 +24,14 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 
 ## Compactness
 
-- If a declaration, expression, call, object literal, array literal, import, or constructor call fits on one line within the configured line limit, it MUST stay on one line.
-- Prefer fewer line breaks when readability is preserved.
-- Do not split code into multiple lines just because it is “safer”; only split when it no longer fits cleanly or readability would suffer.
+- Let Biome decide the final line wrapping.
+- Prefer compact code when writing or refactoring, but do not force single-line objects, callbacks, or other constructs that Biome keeps multiline.
+- Do not split code into multiple lines just because it is “safer”, and do not manually collapse formatter-preserved multiline layouts.
 
 ## Simple Callbacks
 
-- Simple callbacks in `map`, `filter`, `reduce`, `some`, `every`, `find`, and `forEach` MUST use concise arrow functions when the body is a single expression.
-- Do not use block-bodied callbacks with explicit `return` for simple expressions.
-- If a callback fits on one line, keep it on one line.
+- Prefer concise arrow callbacks in `map`, `filter`, `reduce`, `some`, `every`, `find`, and `forEach` when writing new code.
+- Do not rewrite Biome-stable block-bodied callbacks solely to satisfy a style preference.
 
 ## Errors
 

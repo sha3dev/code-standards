@@ -75,7 +75,7 @@ Simplicity is mandatory.
 - if two solutions are both correct, prefer the smaller and more direct one
 - do not remove valid responsibility boundaries in the name of simplicity
 - simplicity means avoiding gratuitous complexity, not reducing structure blindly
-- keep declarations, expressions, calls, and object literals on one line whenever they fit within the configured line limit
+- let Biome decide final wrapping; prefer compact code, but do not force single-line layouts that the formatter keeps multiline
 
 ## Public API
 
@@ -131,7 +131,7 @@ Behavior notes:
 
 `verify` does not replace the generic toolchain:
 
-- formatting and generic lint rules stay in Biome
+- formatting, line wrapping, and generic lint rules stay in Biome
 - type correctness stays in TypeScript
 - runtime behavior stays in tests
 
@@ -489,7 +489,7 @@ Common cases:
 
 - unknown rule id in `--only`: use `code-standards verify --explain <rule-id>` or inspect `resources/ai/rule-catalog.json`
 - too much output: narrow the run with `--only` or `--files`
-- Biome and TypeScript pass but `verify` fails: expected, because `verify` checks product policy and contract rules that generic tooling does not cover
+- Biome and TypeScript pass but `verify` fails: expected, because `verify` checks product policy and contract rules that generic tooling does not cover, but line-wrapping disputes should now be treated as Biome territory
 
 ### Required README headings in generated projects
 

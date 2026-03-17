@@ -118,7 +118,7 @@ async function main() {
   assert.match(libAgentsRaw, /single-return/);
   assert.match(libRulesRaw, /Project Rules/);
   assert.match(libRulesRaw, /Simple Callbacks/);
-  assert.match(libRulesRaw, /object literal, array literal, import, or constructor call/);
+  assert.match(libRulesRaw, /Let Biome decide the final line wrapping/);
   assert.match(libRulesRaw, /## Errors/);
   assert.match(libRulesRaw, /Throw plain `Error` by default/);
   assert.match(libRulesRaw, /## Type Files/);

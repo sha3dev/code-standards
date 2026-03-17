@@ -6,7 +6,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 
 - Use Biome for formatting.
 - Use a max line length of 160.
-- Keep lines as compact as possible: if a declaration, expression, call, constructor call, import, object literal, or array literal fits on one line within 160 chars, it MUST stay on one line.
+- Let Biome decide the final line wrapping.
+- Prefer compact code, but do not force single-line layouts for constructs that Biome intentionally preserves as multiline.
 - Use semicolons.
 - Use double quotes for strings.
 
@@ -22,8 +23,8 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Avoid speculative design for possible future scenarios.
 - Simplicity MUST NOT come at the cost of cohesion or clear responsibility boundaries.
 - Do not remove justified modules, role-based files, or separations merely to make the structure smaller.
-- Prefer concise one-line arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) whenever they fit within the line limit.
-- Avoid block-bodied callbacks with explicit `return` when a concise expression arrow function is sufficient.
+- Prefer concise arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) when writing new code and when Biome already keeps that form.
+- Do not churn Biome-stable block-bodied callbacks solely to satisfy a style preference.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.

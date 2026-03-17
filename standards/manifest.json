@@ -1,7 +1,13 @@
 {
   "meta": { "version": "v1", "scope": "@sha3", "packageManager": "npm", "moduleSystem": "esm" },
   "language": { "runtime": "node", "typescript": true, "target": "ES2022" },
-  "formatting": { "formatter": "biome", "lineLength": 160, "semi": true, "singleQuote": false, "simpleCallbackStyle": "arrow_concise_for_simple_callbacks" },
+  "formatting": {
+    "formatter": "biome",
+    "lineLength": 160,
+    "semi": true,
+    "singleQuote": false,
+    "simpleCallbackStyle": "prefer_concise_when_biome_keeps_it_concise"
+  },
   "naming": {
     "files": "kebab-case",
     "directories": "kebab-case",

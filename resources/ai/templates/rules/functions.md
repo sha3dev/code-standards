@@ -7,8 +7,8 @@
 - If a class grows too large, split it into smaller cohesive units with explicit roles instead of keeping one oversized class file.
 - Implementations MUST prefer the least complex control flow and the fewest necessary steps.
 - Avoid ceremony and indirection when a direct implementation remains clear and correct.
-- Simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) MUST use concise one-line arrow functions when the body is a single expression and fits within the line limit.
-- For simple callback expressions, block bodies and explicit `return` MUST be avoided.
+- Prefer concise arrow callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) when writing new code.
+- Do not rewrite block-bodied callbacks that Biome already preserves solely for stylistic compactness.
 - Types MUST be preferred over interfaces for local modeling unless a public contract requires an interface.
 - New implementation and test files MUST be `.ts`.
 - JavaScript source files (`.js`, `.mjs`, `.cjs`) are not allowed in `src/` or `test/`.
@@ -17,7 +17,7 @@
 - Local constants (for example inside functions/methods) MUST use `camelCase`.
 - `src/config.ts` default export `config` and `src/logger.ts` default export `logger` are canonical naming exceptions.
 - Exported schema-like values MUST use `camelCase` or `PascalCase` names.
-- If a declaration, expression, call, constructor call, import, object literal, or array literal fits in one line within 160 chars, it MUST stay on one line.
+- Let Biome decide the final line wrapping. Prefer compact code, but do not force single-line layouts that the formatter preserves as multiline.
 - If a function/method needs many inputs, define a named `<FunctionName>Options` type and pass one `options` parameter.
 
 Good example:

@@ -38,7 +38,7 @@ If rules conflict, the higher item wins. Existing code has no grandfathered exce
 - `npm run lint` uses Biome for baseline linting and formatting rules.
 - `npm run standards:check` also enforces AST-level project rules such as single return, async/await-only, section ordering, identifier quality, and naming rules.
 - `npm run check` is the final blocking gate.
-- Keep declarations, expressions, calls, and object literals on one line whenever they fit within the line limit.
+- Let Biome decide the final line wrapping. Do not force single-line layouts that the formatter keeps multiline.
 
 ## README Rule
 
@@ -57,7 +57,7 @@ Simplicity is mandatory, not stylistic preference.
 - If a solution can be made smaller and more direct without losing correctness, that simpler version MUST be preferred.
 - Simplicity does not justify removing valid boundaries.
 - Keep distinct current responsibilities separated when they serve a real purpose.
-- Keep code compact: do not split lines that fit comfortably within the configured line limit.
+- Keep code compact, but do not fight Biome over final wrapping decisions.
 - Do not keep helper functions at module scope inside class-oriented feature files; move that logic into the class as private or static methods.
 - If a class starts accumulating unrelated responsibilities or growing into a very large file, you MUST split it into smaller cohesive units with explicit roles.
 

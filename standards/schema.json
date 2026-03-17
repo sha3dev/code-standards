@@ -32,7 +32,7 @@
         "lineLength": { "type": "integer", "minimum": 80, "maximum": 200 },
         "semi": { "type": "boolean" },
         "singleQuote": { "type": "boolean" },
-        "simpleCallbackStyle": { "type": "string", "enum": ["arrow_concise_for_simple_callbacks"] }
+        "simpleCallbackStyle": { "type": "string", "enum": ["prefer_concise_when_biome_keeps_it_concise"] }
       }
     },
     "naming": {
