@@ -13,7 +13,7 @@ In addition to tooling, each generated project MUST include profile-driven AI in
 - `ai/contract.json` as the machine-readable contract
 - optional assistant adapters in `ai/*.md`
 
-The generated contract files are blocking rules and MUST be treated as the top local AI coding contract.
+The generated contract files are the top local AI coding contract.
 When generated instructions conflict with existing repository code, the generated `@sha3/code-standards` conventions MUST win.
 
 ## Enforcement
@@ -31,6 +31,7 @@ Required scripts:
 - `npm run test`
 
 `npm run standards:check` MUST execute `code-standards verify`.
+Default verification fails only on `error` severity; `--strict` also fails on `warning`.
 `npm run lint` and `npm run format:*` MUST be backed by Biome.
 
 No remote CI is required for v1.

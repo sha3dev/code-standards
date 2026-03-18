@@ -14,12 +14,6 @@ import { AppInfoService } from "../app-info/app-info.service.ts";
 import config from "../config.ts";
 
 /**
- * @section types
- */
-
-type HttpServerServiceOptions = { appInfoService: AppInfoService };
-
-/**
  * @section class
  */
 
@@ -34,8 +28,8 @@ export class HttpServerService {
    * @section constructor
    */
 
-  public constructor(options: HttpServerServiceOptions) {
-    this.appInfoService = options.appInfoService;
+  public constructor(appInfoService: AppInfoService) {
+    this.appInfoService = appInfoService;
   }
 
   /**
@@ -43,7 +37,7 @@ export class HttpServerService {
    */
 
   public static createDefault(): HttpServerService {
-    return new HttpServerService({ appInfoService: AppInfoService.createDefault() });
+    return new HttpServerService(AppInfoService.createDefault());
   }
 
   /**
@@ -57,7 +51,6 @@ export class HttpServerService {
       context.header("content-type", config.RESPONSE_CONTENT_TYPE);
       return context.json(payload, 200);
     });
-    const server = createAdaptorServer({ fetch: app.fetch });
-    return server;
+    return createAdaptorServer({ fetch: app.fetch });
   }
 }

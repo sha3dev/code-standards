@@ -29,7 +29,12 @@ async function verifySingleFile(t, relativePath, source, activeRuleIds = RULE_ID
   await writeFile(absolutePath, source, "utf8");
 
   const contract = {
-    rules: RULE_IDS.map((ruleId) => ({ id: ruleId, deterministic: activeRuleIds.includes(ruleId) })),
+    rules: RULE_IDS.map((ruleId) => ({
+      id: ruleId,
+      deterministic: activeRuleIds.includes(ruleId),
+      enforcedBy: ["verify"],
+      severity: "error",
+    })),
     profile: { comment_section_blocks: DEFAULT_PROFILE.comment_section_blocks },
   };
 

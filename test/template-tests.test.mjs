@@ -31,6 +31,20 @@ test("template source files do not contain empty section placeholders", async ()
   }
 });
 
+test("template source files avoid one-field options wrappers and trivial return temporaries", async () => {
+  for (const relativePath of [
+    "templates/node-lib/src/package-info/package-info.service.ts",
+    "templates/node-service/src/app-info/app-info.service.ts",
+    "templates/node-service/src/http/http-server.service.ts",
+    "templates/node-service/src/app/service-runtime.service.ts",
+  ]) {
+    const templateRaw = await readFile(path.join(repoRoot, relativePath), "utf8");
+
+    assert.doesNotMatch(templateRaw, /type [A-Za-z]+Options = \{ [^,\n]+: [^,\n]+ \};/);
+    assert.doesNotMatch(templateRaw, /const server = .*;\n\s*return server;/);
+  }
+});
+
 test("template READMEs document public exports and methods with package-grade sections", async () => {
   const nodeLibReadme = await readFile(path.join(repoRoot, "templates/node-lib/README.md"), "utf8");
   const nodeServiceReadme = await readFile(path.join(repoRoot, "templates/node-service/README.md"), "utf8");

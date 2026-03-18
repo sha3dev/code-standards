@@ -10,8 +10,6 @@ import config from "../config.ts";
 
 export type PackageInfo = { packageName: string };
 
-type PackageInfoServiceOptions = { packageName: string };
-
 /**
  * @section class
  */
@@ -27,8 +25,8 @@ export class PackageInfoService {
    * @section constructor
    */
 
-  public constructor(options: PackageInfoServiceOptions) {
-    this.packageName = options.packageName;
+  public constructor(packageName: string) {
+    this.packageName = packageName;
   }
 
   /**
@@ -36,7 +34,7 @@ export class PackageInfoService {
    */
 
   public static createDefault(): PackageInfoService {
-    return new PackageInfoService({ packageName: config.PACKAGE_NAME });
+    return new PackageInfoService(config.PACKAGE_NAME);
   }
 
   /**

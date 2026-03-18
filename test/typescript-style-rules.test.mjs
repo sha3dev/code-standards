@@ -10,6 +10,10 @@ import { verifyTypeScriptStyle } from "../lib/verify/typescript-style-verifier.m
 
 const RULE_IDS = ["no-any", "explicit-export-return-types", "control-flow-braces", "type-only-imports", "large-class-heuristic", "module-constant-case"];
 
+function buildRule(ruleId, severity = "error") {
+  return { id: ruleId, severity, enforcedBy: ["verify"] };
+}
+
 async function verifyFile(t, relativePath, source) {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sha3-ts-style-"));
   t.after(async () => rm(tempDir, { recursive: true, force: true }));
@@ -18,7 +22,7 @@ async function verifyFile(t, relativePath, source) {
   await writeFile(absolutePath, source, "utf8");
   const analysisContext = await loadProjectAnalysisContext(tempDir);
   const contract = {
-    rules: RULE_IDS.map((ruleId) => ({ id: ruleId, blocking: true })),
+    rules: RULE_IDS.map((ruleId) => buildRule(ruleId, ruleId === "large-class-heuristic" ? "warning" : "error")),
     profile: DEFAULT_PROFILE,
   };
 

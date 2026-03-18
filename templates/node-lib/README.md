@@ -1,6 +1,6 @@
 # 📚 {{packageName}}
 
-Small TypeScript package for exposing package metadata through a stable public API.
+Small TypeScript library that exposes package metadata through one stable, package-root API.
 
 ## TL;DR
 
@@ -19,14 +19,14 @@ console.log(packageInfoService.readPackageInfo());
 
 ## Why
 
-Use this package when you want one obvious place to read the package metadata your application exposes to other modules.
-It keeps that behavior behind a narrow public surface instead of making consumers know about internal files or configuration layout.
+Use this package when other modules, diagnostics code, or adapters need the package name without reaching into private files.
+It gives consumers one stable import path and keeps the metadata mapping in a single service instead of scattering string literals through the codebase.
 
 ## Main Capabilities
 
 - Exposes package metadata through a stable package-root import.
-- Provides a default service wiring that reads from `src/config.ts`.
-- Returns plain serializable data that is easy to log, test, or pass across boundaries.
+- Keeps the configured package name behind one service instead of repeating config access in callers.
+- Returns plain serializable data that is easy to log, test, or hand to HTTP or CLI adapters.
 
 ## Installation
 
@@ -45,7 +45,7 @@ const packageInfo = packageInfoService.readPackageInfo();
 console.log(packageInfo.packageName);
 ```
 
-This is the intended integration path for consumers: import from the package root, create the default service, and read the metadata you want to expose.
+This is the intended integration path: import from the package root, create the default service once, and reuse it anywhere you need package metadata.
 
 ## Examples
 
@@ -60,7 +60,7 @@ const packageInfo: PackageInfo = packageInfoService.readPackageInfo();
 console.log(`[package] ${packageInfo.packageName}`);
 ```
 
-Create the default service once and reuse it:
+Create the default service once and reuse it across boundaries:
 
 ```ts
 import { PackageInfoService } from "{{packageName}}";
@@ -74,7 +74,7 @@ const secondRead = packageInfoService.readPackageInfo();
 
 ### `PackageInfoService`
 
-Primary entrypoint for reading the package metadata exposed by this package.
+Primary entrypoint for reading the package metadata exposed by the library.
 
 ```ts
 import { PackageInfoService } from "{{packageName}}";
@@ -97,7 +97,8 @@ Returns:
 Behavior notes:
 
 - reads the default package name from `config.PACKAGE_NAME`
-- gives consumers a stable way to construct the service without knowing internal wiring
+- keeps callers out of `src/config.ts`
+- gives consumers a stable construction path that stays valid if the internals change
 
 #### `readPackageInfo()`
 
@@ -114,7 +115,7 @@ Returns:
 Behavior notes:
 
 - returns a plain serializable object
-- does not perform filesystem or network I/O
+- performs no filesystem or network I/O
 - is safe to call from application code, tests, and adapters
 
 ### `PackageInfo`
@@ -158,13 +159,14 @@ Configuration is centralized in `src/config.ts`.
 
 Ensure the consumer project supports Node.js ESM and TypeScript extension rewriting.
 
-### Contract failures
+### Standards warnings
 
-Run `npm run standards:check` to see deterministic contract violations such as missing managed files or README sections.
+Run `npm run standards:check` for contract errors, README coverage problems, and advisory warnings from the project verifier.
 
 ## AI Workflow
 
 - Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` file before coding.
 - Do not edit managed contract/tooling files during normal implementation.
 - Keep this README focused on consumer-facing behavior, configuration, and public API.
+- Rewrite examples and API notes whenever the exported behavior changes.
 - Run `npm run check` before finalizing changes.

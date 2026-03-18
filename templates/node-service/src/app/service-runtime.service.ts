@@ -9,12 +9,6 @@ import { HttpServerService } from "../http/http-server.service.ts";
 import logger from "../logger.ts";
 
 /**
- * @section types
- */
-
-type ServiceRuntimeOptions = { httpServerService: HttpServerService };
-
-/**
  * @section class
  */
 
@@ -29,8 +23,8 @@ export class ServiceRuntime {
    * @section constructor
    */
 
-  public constructor(options: ServiceRuntimeOptions) {
-    this.httpServerService = options.httpServerService;
+  public constructor(httpServerService: HttpServerService) {
+    this.httpServerService = httpServerService;
   }
 
   /**
@@ -38,7 +32,7 @@ export class ServiceRuntime {
    */
 
   public static createDefault(): ServiceRuntime {
-    return new ServiceRuntime({ httpServerService: HttpServerService.createDefault() });
+    return new ServiceRuntime(HttpServerService.createDefault());
   }
 
   /**
@@ -46,8 +40,7 @@ export class ServiceRuntime {
    */
 
   public buildServer(): ServerType {
-    const server = this.httpServerService.buildServer();
-    return server;
+    return this.httpServerService.buildServer();
   }
 
   public startServer(): ServerType {

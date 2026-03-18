@@ -1,6 +1,6 @@
 # @sha3/code-standards
 
-Scaffold TypeScript projects, rebuild them with `refactor`, and enforce deterministic project policy with `verify`.
+Scaffold TypeScript projects, rebuild them with `refactor`, and enforce repository policy with `verify`.
 
 ## TL;DR
 
@@ -61,7 +61,7 @@ npm install -D @sha3/code-standards
 
 - `init`: creates a standards-managed TypeScript scaffold
 - `refactor`: snapshots an existing repo and rebuilds it onto the managed scaffold
-- `verify`: enforces deterministic project policy that generic tooling does not cover well
+- `verify`: enforces repository policy that generic tooling does not cover well
 
 That last part matters: `verify` is not another formatter or typechecker. It is the package-specific policy engine for generated repos.
 Generated scaffolds are also expected to ship package-grade README files rather than placeholder docs.
@@ -100,7 +100,7 @@ code-standards verify
 ### `verify` options
 
 ```txt
-code-standards verify [--report text|json] [--only <rule-id[,rule-id...]>] [--files <path[,path...]>]
+code-standards verify [--report text|json] [--only <rule-id[,rule-id...]>] [--files <path[,path...]>] [--strict]
 code-standards verify --explain <rule-id>
 ```
 
@@ -109,8 +109,9 @@ Behavior notes:
 - `init` always works in the current directory and creates a fresh scaffold.
 - `refactor` always works in the current directory and never accepts a remote or local source argument.
 - `refactor` snapshots the previous repo state under `.code-standards/refactor-source/` before rebuilding managed files.
-- `verify` is the deterministic checker for project policy. It complements Biome and TypeScript instead of replacing them.
+- `verify` is the project-policy checker. It complements Biome and TypeScript instead of replacing them.
 - `verify --report json` is intended for CI, PR automation, and scripts.
+- default `verify` fails only on `error` severity; `--strict` also fails on `warning`.
 - `verify --explain <rule-id>` prints operational documentation for a rule without checking the repo.
 - `code-standards verify --help` prints the same option surface shown above.
 
@@ -141,7 +142,7 @@ Use the tools together, not interchangeably:
 
 - run Biome when you want style, formatting, and baseline lint feedback
 - run TypeScript when you want type-safety feedback
-- run `verify` when you want to enforce repository contract, scaffold integrity, and deterministic standards rules
+- run `verify` when you want to enforce repository contract, scaffold integrity, and project-policy rules
 
 ## Integration Guide
 
@@ -173,7 +174,7 @@ npx @sha3/code-standards init --template node-service --yes
 
 What `init` generates for you:
 
-- `AGENTS.md` as the blocking repo policy
+- `AGENTS.md` as the repo policy entrypoint
 - `ai/contract.json` as the deterministic standards contract
 - `ai/rules.md` as the concise human-readable implementation rules file for the LLM
 - `ai/<assistant>.md` adapter files when AI adapters are enabled
@@ -326,6 +327,12 @@ Focused verification by files:
 npx @sha3/code-standards verify --files src/user/user.service.ts,test/user.test.ts
 ```
 
+Strict verification:
+
+```bash
+npx @sha3/code-standards verify --strict
+```
+
 Combined scope control:
 
 ```bash
@@ -404,12 +411,13 @@ Run `code-standards refactor` from the root of the target project.
 
 ### Verify Modes
 
-`verify` has 4 useful modes:
+`verify` has 5 useful modes:
 
 - default text mode: human-readable errors to `stderr`
 - `--report json`: structured output to `stdout`
 - `--only`: execute only selected rule ids
 - `--files`: limit file-oriented checks to a subset of files
+- `--strict`: fail on warnings as well as errors
 - `--explain`: print documentation for one rule instead of verifying the repo
 
 Important behavior:
@@ -424,9 +432,9 @@ Important behavior:
 Example text output:
 
 ```txt
-- [single-return] src/user/user.service.ts: functions and methods in src/ must use a single return statement
-- [canonical-config-import] src/user/user.service.ts: config imports must use `import config from ".../config.ts"`
-Verification failed with 2 issue(s).
+- ERROR [single-return] src/user/user.service.ts: functions and methods in src/ must use a single return statement
+- WARNING [large-class-heuristic/heuristic] src/user/user.service.ts: very large classes should be decomposed into smaller cohesive units
+Verification failed with 1 error(s) and 1 warning(s).
 ```
 
 Example JSON output:
@@ -434,6 +442,7 @@ Example JSON output:
 ```json
 {
   "ok": false,
+  "hasWarnings": true,
   "issues": [
     {
       "ruleId": "single-return",
@@ -446,6 +455,9 @@ Example JSON output:
   ],
   "summary": {
     "issueCount": 1,
+    "errorCount": 1,
+    "warningCount": 0,
+    "auditCount": 0,
     "checkedRuleIds": ["single-return"],
     "checkedFiles": ["src/user/user.service.ts"]
   }
@@ -454,8 +466,8 @@ Example JSON output:
 
 Exit code behavior:
 
-- exit code `0`: verification passed
-- exit code non-zero: verification failed or arguments were invalid
+- exit code `0`: verification passed at the requested severity threshold
+- exit code non-zero: verification found blocking severities for the current mode or arguments were invalid
 
 ### Using verify in CI
 
@@ -516,7 +528,7 @@ Recommended bootstrap prompt:
 ```txt
 Before generating code:
 - Read AGENTS.md, ai/contract.json, ai/rules.md, and ai/<assistant>.md.
-- Summarize the blocking deterministic rules.
+- Summarize the `error` rules and the `warning` rules you will review carefully.
 - Implement the task without editing managed files unless this is a standards update.
 - Run npm run check and fix all failures before finishing.
 ```

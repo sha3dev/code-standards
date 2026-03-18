@@ -9,6 +9,10 @@ import { verifyTestingRules } from "../lib/verify/testing-verifier.mjs";
 
 const RULE_IDS = ["node-test-runner-only", "assert-strict-preferred", "no-ts-ignore-bypass", "behavior-change-tests"];
 
+function buildRule(ruleId, severity = "error") {
+  return { id: ruleId, severity, enforcedBy: ["verify"] };
+}
+
 async function verifyProject(t, files, changedFilesContext) {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sha3-testing-rules-"));
   t.after(async () => rm(tempDir, { recursive: true, force: true }));
@@ -20,7 +24,7 @@ async function verifyProject(t, files, changedFilesContext) {
   }
 
   const analysisContext = await loadProjectAnalysisContext(tempDir);
-  const contract = { rules: RULE_IDS.map((ruleId) => ({ id: ruleId, blocking: true })), profile: {} };
+  const contract = { rules: RULE_IDS.map((ruleId) => buildRule(ruleId, ruleId === "behavior-change-tests" ? "audit" : "error")), profile: {} };
   return verifyTestingRules(tempDir, contract, analysisContext, changedFilesContext);
 }
 

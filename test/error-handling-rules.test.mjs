@@ -9,6 +9,10 @@ import { loadProjectAnalysisContext } from "../lib/verify/source-analysis.mjs";
 
 const RULE_IDS = ["typed-error-must-be-used", "no-silent-catch", "actionable-error-messages"];
 
+function buildRule(ruleId, severity = "error") {
+  return { id: ruleId, severity, enforcedBy: ["verify"] };
+}
+
 async function verifyProject(t, files) {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sha3-error-rules-"));
   t.after(async () => rm(tempDir, { recursive: true, force: true }));
@@ -20,7 +24,10 @@ async function verifyProject(t, files) {
   }
 
   const analysisContext = await loadProjectAnalysisContext(tempDir);
-  const contract = { rules: RULE_IDS.map((ruleId) => ({ id: ruleId, blocking: true })), profile: {} };
+  const contract = {
+    rules: RULE_IDS.map((ruleId) => buildRule(ruleId, ruleId === "actionable-error-messages" ? "warning" : "error")),
+    profile: {},
+  };
   return verifyErrorHandling(tempDir, contract, analysisContext);
 }
 

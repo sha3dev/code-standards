@@ -10,8 +10,6 @@ import config from "../config.ts";
 
 export type AppInfoPayload = { ok: true; serviceName: string };
 
-type AppInfoServiceOptions = { serviceName: string };
-
 /**
  * @section class
  */
@@ -27,8 +25,8 @@ export class AppInfoService {
    * @section constructor
    */
 
-  public constructor(options: AppInfoServiceOptions) {
-    this.serviceName = options.serviceName;
+  public constructor(serviceName: string) {
+    this.serviceName = serviceName;
   }
 
   /**
@@ -36,7 +34,7 @@ export class AppInfoService {
    */
 
   public static createDefault(): AppInfoService {
-    return new AppInfoService({ serviceName: config.SERVICE_NAME });
+    return new AppInfoService(config.SERVICE_NAME);
   }
 
   /**

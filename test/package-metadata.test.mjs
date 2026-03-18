@@ -29,7 +29,7 @@ test("updateCodeStandardsMetadata writes canonical metadata fields", () => {
   });
 
   assert.deepEqual(updatedPackageJson.codeStandards, {
-    contractVersion: "v1",
+    contractVersion: "v2",
     template: "node-service",
     profilePath: "profiles/new.profile.json",
     withAiAdapters: false,

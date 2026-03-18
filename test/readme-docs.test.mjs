@@ -14,6 +14,7 @@ test("README documents verify options and usage", async () => {
     "verify --report json",
     "verify --only",
     "verify --files",
+    "verify --strict",
     "verify --explain single-return",
     "Using verify in CI",
     "Verify Output",

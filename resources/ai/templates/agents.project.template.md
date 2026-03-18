@@ -39,6 +39,10 @@ If rules conflict, the higher item wins. Existing code has no grandfathered exce
 - `npm run standards:check` also enforces AST-level project rules such as single return, async/await-only, section ordering, identifier quality, and naming rules.
 - `npm run check` is the final blocking gate.
 - Let Biome decide the final line wrapping. Do not force single-line layouts that the formatter keeps multiline.
+- `verify` MUST NOT enforce a visual layout that Biome can rewrite.
+- Fix every `error`.
+- Review every `warning` with judgment; do not rewrite code blindly if the result is less simple or less readable.
+- Report `audit` items explicitly, but they do not fail the default verification flow.
 
 ## README Rule
 
@@ -58,6 +62,7 @@ Simplicity is mandatory, not stylistic preference.
 - Simplicity does not justify removing valid boundaries.
 - Keep distinct current responsibilities separated when they serve a real purpose.
 - Keep code compact, but do not fight Biome over final wrapping decisions.
+- Templates are the canonical simplicity baseline. If a rule seems to require a more complex template, the rule is suspect.
 - Do not keep helper functions at module scope inside class-oriented feature files; move that logic into the class as private or static methods.
 - If a class starts accumulating unrelated responsibilities or growing into a very large file, you MUST split it into smaller cohesive units with explicit roles.
 
@@ -78,7 +83,7 @@ Do not edit managed files during normal feature work unless the user explicitly 
 Before writing code:
 
 1. Read `AGENTS.md`, `ai/contract.json`, and `ai/<assistant>.md`.
-2. Summarize the blocking deterministic rules you will follow.
-3. Run `npm run standards:check` before and after implementation when feasible, then fix every deterministic, heuristic, and audit issue it reports.
+2. Summarize the `error` rules you will follow and the `warning` rules you will review carefully.
+3. Run `npm run standards:check` before and after implementation when feasible, then fix every `error`, review every `warning`, and report every `audit` item it reports.
 4. Implement the task without editing managed files unless the user explicitly asked for a standards update.
 5. Run `npm run check` and fix all issues before finishing.

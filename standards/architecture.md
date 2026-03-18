@@ -10,6 +10,7 @@ This is not optional guidance. Simplicity is a mandatory constraint:
 - do not design for hypothetical future extension points
 - when in doubt, remove complexity instead of adding it
 - simplicity does not justify removing valid boundaries
+- generated templates are the canonical simplicity baseline; if a rule makes them worse, the rule must be revised before the template
 
 ## Project Templates
 
@@ -68,3 +69,4 @@ Files inside `src/<feature>/` MUST expose exactly one public class unless the fi
 - If two designs are both correct, the less abstract and less indirect design MUST win.
 - Respect cohesion and responsibility boundaries.
 - If code already has clear, justified boundaries, keep them. Do not remove them only to make the structure look simpler.
+- Generated README files MUST describe the real runtime or package behavior; they MUST NOT describe themselves as scaffold output outside `AI Workflow`.

@@ -98,7 +98,7 @@ async function main() {
   const libBiomeIgnore = await readFile(path.join(libTarget, ".biomeignore"), "utf8");
   const libBiomeConfig = JSON.parse(await readFile(path.join(libTarget, "biome.json"), "utf8"));
   assert.equal(libPackage.codeStandards.template, "node-lib");
-  assert.equal(libPackage.codeStandards.contractVersion, "v1");
+  assert.equal(libPackage.codeStandards.contractVersion, "v2");
   assert.equal(libPackage.codeStandards.withAiAdapters, true);
   assert.equal(libPackage.scripts["standards:check"], "code-standards verify");
   assert.match(libBiomeIgnore, /^node_modules$/m);
@@ -128,7 +128,7 @@ async function main() {
 
   const libContract = JSON.parse(await readFile(path.join(libTarget, "ai", "contract.json"), "utf8"));
   assert.equal(libContract.project.template, "node-lib");
-  assert.equal(libContract.formatVersion, "v1");
+  assert.equal(libContract.formatVersion, "v2");
   assert.equal(libContract.project.withAiAdapters, true);
   assert(libContract.managedFiles.includes("AGENTS.md"));
   assert(libContract.managedFiles.includes("ai/contract.json"));

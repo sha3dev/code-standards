@@ -199,7 +199,7 @@ async function createMinimalNodeLibProject(t, withAiAdaptersInMetadata, withAiAd
   await mkdir(path.join(targetDir, "ai"), { recursive: true });
 
   const contract = {
-    formatVersion: "v1",
+    formatVersion: "v2",
     generatedByVersion: "0.9.0",
     project: {
       name: "demo-lib",
@@ -220,7 +220,7 @@ async function createMinimalNodeLibProject(t, withAiAdaptersInMetadata, withAiAd
         name: "demo-lib",
         type: "module",
         codeStandards: {
-          contractVersion: "v1",
+          contractVersion: "v2",
           template: "node-lib",
           withAiAdapters: withAiAdaptersInMetadata,
         },
@@ -287,7 +287,7 @@ async function createMinimalNodeServiceProject(t, readmeOptions = {}) {
   await mkdir(path.join(targetDir, "ai"), { recursive: true });
 
   const contract = {
-    formatVersion: "v1",
+    formatVersion: "v2",
     generatedByVersion: "0.9.0",
     project: {
       name: "demo-service",
@@ -308,7 +308,7 @@ async function createMinimalNodeServiceProject(t, readmeOptions = {}) {
         name: "demo-service",
         type: "module",
         codeStandards: {
-          contractVersion: "v1",
+          contractVersion: "v2",
           template: "node-service",
           withAiAdapters: false,
         },

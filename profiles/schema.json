@@ -29,7 +29,7 @@
     "instruction_file_location"
   ],
   "properties": {
-    "version": { "type": "string", "const": "v1" },
+    "version": { "type": "string", "const": "v2" },
     "paradigm": { "type": "string", "enum": ["class-first", "functional-first", "hybrid"] },
     "function_size_policy": { "type": "string", "enum": ["max_20_lines_hard", "max_30_lines_soft", "no_fixed_limit"] },
     "return_policy": { "type": "string", "enum": ["single_return_strict_no_exceptions", "single_return_with_guard_clauses", "free_return_style"] },
@@ -88,7 +88,7 @@
     "comment_sections_required_when_empty": { "type": "boolean" },
     "if_requires_braces": { "type": "boolean", "const": true },
     "readme_style": { "type": "string", "const": "top-tier" },
-    "rule_severity_model": { "type": "string", "enum": ["all_blocking", "tiered", "all_preferred"] },
+    "rule_severity_model": { "type": "string", "enum": ["tiered", "all_preferred"] },
     "language": { "type": "string", "enum": ["english_technical", "spanish_technical", "bilingual"] },
     "examples_density": { "type": "string", "enum": ["rule_with_good_bad_examples", "rules_only", "rules_plus_long_templates"] },
     "instruction_file_location": { "type": "string", "enum": ["root_agents_md", "ai_instructions_md", "both"] }

@@ -20,6 +20,7 @@ test("cli shows help", () => {
   assert.match(result.stdout, /--only <rule-id\[,rule-id\.\.\.\]>/);
   assert.match(result.stdout, /--files <path\[,path\.\.\.\]>/);
   assert.match(result.stdout, /--explain <rule-id>/);
+  assert.match(result.stdout, /--strict/);
 });
 
 test("refactor rejects positional arguments", () => {

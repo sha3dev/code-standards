@@ -1,6 +1,6 @@
 # 🚀 {{packageName}}
 
-HTTP service package that exposes one runtime entrypoint for starting or composing a Hono-based server.
+HTTP service package with one runtime entrypoint for composing or starting a Hono server.
 
 ## TL;DR
 
@@ -19,15 +19,15 @@ const server = serviceRuntime.buildServer();
 
 ## Why
 
-Use this package when you want one obvious runtime surface for booting the service and a small Hono HTTP boundary that is easy to test.
-It keeps startup and server construction behind a single public class so application code and tooling do not need to know the internal wiring.
+Use this package when you want one small runtime surface for booting the service and one small HTTP boundary that is easy to test.
+It keeps startup, route wiring, and the default response contract behind a public runtime class so callers do not need to understand the internal composition.
 
 ## Main Capabilities
 
-- Builds the HTTP server without binding a port when you need test or orchestration control.
-- Starts the default runtime with one public method when you want the service to listen immediately.
-- Exposes the root endpoint payload as a public type so consumers can reason about the response contract.
-- Keeps the HTTP API aligned with the standards default of using Hono for service transport.
+- Builds the HTTP server without binding a port when tests or orchestration code need control.
+- Starts the default runtime with one public method when the process should listen immediately.
+- Exposes the root endpoint payload as a public type so other code can depend on the response contract.
+- Keeps transport concerns small and explicit around Hono.
 
 ## Installation
 
@@ -138,6 +138,7 @@ Behavior notes:
 
 - useful for integration tests and manual orchestration
 - does not call `listen()`
+- returns the exact server instance that `startServer()` would later bind
 
 #### `startServer()`
 
@@ -155,6 +156,7 @@ Behavior notes:
 
 - logs the listening address through the package logger
 - binds immediately to the configured default port
+- keeps startup behavior centralized in one public method
 
 ### `AppInfoPayload`
 
@@ -201,13 +203,14 @@ Configuration is centralized in `src/config.ts`.
 
 Override `PORT` in `.env` or your shell before running `npm run start`.
 
-### Contract failures
+### Standards warnings
 
-Run `npm run standards:check` to detect missing managed files, README sections, or structural drift from the project contract.
+Run `npm run standards:check` to detect contract errors, README coverage gaps, and advisory warnings from the project verifier.
 
 ## AI Workflow
 
 - Read `AGENTS.md`, `ai/contract.json`, and the relevant `ai/<assistant>.md` before coding.
 - Keep managed contract/tooling files read-only during feature work.
 - Keep this README focused on the runtime surface, HTTP contract, configuration, and public API.
+- Rewrite examples and endpoint notes whenever exported behavior changes.
 - Run `npm run check` before finalizing changes.

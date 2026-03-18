@@ -5,9 +5,11 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 ## Formatting
 
 - Use Biome for formatting.
+- Biome is the sole authority for wrapping, quoting, spacing, and final visual layout.
 - Use a max line length of 160.
 - Let Biome decide the final line wrapping.
 - Prefer compact code, but do not force single-line layouts for constructs that Biome intentionally preserves as multiline.
+- `verify` MUST NOT enforce a visual code shape that Biome can legitimately rewrite.
 - Use semicolons.
 - Use double quotes for strings.
 
@@ -25,6 +27,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - Do not remove justified modules, role-based files, or separations merely to make the structure smaller.
 - Prefer concise arrow functions for simple callbacks (for example in `map`, `filter`, `reduce`, `some`, `every`, `find`, `forEach`) when writing new code and when Biome already keeps that form.
 - Do not churn Biome-stable block-bodied callbacks solely to satisfy a style preference.
+- Heuristic rules MUST NOT require an exact code shape; they may only report risks with concrete evidence.
 - Avoid `any` unless there is no viable alternative.
 - Prefer explicit return types for exported functions.
 - Use type-only imports when possible.
@@ -37,6 +40,11 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 - If a file exposes a public class, helper logic MUST stay inside that class as private or static methods rather than module-scope functions.
 - Oversized classes MUST be split into smaller cohesive units with clear roles instead of accumulating into one monolithic file.
 - `src/config.ts` MUST export a default object named `config` and it MUST always be imported as `import config from ".../config.ts"`.
+
+## Standards Admission
+
+- No new rule may be added to `resources/ai/rule-catalog.json` without a normative source in `standards/*`.
+- Every new rule MUST declare implementation ownership, a positive fixture, a negative fixture, and an explicit non-overlap decision for `Biome` or other generic tooling.
 
 ## Naming
 

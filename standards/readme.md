@@ -25,6 +25,7 @@ Do not write README like a generated scaffold summary, code dump, or file invent
 ## Writing Rules
 
 - Start from the consumer perspective: why this package exists, when to use it, and what stable surface it offers.
+- Write like the package maintainer talking to another engineer, not like a scaffold narrator.
 - Use concrete commands and expected execution order.
 - Avoid vague claims without implementation detail.
 - Keep headings and lists scannable.
@@ -33,9 +34,18 @@ Do not write README like a generated scaffold summary, code dump, or file invent
 - Document configuration keys as user-facing controls, not just constant names.
 - Do not enumerate private methods, internal helpers, or implementation-only files unless they are necessary for consumers to operate the package.
 - Do not describe the project as "scaffolded", "generated", or "template" documentation in the README itself.
+- Do not describe the README itself, the scaffold, or the generation process outside the `AI Workflow` section.
 - Put practical examples before the exhaustive API reference where possible.
 - Use a structure inspired by high-quality package READMEs such as `ky`: fast value proposition, examples first, then detailed API reference.
 - Update README with every behavior or command change.
+
+## Verification Rubric
+
+- README MUST contain runnable `bash` or `ts` examples that match the actual public surface.
+- README MUST document every exported type/function/class and every public class method.
+- README MUST cover each top-level `config` key with user-facing impact.
+- README MUST avoid placeholder language, TODOs, and abstract filler.
+- A good README may use different wording than the template as long as it meets the same coverage and quality bar.
 
 ## Quality Bar
 
