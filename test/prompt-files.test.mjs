@@ -34,6 +34,14 @@ test("renderPromptFiles materializes prompts into the target repo", async (t) =>
 
   assert.equal(generatedRefactorPrompt, sourceRefactorPrompt);
   assert.match(rootPrompt, /AGENTS\.md/);
+  assert.match(rootPrompt, /SKILLS\.md/);
+  assert.match(rootPrompt, /skills\/init-workflow\/SKILL\.md/);
+  assert.match(rootPrompt, /skills\/feature-shaping\/SKILL\.md/);
+  assert.match(rootPrompt, /skills\/simplicity-audit\/SKILL\.md/);
+  assert.match(rootPrompt, /skills\/change-synchronization\/SKILL\.md/);
+  assert.match(rootPrompt, /skills\/test-scope-selection\/SKILL\.md/);
+  assert.match(rootPrompt, /skills\/readme-authoring\/SKILL\.md/);
+  assert.match(rootPrompt, /skills\/http-api-conventions\/SKILL\.md/);
   assert.match(rootPrompt, /ai\/contract\.json/);
   assert.match(rootPrompt, /prompts\/init-contract\.md/);
   assert.match(rootPrompt, /## Implementation Request/);
@@ -52,20 +60,11 @@ test("contract prompts require the LLM to execute npm run check itself", async (
   }
 });
 
-test("refactor contract forbids restoring managed files from the snapshot", async () => {
+test("refactor contract delegates the procedural workflow to the refactor skill", async () => {
   const promptRaw = await readFile(path.join(packageRoot, "prompts", "refactor-contract.md"), "utf8");
 
-  assert.match(
-    promptRaw,
-    /you MUST NEVER restore `AGENTS\.md`, `ai\/\*`, `prompts\/\*`, `\.vscode\/\*`, `biome\.json`, `tsconfig\*\.json`, `package\.json`, or lockfiles from that snapshot/i,
-  );
-  assert.match(promptRaw, /pre-existing managed-file drift created by the scaffold regeneration is expected and is NOT a blocker/i);
-  assert.match(promptRaw, /you MUST NEVER use `git checkout`, `git restore`, or snapshot copies to roll managed files back/i);
-  assert.match(promptRaw, /You MUST analyze the legacy code first/);
-  assert.match(promptRaw, /You MUST then build a fresh implementation on top of the regenerated scaffold/);
-  assert.match(promptRaw, /copying legacy files into the new scaffold and making only superficial edits/);
-  assert.match(promptRaw, /preserving plural feature folders, unnecessary typed errors, helper files, wrapper services/);
-  assert.match(promptRaw, /before writing final code, you MUST explicitly compare the planned target structure against the active standards/i);
+  assert.match(promptRaw, /skills\/refactor-workflow\/SKILL\.md/);
+  assert.doesNotMatch(promptRaw, /copying legacy files into the new scaffold and making only superficial edits/i);
 });
 
 test("short prompts delegate to the contract files", async () => {
@@ -73,5 +72,18 @@ test("short prompts delegate to the contract files", async () => {
   const refactorPromptRaw = await readFile(path.join(packageRoot, "prompts", "refactor.prompt.md"), "utf8");
 
   assert.match(initPromptRaw, /prompts\/init-contract\.md/);
+  assert.match(initPromptRaw, /skills\/init-workflow\/SKILL\.md/);
+  assert.match(initPromptRaw, /skills\/feature-shaping\/SKILL\.md/);
+  assert.match(initPromptRaw, /skills\/simplicity-audit\/SKILL\.md/);
+  assert.match(initPromptRaw, /skills\/change-synchronization\/SKILL\.md/);
+  assert.match(initPromptRaw, /skills\/test-scope-selection\/SKILL\.md/);
+  assert.match(initPromptRaw, /skills\/readme-authoring\/SKILL\.md/);
+  assert.match(initPromptRaw, /skills\/http-api-conventions\/SKILL\.md/);
   assert.match(refactorPromptRaw, /prompts\/refactor-contract\.md/);
+  assert.match(refactorPromptRaw, /skills\/refactor-workflow\/SKILL\.md/);
+  assert.match(refactorPromptRaw, /skills\/feature-shaping\/SKILL\.md/);
+  assert.match(refactorPromptRaw, /skills\/simplicity-audit\/SKILL\.md/);
+  assert.match(refactorPromptRaw, /skills\/change-synchronization\/SKILL\.md/);
+  assert.match(refactorPromptRaw, /skills\/test-scope-selection\/SKILL\.md/);
+  assert.match(refactorPromptRaw, /skills\/http-api-conventions\/SKILL\.md/);
 });

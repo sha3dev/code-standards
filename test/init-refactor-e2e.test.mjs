@@ -124,6 +124,15 @@ function runNpm(args, cwd, env = process.env) {
   });
 }
 
+function runBiome(args, cwd, env = process.env) {
+  return spawnSync(path.join(cwd, "node_modules", ".bin", "biome"), args, {
+    cwd,
+    env,
+    encoding: "utf8",
+    timeout: 120_000,
+  });
+}
+
 async function createWorkspace(t, prefix) {
   const targetDir = await mkdtemp(path.join(os.tmpdir(), prefix));
   t.after(async () => rm(targetDir, { recursive: true, force: true }));
@@ -141,6 +150,19 @@ test("init node-lib fixture passes npm run check through the real CLI", async (t
 
   const checkResult = runNpm(["run", "check"], targetDir, env);
   assert.equal(checkResult.status, 0, checkResult.stderr);
+  const contractBiomeResult = runBiome(["check", "ai/contract.json"], targetDir, env);
+  assert.equal(contractBiomeResult.status, 0, contractBiomeResult.stderr);
+  const skillsRaw = await readFile(path.join(targetDir, "SKILLS.md"), "utf8");
+  assert.match(skillsRaw, /init-workflow/);
+  assert.match(skillsRaw, /feature-shaping/);
+  assert.match(skillsRaw, /simplicity-audit/);
+  assert.match(skillsRaw, /change-synchronization/);
+  assert.match(skillsRaw, /test-scope-selection/);
+  assert.match(skillsRaw, /http-api-conventions/);
+  assert.match(skillsRaw, /refactor-workflow/);
+  assert.match(skillsRaw, /readme-authoring/);
+  const initSkillRaw = await readFile(path.join(targetDir, "skills", "init-workflow", "SKILL.md"), "utf8");
+  assert.match(initSkillRaw, /name: init-workflow/);
 
   const strictVerifyResult = runCli(["verify", "--strict"], targetDir, env);
   assert.equal(strictVerifyResult.status, 0, strictVerifyResult.stderr);
@@ -160,6 +182,20 @@ test("init node-service fixture passes npm run check through the real CLI", asyn
 
   const checkResult = runNpm(["run", "check"], targetDir, env);
   assert.equal(checkResult.status, 0, checkResult.stderr);
+  const contractBiomeResult = runBiome(["check", "ai/contract.json"], targetDir, env);
+  assert.equal(contractBiomeResult.status, 0, contractBiomeResult.stderr);
+  const skillsRaw = await readFile(path.join(targetDir, "SKILLS.md"), "utf8");
+  assert.match(skillsRaw, /init-workflow/);
+  assert.match(skillsRaw, /feature-shaping/);
+  assert.match(skillsRaw, /simplicity-audit/);
+  assert.match(skillsRaw, /change-synchronization/);
+  assert.match(skillsRaw, /test-scope-selection/);
+  assert.match(skillsRaw, /http-api-conventions/);
+  assert.match(skillsRaw, /refactor-workflow/);
+  assert.match(skillsRaw, /readme-authoring/);
+  const httpApiSkillRaw = await readFile(path.join(targetDir, "skills", "http-api-conventions", "SKILL.md"), "utf8");
+  assert.match(httpApiSkillRaw, /name: http-api-conventions/);
+  assert.match(httpApiSkillRaw, /GET \/api\/users/);
 
   const strictVerifyResult = runCli(["verify", "--strict"], targetDir, env);
   assert.equal(strictVerifyResult.status, 0, strictVerifyResult.stderr);
@@ -184,6 +220,11 @@ test("refactor handles a small flat repo and produces a passing node-lib scaffol
 
   const checkResult = runNpm(["run", "check"], targetDir, env);
   assert.equal(checkResult.status, 0, checkResult.stderr);
+  const contractBiomeResult = runBiome(["check", "ai/contract.json"], targetDir, env);
+  assert.equal(contractBiomeResult.status, 0, contractBiomeResult.stderr);
+  const refactorSkillRaw = await readFile(path.join(targetDir, "skills", "refactor-workflow", "SKILL.md"), "utf8");
+  assert.match(refactorSkillRaw, /^---$/m);
+  assert.match(refactorSkillRaw, /name: refactor-workflow/);
 
   const snapshotRaw = await readFile(path.join(targetDir, ".code-standards", "refactor-source", "latest", "src", "index.ts"), "utf8");
   assert.match(snapshotRaw, /readValue/);

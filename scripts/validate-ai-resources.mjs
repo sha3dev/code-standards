@@ -10,12 +10,44 @@ const catalogPath = path.join(repoRoot, "resources", "ai", "rule-catalog.json");
 const catalogSchemaPath = path.join(repoRoot, "resources", "ai", "rule-catalog.schema.json");
 const contractSchemaPath = path.join(repoRoot, "resources", "ai", "contract.schema.json");
 const agentsTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "agents.project.template.md");
+const skillsIndexTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills.index.template.md");
+const featureShapingSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "feature-shaping", "SKILL.md");
+const simplicityAuditSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "simplicity-audit", "SKILL.md");
+const changeSynchronizationSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "change-synchronization", "SKILL.md");
+const testScopeSelectionSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "test-scope-selection", "SKILL.md");
+const httpApiConventionsSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "http-api-conventions", "SKILL.md");
+const initSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "init-workflow", "SKILL.md");
+const refactorSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "refactor-workflow", "SKILL.md");
+const readmeSkillTemplatePath = path.join(repoRoot, "resources", "ai", "templates", "skills", "readme-authoring", "SKILL.md");
 
-const [catalogRaw, catalogSchemaRaw, contractSchemaRaw, agentsTemplateRaw] = await Promise.all([
+const [
+  catalogRaw,
+  catalogSchemaRaw,
+  contractSchemaRaw,
+  agentsTemplateRaw,
+  skillsIndexTemplateRaw,
+  featureShapingSkillTemplateRaw,
+  simplicityAuditSkillTemplateRaw,
+  changeSynchronizationSkillTemplateRaw,
+  testScopeSelectionSkillTemplateRaw,
+  httpApiConventionsSkillTemplateRaw,
+  initSkillTemplateRaw,
+  refactorSkillTemplateRaw,
+  readmeSkillTemplateRaw,
+] = await Promise.all([
   readFile(catalogPath, "utf8"),
   readFile(catalogSchemaPath, "utf8"),
   readFile(contractSchemaPath, "utf8"),
   readFile(agentsTemplatePath, "utf8"),
+  readFile(skillsIndexTemplatePath, "utf8"),
+  readFile(featureShapingSkillTemplatePath, "utf8"),
+  readFile(simplicityAuditSkillTemplatePath, "utf8"),
+  readFile(changeSynchronizationSkillTemplatePath, "utf8"),
+  readFile(testScopeSelectionSkillTemplatePath, "utf8"),
+  readFile(httpApiConventionsSkillTemplatePath, "utf8"),
+  readFile(initSkillTemplatePath, "utf8"),
+  readFile(refactorSkillTemplatePath, "utf8"),
+  readFile(readmeSkillTemplatePath, "utf8"),
 ]);
 
 const catalog = JSON.parse(catalogRaw);
@@ -49,6 +81,23 @@ for (const rule of catalog.rules) {
 for (const token of ["{{contractVersion}}", "{{generatedByVersion}}", "{{deterministicRules}}", "{{heuristicRules}}", "{{auditRules}}", "{{managedFiles}}"]) {
   if (!agentsTemplateRaw.includes(token)) {
     console.error(`resources/ai/templates/agents.project.template.md is missing token ${token}`);
+    process.exit(1);
+  }
+}
+
+for (const [filePath, fileRaw, requiredSnippet] of [
+  ["resources/ai/templates/skills.index.template.md", skillsIndexTemplateRaw, "## Default Workflow Skills"],
+  ["resources/ai/templates/skills/feature-shaping/SKILL.md", featureShapingSkillTemplateRaw, "name: feature-shaping"],
+  ["resources/ai/templates/skills/simplicity-audit/SKILL.md", simplicityAuditSkillTemplateRaw, "name: simplicity-audit"],
+  ["resources/ai/templates/skills/change-synchronization/SKILL.md", changeSynchronizationSkillTemplateRaw, "name: change-synchronization"],
+  ["resources/ai/templates/skills/test-scope-selection/SKILL.md", testScopeSelectionSkillTemplateRaw, "name: test-scope-selection"],
+  ["resources/ai/templates/skills/http-api-conventions/SKILL.md", httpApiConventionsSkillTemplateRaw, "name: http-api-conventions"],
+  ["resources/ai/templates/skills/init-workflow/SKILL.md", initSkillTemplateRaw, "name: init-workflow"],
+  ["resources/ai/templates/skills/refactor-workflow/SKILL.md", refactorSkillTemplateRaw, "name: refactor-workflow"],
+  ["resources/ai/templates/skills/readme-authoring/SKILL.md", readmeSkillTemplateRaw, "name: readme-authoring"],
+]) {
+  if (!fileRaw.includes(requiredSnippet)) {
+    console.error(`${filePath} is missing required content: ${requiredSnippet}`);
     process.exit(1);
   }
 }

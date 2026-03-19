@@ -175,8 +175,10 @@ npx @sha3/code-standards init --template node-service --yes
 What `init` generates for you:
 
 - `AGENTS.md` as the repo policy entrypoint
+- `SKILLS.md` as the index of specialized workflows that should only be loaded when relevant
 - `ai/contract.json` as the deterministic standards contract
 - `ai/rules.md` as the concise human-readable implementation rules file for the LLM
+- `skills/*` workflow guides such as init, refactor, feature shaping, simplicity audit, change synchronization, test scope selection, HTTP API conventions, and README authoring
 - `ai/<assistant>.md` adapter files when AI adapters are enabled
 - `PROMPT.md` in the project root as the starter prompt you complete before the first implementation pass
 - the managed `src/`, `test/`, config, and package surface for the selected template
@@ -186,10 +188,14 @@ The CLI also prints these next steps to the console after `init` completes, so t
 
 Recommended LLM workflow after `init`:
 
-1. Open `AGENTS.md`, `ai/contract.json`, `ai/rules.md`, and your assistant file such as `ai/codex.md`.
-2. Open `PROMPT.md`.
-3. Complete the final `Implementation Request` section.
-4. Paste the full contents of `PROMPT.md` into the LLM. For example:
+1. Open `AGENTS.md`, `SKILLS.md`, `ai/contract.json`, `ai/rules.md`, and your assistant file such as `ai/codex.md`.
+2. Load `skills/init-workflow/SKILL.md`, `skills/feature-shaping/SKILL.md`, `skills/simplicity-audit/SKILL.md`, and `skills/change-synchronization/SKILL.md` for init-based implementation.
+3. Load `skills/test-scope-selection/SKILL.md` when behavior changes.
+4. Load `skills/readme-authoring/SKILL.md` whenever the task rewrites `README.md`.
+5. For `node-service` projects or any HTTP endpoint task, load `skills/http-api-conventions/SKILL.md`.
+6. Open `PROMPT.md`.
+7. Complete the final `Implementation Request` section.
+8. Paste the full contents of `PROMPT.md` into the LLM. For example:
 
 ```txt
 Task:
@@ -198,14 +204,14 @@ Task:
 - Add tests for the new behavior.
 ```
 
-5. In your prompt, explicitly require the LLM to execute:
+9. In your prompt, explicitly require the LLM to execute:
 
 ```bash
 npm run check
 ```
 
-6. Require the LLM to fix any failing checks and rerun the command until it passes.
-7. Require the LLM to rewrite `README.md` so it documents the final public exports and public methods instead of leaving scaffold-placeholder API text.
+10. Require the LLM to fix any failing checks and rerun the command until it passes.
+11. Require the LLM to rewrite `README.md` so it documents the final public exports and public methods instead of leaving scaffold-placeholder API text.
 
 ### Regenerate an existing repo
 
@@ -251,8 +257,15 @@ npx @sha3/code-standards refactor --yes --install
 After `refactor`, these files matter most:
 
 - `AGENTS.md`
+- `SKILLS.md`
+- `skills/feature-shaping/SKILL.md`
+- `skills/simplicity-audit/SKILL.md`
+- `skills/change-synchronization/SKILL.md`
+- `skills/test-scope-selection/SKILL.md`
+- `skills/http-api-conventions/SKILL.md`
 - `ai/contract.json`
 - `ai/rules.md`
+- `skills/refactor-workflow/SKILL.md`
 - `.code-standards/refactor-source/public-contract.json`
 - `.code-standards/refactor-source/preservation.json`
 - `.code-standards/refactor-source/analysis-summary.md`
@@ -284,8 +297,15 @@ Task:
 
 5. Let the LLM implement the rewrite using:
    - `AGENTS.md`
+   - `SKILLS.md`
+   - `skills/feature-shaping/SKILL.md`
+   - `skills/simplicity-audit/SKILL.md`
+   - `skills/change-synchronization/SKILL.md`
+   - `skills/test-scope-selection/SKILL.md`
+   - `skills/http-api-conventions/SKILL.md` when transport contracts exist
    - `ai/contract.json`
    - `ai/rules.md`
+   - `skills/refactor-workflow/SKILL.md`
    - `.code-standards/refactor-source/public-contract.json`
    - `.code-standards/refactor-source/preservation.json`
    - `.code-standards/refactor-source/analysis-summary.md`
@@ -520,14 +540,19 @@ Generated projects treat these files as the local AI contract:
 
 1. `ai/contract.json`
 2. `AGENTS.md`
-3. `ai/rules.md`
-4. `ai/<assistant>.md`
+3. `SKILLS.md`
+4. `skills/*`
+5. `ai/rules.md`
+6. `ai/<assistant>.md`
 
 Recommended bootstrap prompt:
 
 ```txt
 Before generating code:
-- Read AGENTS.md, ai/contract.json, ai/rules.md, and ai/<assistant>.md.
+- Read AGENTS.md, SKILLS.md, ai/contract.json, ai/rules.md, and ai/<assistant>.md.
+- Load `skills/init-workflow/SKILL.md`, `skills/feature-shaping/SKILL.md`, `skills/simplicity-audit/SKILL.md`, and `skills/change-synchronization/SKILL.md` for init-based implementation.
+- Load `skills/refactor-workflow/SKILL.md`, `skills/feature-shaping/SKILL.md`, `skills/simplicity-audit/SKILL.md`, and `skills/change-synchronization/SKILL.md` for refactor work.
+- Load `skills/test-scope-selection/SKILL.md` for meaningful behavior changes, `skills/readme-authoring/SKILL.md` whenever README changes, and `skills/http-api-conventions/SKILL.md` whenever HTTP endpoints exist or change.
 - Summarize the `error` rules and the `warning` rules you will review carefully.
 - Implement the task without editing managed files unless this is a standards update.
 - Run npm run check and fix all failures before finishing.

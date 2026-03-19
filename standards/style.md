@@ -49,6 +49,7 @@ All code MUST follow the canonical rules in `standards/manifest.json`.
 ## Naming
 
 - Use English technical/domain terms for all identifiers.
+- All generated project content MUST be written in English, including source code comments, README files, documentation, AI instruction files, examples, and user-facing template text.
 - Use `kebab-case` for files and directories.
 - Feature folder names MUST be singular (`src/invoice`, `src/user`, `src/billing`).
 - Class names MUST be `PascalCase` nouns.

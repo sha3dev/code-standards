@@ -25,6 +25,7 @@ Do not write README like a generated scaffold summary, code dump, or file invent
 ## Writing Rules
 
 - Start from the consumer perspective: why this package exists, when to use it, and what stable surface it offers.
+- README content MUST be written in English.
 - Write like the package maintainer talking to another engineer, not like a scaffold narrator.
 - Use concrete commands and expected execution order.
 - Avoid vague claims without implementation detail.

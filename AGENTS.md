@@ -17,6 +17,7 @@ This repository is AI-first. Always consume standards in this order:
 - Use `code-standards profile` to maintain the default AI style profile.
 - Treat generated project-level `AGENTS.md` as blocking policy.
 - Follow `standards/readme.md` when creating or updating README files.
+- Require all generated content to be written in English, including code comments, README files, documentation, examples, and AI instruction files.
 - Treat simplicity as a mandatory rule: no speculative abstractions, no gratuitous indirection, no extra files/layers/wrappers unless they solve a real current problem.
 - Simplicity does not justify removing valid boundaries; keep distinct current responsibilities separated when they serve a real purpose.
 - Let Biome decide the final line wrapping and formatting shape.

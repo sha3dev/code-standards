@@ -5,8 +5,10 @@ This directory stores profile-aware templates used by `code-standards init`.
 Template resolution order:
 
 1. `resources/ai/templates/agents.project.template.md`
-2. `resources/ai/templates/rules/*.md`
-3. `resources/ai/templates/adapters/*.template.md`
+2. `resources/ai/templates/skills.index.template.md`
+3. `resources/ai/templates/skills/*/SKILL.md`
+4. `resources/ai/templates/rules/*.md`
+5. `resources/ai/templates/adapters/*.template.md`
 
 Rendering rules:
 

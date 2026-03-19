@@ -82,10 +82,19 @@ async function main() {
   assert(libFiles.includes("src/package-info/package-info.service.ts"));
   assert(libFiles.includes("test/package-info.test.ts"));
   assert(libFiles.includes("AGENTS.md"));
+  assert(libFiles.includes("SKILLS.md"));
   assert(libFiles.includes("PROMPT.md"));
   assert(libFiles.includes("ai/contract.json"));
   assert(libFiles.includes("ai/rules.md"));
   assert(libFiles.includes("ai/codex.md"));
+  assert(libFiles.includes("skills/feature-shaping/SKILL.md"));
+  assert(libFiles.includes("skills/simplicity-audit/SKILL.md"));
+  assert(libFiles.includes("skills/change-synchronization/SKILL.md"));
+  assert(libFiles.includes("skills/test-scope-selection/SKILL.md"));
+  assert(libFiles.includes("skills/http-api-conventions/SKILL.md"));
+  assert(libFiles.includes("skills/init-workflow/SKILL.md"));
+  assert(libFiles.includes("skills/refactor-workflow/SKILL.md"));
+  assert(libFiles.includes("skills/readme-authoring/SKILL.md"));
   assert(libFiles.includes("ai/examples/rules/returns-good.ts"));
   assert(libFiles.includes("biome.json"));
   assert(libFiles.includes(".biomeignore"));
@@ -110,8 +119,10 @@ async function main() {
   assert.equal(libBiomeConfig.linter.rules.correctness.noUnusedImports, "error");
 
   const libAgentsRaw = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
+  const libSkillsRaw = await readFile(path.join(libTarget, "SKILLS.md"), "utf8");
   const libRulesRaw = await readFile(path.join(libTarget, "ai", "rules.md"), "utf8");
   assert.match(libAgentsRaw, /machine-readable source of truth/);
+  assert.match(libAgentsRaw, /SKILLS\.md/);
   assert.match(libAgentsRaw, /Deterministic Rules/);
   assert.match(libAgentsRaw, /Heuristic Rules/);
   assert.match(libAgentsRaw, /Audit Rules/);
@@ -125,14 +136,31 @@ async function main() {
   assert.match(libRulesRaw, /Create `\*\.types\.ts` only when shared feature types are substantial enough to justify a dedicated file/);
   assert.match(libRulesRaw, /## Feature Classes/);
   assert.match(libRulesRaw, /files MUST expose exactly one public class unless the file is `\*\.types\.ts`/);
+  assert.match(libSkillsRaw, /init-workflow/);
+  assert.match(libSkillsRaw, /feature-shaping/);
+  assert.match(libSkillsRaw, /simplicity-audit/);
+  assert.match(libSkillsRaw, /change-synchronization/);
+  assert.match(libSkillsRaw, /test-scope-selection/);
+  assert.match(libSkillsRaw, /http-api-conventions/);
+  assert.match(libSkillsRaw, /refactor-workflow/);
+  assert.match(libSkillsRaw, /readme-authoring/);
 
   const libContract = JSON.parse(await readFile(path.join(libTarget, "ai", "contract.json"), "utf8"));
   assert.equal(libContract.project.template, "node-lib");
   assert.equal(libContract.formatVersion, "v2");
   assert.equal(libContract.project.withAiAdapters, true);
   assert(libContract.managedFiles.includes("AGENTS.md"));
+  assert(libContract.managedFiles.includes("SKILLS.md"));
   assert(libContract.managedFiles.includes("ai/contract.json"));
   assert(libContract.managedFiles.includes("ai/rules.md"));
+  assert(libContract.managedFiles.includes("skills/feature-shaping/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/simplicity-audit/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/change-synchronization/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/test-scope-selection/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/http-api-conventions/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/init-workflow/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/refactor-workflow/SKILL.md"));
+  assert(libContract.managedFiles.includes("skills/readme-authoring/SKILL.md"));
   assert(libContract.rules.some((rule) => rule.id === "single-return"));
   assert(libContract.rules.some((rule) => rule.id === "feature-class-only"));
 
@@ -182,6 +210,7 @@ async function main() {
   assert.match(result.stdout, /Copy\/paste this prompt into your LLM:/);
   assert.match(result.stdout, /----- BEGIN REFACTOR PROMPT -----/);
   assert.match(result.stdout, /Read these files before making any implementation changes:/);
+  assert.match(result.stdout, /SKILLS\.md/);
   assert.match(result.stdout, /ai\/rules\.md/);
   assert.doesNotMatch(result.stdout, /^Rules:$/m);
   assert.match(result.stdout, /----- END REFACTOR PROMPT -----/);
@@ -228,8 +257,17 @@ async function main() {
 
   const serviceFiles = await listRelativeFiles(serviceTarget);
   assert(serviceFiles.includes("AGENTS.md"));
+  assert(serviceFiles.includes("SKILLS.md"));
   assert(serviceFiles.includes("ai/contract.json"));
   assert(serviceFiles.includes("ai/rules.md"));
+  assert(serviceFiles.includes("skills/feature-shaping/SKILL.md"));
+  assert(serviceFiles.includes("skills/simplicity-audit/SKILL.md"));
+  assert(serviceFiles.includes("skills/change-synchronization/SKILL.md"));
+  assert(serviceFiles.includes("skills/test-scope-selection/SKILL.md"));
+  assert(serviceFiles.includes("skills/http-api-conventions/SKILL.md"));
+  assert(serviceFiles.includes("skills/init-workflow/SKILL.md"));
+  assert(serviceFiles.includes("skills/refactor-workflow/SKILL.md"));
+  assert(serviceFiles.includes("skills/readme-authoring/SKILL.md"));
   assert(!serviceFiles.includes("ai/codex.md"));
   assert(serviceFiles.includes("src/app-info/app-info.service.ts"));
   assert(serviceFiles.includes("src/http/http-server.service.ts"));
@@ -259,9 +297,18 @@ async function main() {
   assert.equal(serviceContract.project.template, "node-service");
   assert.equal(serviceContract.project.withAiAdapters, false);
   assert(serviceContract.managedFiles.includes("AGENTS.md"));
+  assert(serviceContract.managedFiles.includes("SKILLS.md"));
   assert(serviceContract.managedFiles.includes("PROMPT.md"));
   assert(serviceContract.managedFiles.includes("ai/contract.json"));
   assert(serviceContract.managedFiles.includes("ai/rules.md"));
+  assert(serviceContract.managedFiles.includes("skills/feature-shaping/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/simplicity-audit/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/change-synchronization/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/test-scope-selection/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/http-api-conventions/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/init-workflow/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/refactor-workflow/SKILL.md"));
+  assert(serviceContract.managedFiles.includes("skills/readme-authoring/SKILL.md"));
   assert(serviceContract.managedFiles.includes("prompts/init.prompt.md"));
   assert(serviceContract.managedFiles.includes("prompts/refactor.prompt.md"));
 

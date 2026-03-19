@@ -15,6 +15,7 @@ In addition to tooling, each generated project MUST include profile-driven AI in
 
 The generated contract files are the top local AI coding contract.
 When generated instructions conflict with existing repository code, the generated `@sha3/code-standards` conventions MUST win.
+All generated artifacts MUST be written in English, including `AGENTS.md`, `ai/contract.json` string content, assistant adapter files, README files, docs, examples, and template-generated user-facing text.
 
 ## Enforcement
 
