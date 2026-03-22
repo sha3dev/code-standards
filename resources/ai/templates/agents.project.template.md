@@ -38,7 +38,7 @@ If rules conflict, the higher item wins. Existing code has no grandfathered exce
 
 - `npm run standards:check` validates project structure, README sections, managed files, metadata sync, and AI contract presence.
 - `npm run lint` uses Biome for baseline linting and formatting rules.
-- `npm run standards:check` also enforces AST-level project rules such as single return, async/await-only, section ordering, identifier quality, and naming rules.
+- `npm run standards:check` also enforces AST-level project rules such as single return outside `src/http/`, async/await-only, section ordering, identifier quality, and naming rules.
 - `npm run check` is the final blocking gate.
 - Let Biome decide the final line wrapping. Do not force single-line layouts that the formatter keeps multiline.
 - `verify` MUST NOT enforce a visual layout that Biome can rewrite.
@@ -73,6 +73,7 @@ Simplicity is mandatory, not stylistic preference.
 {{managedFiles}}
 
 Do not edit managed files during normal feature work unless the user explicitly requests a standards update. Use `npx @sha3/code-standards refactor --yes` when the package contract changes.
+Biome ignores managed files by default so contract docs and prompts do not create lint or format noise during normal implementation work.
 
 ## Bootstrap Prompt
 
@@ -86,3 +87,4 @@ Before writing code:
 6. Run `npm run standards:check` before and after implementation when feasible, then fix every `error`, review every `warning`, and report every `audit` item it reports.
 7. Implement the task without editing managed files unless the user explicitly asked for a standards update.
 8. Run `npm run check` and fix all issues before finishing.
+9. Prefer guard clauses and early returns inside `src/http/` transport adapters when they make request validation or response handling clearer; keep stricter single-return style in domain code.

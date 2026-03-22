@@ -4,10 +4,10 @@
     {
       "id": "single-return",
       "title": "Single Return",
-      "summary": "Functions and methods in src/ must use a single return statement.",
+      "summary": "Functions and methods outside src/http/ must use a single return statement.",
       "severity": "error",
       "kind": "style",
-      "appliesTo": ["src/**/*.ts"],
+      "appliesTo": ["src/**/*.ts", "!src/http/**/*.ts"],
       "deterministic": true,
       "verificationMode": "deterministic",
       "verificationSource": "ast",

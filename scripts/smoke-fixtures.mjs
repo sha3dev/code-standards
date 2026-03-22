@@ -76,7 +76,7 @@ async function main() {
   assert.match(result.stdout, /Project created/);
   assert.match(result.stdout, /Guided next steps:/);
   assert.match(result.stdout, /PROMPT\.md/);
-  assert.doesNotMatch(result.stdout, /npm run check/);
+  assert.match(result.stdout, /init-phase-3-verify\.md/);
 
   const libFiles = await listRelativeFiles(libTarget);
   assert(libFiles.includes("src/package-info/package-info.service.ts"));
@@ -207,13 +207,13 @@ async function main() {
   assert.match(result.stdout, /Legacy code was moved into \.code-standards\/refactor-source\/latest\//);
   assert.match(result.stdout, /No lint, format, or check pass was run against the intermediate refactor state/);
   assert.match(result.stdout, /Final npm run check is deferred/);
-  assert.match(result.stdout, /Copy\/paste this prompt into your LLM:/);
-  assert.match(result.stdout, /----- BEGIN REFACTOR PROMPT -----/);
-  assert.match(result.stdout, /Read these files before making any implementation changes:/);
-  assert.match(result.stdout, /SKILLS\.md/);
-  assert.match(result.stdout, /ai\/rules\.md/);
+  assert.match(result.stdout, /Use the sequential phase prompts instead of pasting one giant prompt/);
+  assert.match(result.stdout, /----- BEGIN PROMPT CHECKLIST -----/);
+  assert.match(result.stdout, /Sequential LLM Workflow/);
+  assert.match(result.stdout, /prompts\/refactor\.prompt\.md/);
+  assert.match(result.stdout, /prompts\/refactor-phase-2-rebuild\.md/);
   assert.doesNotMatch(result.stdout, /^Rules:$/m);
-  assert.match(result.stdout, /----- END REFACTOR PROMPT -----/);
+  assert.match(result.stdout, /----- END PROMPT CHECKLIST -----/);
   const refactoredAgents = await readFile(path.join(libTarget, "AGENTS.md"), "utf8");
   assert.doesNotMatch(refactoredAgents, /# stale/);
   const libIndexAfterRefactor = await readFile(path.join(libTarget, "src", "index.ts"), "utf8");
@@ -253,7 +253,7 @@ async function main() {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Guided next steps:/);
   assert.match(result.stdout, /PROMPT\.md/);
-  assert.doesNotMatch(result.stdout, /npm run check/);
+  assert.match(result.stdout, /init-phase-3-verify\.md/);
 
   const serviceFiles = await listRelativeFiles(serviceTarget);
   assert(serviceFiles.includes("AGENTS.md"));

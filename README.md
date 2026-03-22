@@ -127,6 +127,7 @@ Behavior notes:
 - HTTP API documentation for service templates
 - TypeScript-only source policy in `src/` and `test/`
 - deterministic AST rules such as `single-return`, `async-await-only`, `canonical-config-import`, and file naming rules
+- `single-return` stays strict in `src/` except for `src/http/**`, where transport handlers may use early returns when that keeps request flow clearer
 
 ### What `verify` does not check
 
@@ -161,7 +162,7 @@ Use `init` when you are starting a new repo from the managed scaffold.
 1. Create and enter the target directory.
 2. Run `init` with the template you want.
 3. Review the generated contract files before asking an LLM to write code.
-4. Pass the generated init prompt to your LLM together with your feature brief.
+4. Use the generated phase prompts one at a time together with your feature brief.
 5. Make the LLM execute `npm run check` itself and fix any failures before it finishes.
 
 Minimal flow:
@@ -180,22 +181,24 @@ What `init` generates for you:
 - `ai/rules.md` as the concise human-readable implementation rules file for the LLM
 - `skills/*` workflow guides such as init, refactor, feature shaping, simplicity audit, change synchronization, test scope selection, HTTP API conventions, and README authoring
 - `ai/<assistant>.md` adapter files when AI adapters are enabled
-- `PROMPT.md` in the project root as the starter prompt you complete before the first implementation pass
+- `PROMPT.md` in the project root as the operator checklist and request sheet for the phased LLM workflow
+- `prompts/init.prompt.md`, `prompts/init-phase-2-implement.md`, and `prompts/init-phase-3-verify.md` as the sequential init prompts
 - the managed `src/`, `test/`, config, and package surface for the selected template
 - a README scaffold that is meant to be rewritten into package-grade integration documentation once real behavior exists
+- a root `SCAFFOLD-FEEDBACK.md` handoff requirement in the generated workflow so the LLM leaves scaffold/process feedback after implementation
 
 The CLI also prints these next steps to the console after `init` completes, so the user does not have to infer the LLM workflow manually.
 
 Recommended LLM workflow after `init`:
 
-1. Open `AGENTS.md`, `SKILLS.md`, `ai/contract.json`, `ai/rules.md`, and your assistant file such as `ai/codex.md`.
-2. Load `skills/init-workflow/SKILL.md`, `skills/feature-shaping/SKILL.md`, `skills/simplicity-audit/SKILL.md`, and `skills/change-synchronization/SKILL.md` for init-based implementation.
-3. Load `skills/test-scope-selection/SKILL.md` when behavior changes.
-4. Load `skills/readme-authoring/SKILL.md` whenever the task rewrites `README.md`.
-5. For `node-service` projects or any HTTP endpoint task, load `skills/http-api-conventions/SKILL.md`.
-6. Open `PROMPT.md`.
-7. Complete the final `Implementation Request` section.
-8. Paste the full contents of `PROMPT.md` into the LLM. For example:
+1. Open `PROMPT.md`.
+2. Complete the final `Implementation Request` section.
+3. Start with `prompts/init.prompt.md`. That phase should only produce a plan, assumptions, and a `Phase 2 reads` list.
+4. Continue with `prompts/init-phase-2-implement.md` using only the approved plan output and the files named in `Phase 2 reads`.
+5. Finish with `prompts/init-phase-3-verify.md` so the LLM runs verification and closes the task.
+6. Load optional skills only when the active phase prompt says they are needed.
+
+Minimal request example for `PROMPT.md`:
 
 ```txt
 Task:
@@ -204,14 +207,13 @@ Task:
 - Add tests for the new behavior.
 ```
 
-9. In your prompt, explicitly require the LLM to execute:
+The final phase must explicitly require the LLM to execute:
 
 ```bash
 npm run check
 ```
 
-10. Require the LLM to fix any failing checks and rerun the command until it passes.
-11. Require the LLM to rewrite `README.md` so it documents the final public exports and public methods instead of leaving scaffold-placeholder API text.
+The final phase must also require the LLM to fix any failing checks, rewrite `README.md` when behavior changes, and create or update `SCAFFOLD-FEEDBACK.md`.
 
 ### Regenerate an existing repo
 
@@ -228,7 +230,7 @@ npx @sha3/code-standards refactor --yes
 3. write `.code-standards/refactor-source/latest/`
 4. write `public-contract.json`, `preservation.json`, and `analysis-summary.md`
 5. rebuild the managed scaffold
-6. print the refactor prompt for the LLM handoff
+6. generate a phased refactor handoff for the LLM
 
 ### `refactor` step by step
 
@@ -238,9 +240,10 @@ Use `refactor` when you already have a repo and want to rebuild it onto the mana
 2. Run `refactor`.
 3. Answer the preservation questions if you are in interactive mode.
 4. Let the command move the legacy code into `.code-standards/refactor-source/latest/` and rebuild the managed surface.
-5. Open the generated refactor artifacts and the generated refactor prompt.
-6. Pass that prompt to the LLM so it can rebuild the domain code into the fresh scaffold.
+5. Open `PROMPT.md` and the generated refactor artifacts.
+6. Use the refactor phase prompts one at a time so the LLM can rebuild the domain code into the fresh scaffold.
 7. Require the LLM to execute `npm run check` itself and fix any failures before it finishes.
+8. Require the LLM to finish by creating or updating `SCAFFOLD-FEEDBACK.md` with concrete scaffold/process feedback.
 
 Typical command:
 
@@ -256,6 +259,7 @@ npx @sha3/code-standards refactor --yes --install
 
 After `refactor`, these files matter most:
 
+- `PROMPT.md`
 - `AGENTS.md`
 - `SKILLS.md`
 - `skills/feature-shaping/SKILL.md`
@@ -271,8 +275,10 @@ After `refactor`, these files matter most:
 - `.code-standards/refactor-source/analysis-summary.md`
 - `.code-standards/refactor-source/latest/`
 - `prompts/refactor.prompt.md`
+- `prompts/refactor-phase-2-rebuild.md`
+- `prompts/refactor-phase-3-verify.md`
 
-The CLI also prints a ready-to-paste refactor prompt after `refactor` completes, so the normal flow is: run `refactor`, copy the printed prompt, paste it into the LLM.
+The CLI prints the operator checklist after `refactor` completes. The normal flow is: run `refactor`, complete `PROMPT.md`, start with `prompts/refactor.prompt.md`, then continue phase by phase.
 
 Important behavior note:
 
@@ -284,9 +290,12 @@ Important behavior note:
 Recommended LLM workflow after `refactor`:
 
 1. Run `refactor` and wait for it to complete.
-2. Open `prompts/refactor.prompt.md` in the refactored repo.
-3. Paste the full contents of `prompts/refactor.prompt.md` into the LLM.
-4. Add a short execution brief underneath, for example:
+2. Open `PROMPT.md` and complete the `Refactor Request` section.
+3. Start with `prompts/refactor.prompt.md`. That phase should only return preserved contracts, risks, and a `Phase 2 reads` list.
+4. Continue with `prompts/refactor-phase-2-rebuild.md` using only the approved phase 1 output and the files named in `Phase 2 reads`.
+5. Finish with `prompts/refactor-phase-3-verify.md` so the LLM runs verification and closes the task.
+
+Minimal request example for `PROMPT.md`:
 
 ```txt
 Task:
@@ -295,31 +304,17 @@ Task:
 - Do not edit managed files unless a standards update is explicitly required.
 ```
 
-5. Let the LLM implement the rewrite using:
-   - `AGENTS.md`
-   - `SKILLS.md`
-   - `skills/feature-shaping/SKILL.md`
-   - `skills/simplicity-audit/SKILL.md`
-   - `skills/change-synchronization/SKILL.md`
-   - `skills/test-scope-selection/SKILL.md`
-   - `skills/http-api-conventions/SKILL.md` when transport contracts exist
-   - `ai/contract.json`
-   - `ai/rules.md`
-   - `skills/refactor-workflow/SKILL.md`
-   - `.code-standards/refactor-source/public-contract.json`
-   - `.code-standards/refactor-source/preservation.json`
-   - `.code-standards/refactor-source/analysis-summary.md`
-   - `.code-standards/refactor-source/latest/`
-6. Make the LLM rewrite `README.md` as package-grade integration documentation for the rebuilt public API and runtime behavior.
-7. In your prompt, explicitly require the LLM to execute:
+6. Let each phase load only the files named by that phase prompt instead of reloading the whole refactor pack every time.
+7. Make the final phase rewrite `README.md` as package-grade integration documentation for the rebuilt public API and runtime behavior when needed.
+8. In the final phase, explicitly require the LLM to execute:
 
 ```bash
 npm run check
 ```
 
-8. Require the LLM to fix any failing checks and rerun the command until it passes.
+9. Require the LLM to fix any failing checks and rerun the command until it passes.
 
-Practical rule: `refactor` prepares the repo and the context pack; the LLM then performs the actual domain rewrite using `prompts/refactor.prompt.md`.
+Practical rule: `refactor` prepares the repo and the context pack; the LLM should consume that pack incrementally through the phase prompts instead of in one large prompt.
 
 ### Verify a project
 
@@ -452,7 +447,7 @@ Important behavior:
 Example text output:
 
 ```txt
-- ERROR [single-return] src/user/user.service.ts: functions and methods in src/ must use a single return statement
+- ERROR [single-return] src/user/user.service.ts: functions and methods outside src/http/ must use a single return statement
 - WARNING [large-class-heuristic/heuristic] src/user/user.service.ts: very large classes should be decomposed into smaller cohesive units
 Verification failed with 1 error(s) and 1 warning(s).
 ```
@@ -468,7 +463,7 @@ Example JSON output:
       "ruleId": "single-return",
       "category": "source-rule",
       "severity": "error",
-      "message": "functions and methods in src/ must use a single return statement",
+      "message": "functions and methods outside src/http/ must use a single return statement",
       "relativePath": "src/user/user.service.ts",
       "enforcedBy": "verify"
     }

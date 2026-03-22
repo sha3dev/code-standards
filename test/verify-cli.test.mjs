@@ -42,7 +42,7 @@ async function createVerifyFixture(t) {
       {
         id: "single-return",
         title: "Single Return",
-        summary: "Functions and methods in src/ must use a single return statement.",
+        summary: "Functions and methods outside src/http/ must use a single return statement.",
         severity: "error",
         kind: "style",
         deterministic: true,
@@ -51,7 +51,7 @@ async function createVerifyFixture(t) {
         implementedBy: ["source-rule-verifier"],
         requiresContext: "full-project",
         confidence: "high",
-        appliesTo: ["src/**/*.ts"],
+        appliesTo: ["src/**/*.ts", "!src/http/**/*.ts"],
         enforcedBy: ["verify"],
         examples: {
           good: ["ai/examples/rules/returns-good.ts"],

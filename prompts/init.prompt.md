@@ -1,33 +1,28 @@
-Read these files before making any implementation changes:
+This is phase 1 of the init workflow. Do not implement yet.
 
+Read only the minimum context needed to produce an execution plan:
+
+- `PROMPT.md`
 - `AGENTS.md`
-- `SKILLS.md`
 - `ai/contract.json`
 - `ai/rules.md`
-- `prompts/init-contract.md`
 - `skills/init-workflow/SKILL.md`
 - `skills/feature-shaping/SKILL.md`
 - `skills/simplicity-audit/SKILL.md`
 - `skills/change-synchronization/SKILL.md`
-- the assistant-specific adapter in `ai/`
+- the assistant-specific adapter in `ai/`, if present
 
-Your job is to implement the requested behavior in the scaffold under `src/` and `test/` following the rules in `ai/rules.md`, `prompts/init-contract.md`, and `skills/init-workflow/SKILL.md`.
-You MUST also load `skills/feature-shaping/SKILL.md`, `skills/simplicity-audit/SKILL.md`, and `skills/change-synchronization/SKILL.md`.
-If the task introduces meaningful behavior changes, you MUST load `skills/test-scope-selection/SKILL.md`.
-If the task creates or updates `README.md`, you MUST also load `skills/readme-authoring/SKILL.md` before editing it.
-If the project is a `node-service` or the task changes HTTP endpoints, you MUST also load `skills/http-api-conventions/SKILL.md`.
+Load optional skills only if the request in `PROMPT.md` triggers them:
 
-Implementation reminders:
+- `skills/test-scope-selection/SKILL.md` for meaningful behavior changes
+- `skills/readme-authoring/SKILL.md` when `README.md` must change
+- `skills/http-api-conventions/SKILL.md` for `node-service` projects or HTTP endpoint work
 
-- Let Biome decide final layout and wrapping.
-- Fix `error` rules first; review `warning` rules carefully instead of overcorrecting them.
-- Simplify before introducing abstractions or extra files.
-- Rewrite `README.md` last so it matches the final public behavior.
+Return only:
 
-## Package Specification
+1. A compact implementation plan with the minimum files that need inspection next.
+2. Open questions or assumptions that could change the design.
+3. A short list named `Phase 2 reads` with only the files the LLM should load for implementation.
 
-- Goal:
-- Public API:
-- Runtime constraints:
-- Required dependencies:
-- Feature requirements:
+Do not edit files, do not run verification, and do not restate the full contract.
+Phase 2 continues in `prompts/init-phase-2-implement.md`.

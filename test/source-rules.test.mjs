@@ -61,6 +61,26 @@ export class UserService {
   assert(errors.some((issue) => issue.ruleId === "single-return"));
 });
 
+test("single-return allows early returns in src/http transport files", async (t) => {
+  const errors = await verifySingleFile(
+    t,
+    "src/http/user.controller.ts",
+    `
+export class UserController {
+  public readValue(input: string): string {
+    if (input.length === 0) {
+      return "empty";
+    }
+
+    return input;
+  }
+}
+`,
+  );
+
+  assert(!errors.some((issue) => issue.ruleId === "single-return"));
+});
+
 test("async-await-only flags promise chains in src", async (t) => {
   const errors = await verifySingleFile(
     t,

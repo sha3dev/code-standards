@@ -13,7 +13,7 @@ test("renderTextReport formats issues with rule id and path", () => {
         ruleId: "single-return",
         category: "source-rule",
         severity: "error",
-        message: "functions and methods in src/ must use a single return statement",
+        message: "functions and methods outside src/http/ must use a single return statement",
         relativePath: "src/user/user.service.ts",
         enforcedBy: "verify",
       },
@@ -28,7 +28,7 @@ test("renderTextReport formats issues with rule id and path", () => {
     },
   });
 
-  assert.equal(output, "- ERROR [single-return] src/user/user.service.ts: functions and methods in src/ must use a single return statement");
+  assert.equal(output, "- ERROR [single-return] src/user/user.service.ts: functions and methods outside src/http/ must use a single return statement");
 });
 
 test("renderJsonReport returns stable parseable JSON", () => {

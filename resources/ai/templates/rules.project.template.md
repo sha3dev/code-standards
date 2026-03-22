@@ -8,6 +8,7 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 - Treat `AGENTS.md` as blocking local policy.
 - Treat `SKILLS.md` and `skills/*` as specialized workflow guidance that applies when the task matches that workflow.
 - Keep managed files read-only unless the user explicitly requests a standards update.
+- Managed files are ignored by Biome by default; do not remove those ignores just to lint contract or prompt artifacts during feature work.
 - Run `npm run check` yourself before finishing and fix any failures before you stop.
 - Fix every `error`, review every `warning`, and report every `audit` item.
 
@@ -34,6 +35,11 @@ Read this file together with `AGENTS.md` and `ai/contract.json` before making im
 - Throw plain `Error` by default.
 - Use custom error types only when other code must distinguish failure kinds.
 - Do not add error hierarchies without a real consumer.
+
+## Transport Pragmatism
+
+- `single-return` stays strict across `src/` except for `src/http/**`.
+- In `src/http/**`, prefer the clearest handler flow for validation, auth, and response branching, including early returns when they reduce nesting.
 
 ## Type Files
 

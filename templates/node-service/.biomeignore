@@ -2,3 +2,9 @@ node_modules
 dist
 coverage
 .code-standards
+AGENTS.md
+PROMPT.md
+SKILLS.md
+ai
+prompts
+skills

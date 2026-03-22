@@ -169,6 +169,11 @@ test("init node-lib fixture passes npm run check through the real CLI", async (t
 
   const readmeRaw = await readFile(path.join(targetDir, "README.md"), "utf8");
   assert.match(readmeRaw, /stable, package-root API/);
+  const biomeIgnoreRaw = await readFile(path.join(targetDir, ".biomeignore"), "utf8");
+  assert.match(biomeIgnoreRaw, /^AGENTS\.md$/m);
+  assert.match(biomeIgnoreRaw, /^ai\/contract\.json$/m);
+  assert.match(biomeIgnoreRaw, /^prompts\/init\.prompt\.md$/m);
+  assert.match(biomeIgnoreRaw, /^skills\/init-workflow\/SKILL\.md$/m);
 });
 
 test("init node-service fixture passes npm run check through the real CLI", async (t) => {
@@ -202,6 +207,11 @@ test("init node-service fixture passes npm run check through the real CLI", asyn
 
   const readmeRaw = await readFile(path.join(targetDir, "README.md"), "utf8");
   assert.match(readmeRaw, /one runtime entrypoint/);
+  const biomeIgnoreRaw = await readFile(path.join(targetDir, ".biomeignore"), "utf8");
+  assert.match(biomeIgnoreRaw, /^AGENTS\.md$/m);
+  assert.match(biomeIgnoreRaw, /^ai\/contract\.json$/m);
+  assert.match(biomeIgnoreRaw, /^prompts\/init\.prompt\.md$/m);
+  assert.match(biomeIgnoreRaw, /^skills\/http-api-conventions\/SKILL\.md$/m);
 });
 
 test("refactor handles a small flat repo and produces a passing node-lib scaffold", async (t) => {

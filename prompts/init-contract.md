@@ -1,5 +1,7 @@
 ## Init Contract
 
+Use this contract during implementation and verification phases, not as phase-1 planning input unless the plan proves it is necessary.
+
 - This workflow is an init-based implementation. You MUST load `skills/init-workflow/SKILL.md` and follow it as the primary procedural guide for execution order and reporting.
 - You MUST load `skills/feature-shaping/SKILL.md`, `skills/simplicity-audit/SKILL.md`, and `skills/change-synchronization/SKILL.md` as part of the default init workflow.
 - If the task introduces meaningful behavior changes, you MUST load `skills/test-scope-selection/SKILL.md`.
@@ -13,9 +15,11 @@
 - You MUST let Biome decide final layout and wrapping.
 - You MUST execute `npm run check` yourself before finishing.
 - If `npm run check` fails, you MUST fix the issues and rerun it until it passes.
+- As the final step, you MUST create or update `SCAFFOLD-FEEDBACK.md` in the project root with concrete feedback about scaffold problems, unclear instructions, friction, missing patterns, and suggested improvements.
 
 When you respond after implementation, include:
 
 - changed files
 - a short compliance checklist
 - proof that `npm run check` passed
+- confirmation that `SCAFFOLD-FEEDBACK.md` was created or updated
